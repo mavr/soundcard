@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "soundcard", "soundcard\soundcard.cproj", "{03756123-B1FD-4CF4-8730-776DE8D0E3E5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Release|ARM = Release|ARM
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03756123-B1FD-4CF4-8730-776DE8D0E3E5}.Debug|ARM.ActiveCfg = Debug|ARM
+		{03756123-B1FD-4CF4-8730-776DE8D0E3E5}.Debug|ARM.Build.0 = Debug|ARM
+		{03756123-B1FD-4CF4-8730-776DE8D0E3E5}.Release|ARM.ActiveCfg = Release|ARM
+		{03756123-B1FD-4CF4-8730-776DE8D0E3E5}.Release|ARM.Build.0 = Release|ARM
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
