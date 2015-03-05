@@ -56,9 +56,12 @@ void Init() {
 	
 	NVIC_EnableIRQ(SSC_IRQn);
 	
-//	PMC->PMC_PCER0 |= (1UL << ID_UART0);
-//	uart_system();
-//	uart_tx_enable();
+	PMC->PMC_PCER0 |= (1UL << ID_UART0);
+	uart_system();
+	uart_tx_enable();
+	uart_rx_enable();
+	
+	NVIC_EnableIRQ(UART0_IRQn);
 	
 }
 

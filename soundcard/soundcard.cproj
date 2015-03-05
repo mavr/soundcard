@@ -161,6 +161,12 @@
     <Compile Include="cmsis\src\system_sam4s.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="core\fifo.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="core\fifo.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="init.c">
       <SubType>compile</SubType>
     </Compile>
@@ -206,6 +212,7 @@
     <Folder Include="cmsis\linkerScripts\" />
     <Folder Include="cmsis\src\" />
     <Folder Include="module\" />
+    <Folder Include="core\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cmsis\linkerScripts\sam4sd32c_flash.ld">
