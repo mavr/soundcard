@@ -10,7 +10,7 @@
 #include "module/ad74111.h"
 #include "module/uart.h"
 #include "init.h"
-
+#include "system.h"
 /**
  * \brief Application entry point.
  *
