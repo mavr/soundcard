@@ -11,6 +11,7 @@
 #include "module/ad74111.h"
 #include "module/timer.h"
 #include "module/uart.h"
+#include "module/udp.h"
 
 void Init() {
 	/* From system_init() */
@@ -54,14 +55,15 @@ void Init() {
 	/* After initializing ssc interface and enable codec's clock turn on codec. */
 	codec_init();
 	
-	NVIC_EnableIRQ(SSC_IRQn);
+//	NVIC_EnableIRQ(SSC_IRQn);
 	
-	PMC->PMC_PCER0 |= (1UL << ID_UART0);
-	uart_system();
-	uart_tx_enable();
-	uart_rx_enable();
-	
-	NVIC_EnableIRQ(UART0_IRQn);
+//	PMC->PMC_PCER0 |= (1UL << ID_UART0);
+//	uart_system();
+//	uart_tx_enable();
+//	uart_rx_enable();
+//	NVIC_EnableIRQ(UART0_IRQn);
+
+	udp_system();
 	
 }
 
@@ -75,12 +77,15 @@ void pmc_system() {
 	
 	PMC->CKGR_PLLBR = CKGR_PLLBR_MULB(0);
 	PMC->CKGR_PLLBR = CKGR_PLLBR_PLLBCOUNT(10) | CKGR_PLLBR_DIVB(10) | CKGR_PLLBR_MULB(40);
-	while(!(PMC->PMC_SR & PMC_SR_LOCKB));
-	
-	
+	while(!(PMC->PMC_SR & PMC_SR_LOCKB));	
 	
 	PMC->PMC_MCKR = PMC_MCKR_CSS_PLLB_CLK;
 	while(!(PMC->PMC_SR & PMC_SR_MCKRDY));
+	
+	PMC->CKGR_PLLAR = CKGR_PLLAR_MULA(0);
+	PMC->CKGR_PLLAR = CKGR_PLLBR_PLLBCOUNT(10) | CKGR_PLLAR_DIVA(1) | CKGR_PLLAR_MULA(7) | CKGR_PLLAR_ONE; 
+	
+	PMC->PMC_USB = PMC_USB_USBDIV(1); // PLLA and div 2
 //
 //	SystemCoreClockUpdate();
 }

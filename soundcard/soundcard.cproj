@@ -213,6 +213,21 @@
     <Compile Include="module\uart.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="module\udp.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\udp.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\udp_isr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\usb.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\usb.h">
+      <SubType>compile</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="cmsis\" />
