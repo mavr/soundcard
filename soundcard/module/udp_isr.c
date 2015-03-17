@@ -12,19 +12,19 @@ void UDP_Handler() {
 
 /* Go go go from powered to default state */ 
 	if(UDP->UDP_ISR & UDP_ISR_ENDBUSRES) {
-		/* no understand action with ep */
-		UDP->UDP_CSR[0] |= UDP_CSR_EPEDS;
-		UDP->UDP_IER |= UDP_IER_EP0INT;
+		ep_reset(&ep_control, 0, UDP_EP_TYPE_CONTROL, 8);
 		
 		udp_set_interrupt();
 		udp_ddp_pull_up();
 		
 		UDP->UDP_ICR |= UDP_ICR_ENDBUSRES;
+//		UDP->UDP_FADDR = 0x00;
 		
 		return;
 	}
-	volatile uint8_t i;
-	if((UDP->UDP_ISR & UDP_IMR_SOFINT) == 0) {
-		i = 7;
+	
+	if(UDP->UDP_ISR & UDP_IMR_EP0INT) {
+		ep_callback(&ep_control);
+		UDP->UDP_ICR |= UDP_IMR_EP0INT;
 	}
 }
