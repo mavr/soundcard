@@ -20,6 +20,9 @@
 #define UDP_EP_TYPE_BULK		1
 #define UDP_EP_TYPE_INT			2
 
+/* Endpoint size */
+#define UDP_EP0_SIZE			64
+
 /* Endpoit buffers */
 #define UDP_EP0_RX_BUFFER_SIZE	64
 #define UDP_EP0_TX_BUFFER_SIZE	64
@@ -38,7 +41,7 @@ typedef struct {
 	
 } udp_t;
 
-static const uint8_t udp_dev_descriptor[] = {
+static uint8_t udp_dev_descriptor[] = {
 	0x12, // bLength
 	0x01, // bDescriptorType
 	0x00, // bcdUSB
@@ -59,7 +62,7 @@ static const uint8_t udp_dev_descriptor[] = {
 	0x01  // bNumConfigurations
 };
 
-static const uint8_t udp_ep0_descriptor[] = {
+static uint8_t udp_ep0_descriptor[] = {
 	0x07, // bLength
 	0x05, // bDescriptorType - ep
 	0x00, // bEndpointAddress - 0x00 for control
@@ -69,24 +72,33 @@ static const uint8_t udp_ep0_descriptor[] = {
 	0x0A  // bInterval
 };
 
+static uint8_t udp_conf_descriptor[] = { 0x00, 0x00 };
+
+enum ep_state { EP_STATE_NONE, EP_STATE_IDLE, EP_STATE_TRANS, EP_STATE_SETUP };
+
 /* structure of endpoint */
 typedef struct {
 /* main block */
 	uint8_t type;
 	uint8_t size;
 	uint8_t number;
+	
+	enum ep_state state;
 
 /* buffer block */
 	uint8_t *rx_buffer;
 	uint32_t rx_buffer_size;
 	uint32_t rx_bytes_ready;
-	uint32_t bank;
+	uint32_t rx_bank;
 	
 	uint8_t *tx_buffer;
-	uint32_t tx_buffer_size;
-	uint32_t tx_buffer_ready;	
+	uint32_t tx_size;
+	uint32_t tx_count;
 	
 /* callback block */
+	void (*callback)(void);
+	
+	uint16_t value;
 
 /* register control block */
 	uint32_t interrupt_mask;
@@ -111,11 +123,14 @@ void udp_set_dev_addr(uint8_t address);
 void udp_enumerate(const udp_setup_data_t *request);
 
 void udp_read(uint8_t *data);
-void udp_push(udp_ep_t *ep, uint8_t *data, uint32_t size);
-void udp_write(udp_ep_t *ep, const uint8_t *data, uint32_t size);
-inline void udp_fifo_push(udp_ep_t *ep, uint8_t value);
+int udp_send(udp_ep_t *ep, uint8_t *data, uint32_t size);
+int udp_push(udp_ep_t *ep);
+void udp_setup(udp_ep_t *ep);
 
-void udp_set_descriptor(uint8_t type, uint8_t index);
+
+void udp_fifo_push(udp_ep_t *ep, uint8_t value);
+
+void udp_get_descriptor(uint16_t wValue, uint16_t wIndex);
 
 /* Endpoint processing functions */
 void ep_init(udp_ep_t *ep, uint8_t type, uint8_t size, uint8_t number);

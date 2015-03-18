@@ -12,13 +12,12 @@ void UDP_Handler() {
 
 /* Go go go from powered to default state */ 
 	if(UDP->UDP_ISR & UDP_ISR_ENDBUSRES) {
-		ep_reset(&ep_control, 0, UDP_EP_TYPE_CONTROL, 8);
+		ep_reset(&ep_control, UDP_EP_CONTROL, UDP_EP_TYPE_CONTROL, UDP_EP0_SIZE);
 		
 		udp_set_interrupt();
 		udp_ddp_pull_up();
 		
 		UDP->UDP_ICR |= UDP_ICR_ENDBUSRES;
-//		UDP->UDP_FADDR = 0x00;
 		
 		return;
 	}

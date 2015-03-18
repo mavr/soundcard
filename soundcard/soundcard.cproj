@@ -171,6 +171,9 @@
     <Compile Include="core\fifo.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="include\error_code.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="include\system.h">
       <SubType>compile</SubType>
     </Compile>
