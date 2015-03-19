@@ -109,6 +109,7 @@ typedef struct {
 udp_ep_t ep_control;
 uint8_t ep0_rx_buffer[UDP_EP0_RX_BUFFER_SIZE];
 uint8_t ep0_tx_buffer[UDP_EP0_TX_BUFFER_SIZE];
+uint8_t debug_arr[12];
 
 udp_ep_t ep_in;
 udp_ep_t ep_out;
@@ -124,6 +125,7 @@ void udp_enumerate(const udp_setup_data_t *request);
 
 void udp_read(uint8_t *data);
 int udp_send(udp_ep_t *ep, uint8_t *data, uint32_t size);
+int udp_send_zlp(udp_ep_t *ep);
 int udp_push(udp_ep_t *ep);
 void udp_setup(udp_ep_t *ep);
 

@@ -37,8 +37,8 @@ void ep_init(udp_ep_t *ep, uint8_t type, uint8_t size, uint8_t number) {
 	ep->size = size;
 	ep->number = number;
 	
-	ep->state = EP_STATE_IDLE;
-	ep->callback = NULL;
+//	ep->state = EP_STATE_IDLE;
+//	ep->callback = NULL;
 	
 /* Buffer ? */	
 
@@ -46,12 +46,12 @@ void ep_init(udp_ep_t *ep, uint8_t type, uint8_t size, uint8_t number) {
 		case UDP_EP_TYPE_CONTROL:
 			ep->CSR = &(UDP->UDP_CSR[0]);
 			ep->FDR = &(UDP->UDP_FDR[0]);
-			ep->rx_buffer = ep0_rx_buffer;
-			ep->tx_buffer = ep0_tx_buffer;
-			ep->rx_buffer_size = 0;
-			ep->tx_size = 0;
-			ep->rx_bytes_ready = 0;
-			ep->tx_count = 0;
+//			ep->rx_buffer = ep0_rx_buffer;
+//			ep->tx_buffer = ep0_tx_buffer;
+			//ep->rx_buffer_size = 0;
+			//ep->tx_size = 0;
+			//ep->rx_bytes_ready = 0;
+			//ep->tx_count = 0;
 			break;
 			
 		case UDP_EP_TYPE_BULK:
@@ -110,7 +110,12 @@ int udp_push(udp_ep_t *ep) {
 //	for(uint32_t i = 0; i < size; i++) ep->FDR = *(ep->tx_buffer + ep->tx_count + i);
 //	for(uint32_t i = 0; i < size; i++) UDP->UDP_FDR[0] = *(ep->tx_buffer + ep->tx_count + i);
 	uint32_t i;
-	for(i = 0; i < ep->tx_size; i++) UDP->UDP_FDR[0] = *(ep->tx_buffer + ep->tx_count + i);
+	uint8_t tmp;
+	for(i = 0; i < ep->tx_size; i++) {
+		tmp =  (uint8_t) *(ep->tx_buffer + ep->tx_count + i);
+		debug_arr[i] = tmp;
+		UDP->UDP_FDR[0] = tmp; //(uint8_t) *(udp_dev_descriptor + ep->tx_count + i);
+	}
 	ep->tx_count += size;
 	
 	ep_control_set(ep, UDP_CSR_TXPKTRDY);
@@ -119,13 +124,15 @@ int udp_push(udp_ep_t *ep) {
 }
 
 int udp_send(udp_ep_t *ep, uint8_t *data, uint32_t size) {
-	if(ep->state != EP_STATE_IDLE) return ERRBUSY;
+//	if(ep->state != EP_STATE_IDLE) return ERRBUSY;
 	
-	ep->state = EP_STATE_TRANS;
+//	ep->state = EP_STATE_TRANS;
 	
 	if(size > UDP_EP0_TX_BUFFER_SIZE) return ERRMEMOVER;
 	
-	memcpy(ep->tx_buffer, data, size);
+	//memcpy(ep->tx_buffer, data, size);
+	//while(memcmp(ep->tx_buffer, data, size) != 0);
+	ep->tx_buffer = data;
 	ep->tx_size = size;
 	ep->tx_count = 0;
 	
@@ -133,16 +140,25 @@ int udp_send(udp_ep_t *ep, uint8_t *data, uint32_t size) {
 	return SUCCESS;
 }
 
+int udp_send_zlp(udp_ep_t *ep) {
+//	if(ep->state != EP_STATE_IDLE) return ERRBUSY;
+	while(*ep->CSR & UDP_CSR_TXPKTRDY);
+	ep_control_set(ep, UDP_CSR_TXPKTRDY);		
+}
+
 void udp_setaddress_set(uint8_t type) {
-	udp_send(&ep_control, 0, 0);
+	udp_send_zlp(&ep_control);
 	
-//	while(!(UDP->UDP_CSR[0] & UDP_CSR_TXCOMP) );
+	while(!(UDP->UDP_CSR[0] & UDP_CSR_TXCOMP) );
 	
+	UDP->UDP_GLB_STAT = UDP_GLB_STAT_FADDEN;
 	UDP->UDP_FADDR |= temp_addr | UDP_FADDR_FEN;
-	UDP->UDP_GLB_STAT |= UDP_GLB_STAT_FADDEN;
 }
 
 void udp_get_descriptor(uint16_t wValue, uint16_t wIndex) {
+	static count = 0;
+	count++;
+	
 	uint8_t *_p_desc = 0;
 		
 	// Type of descriptor is contains in high byte. Low byte contains index of descriptor.
@@ -182,7 +198,7 @@ void udp_enumerate(const udp_setup_data_t *request) {
 					break;
 				
 				case UDP_bRequest_SET_ADDRESS :
-					temp_addr = (request->wValue >> 8 ) & 0x7F;
+					temp_addr = (request->wValue) & 0x7F;
 					udp_setaddress_set(0);
 					break;
 			}
@@ -205,8 +221,9 @@ void ep_callback(udp_ep_t *ep) {
 	}
 	
 	if(*ep->CSR & UDP_CSR_TXCOMP) {
-		if(udp_push(ep) == LAST_TRUNK) ep->state = EP_STATE_IDLE;
+//		if(udp_push(ep) == LAST_TRUNK) ep->state = EP_STATE_IDLE;
 		*ep->CSR &= ~UDP_CSR_TXCOMP;
+		udp_push(ep);
 	}
 	
 	if(*ep->CSR & (UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1)) {

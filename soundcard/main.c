@@ -20,9 +20,7 @@ int main(void) {
 	/* Initialize the SAM system */
 	Init();
 	
-	while(1) {
-
-	}
+	while(1);
 }
 
 
