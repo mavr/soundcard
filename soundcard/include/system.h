@@ -9,7 +9,7 @@
 #ifndef SYSTEM_H_
 #define SYSTEM_H_
 
-
+#define nop() __asm __volatile ("nop"); 
 
 
 

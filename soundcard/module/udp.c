@@ -9,6 +9,7 @@
 #include "udp.h"
 #include "udp_request.h"
 #include "error_code.h"
+#include "system.h"
 #include <string.h>
 
 void udp_system() {
@@ -71,12 +72,27 @@ void ep_reset(udp_ep_t *ep, uint8_t ep_number, uint8_t ep_type, uint8_t ep_size)
 	ep_enable(ep);
 }
 
+void ep_control_set(udp_ep_t *ep, uint32_t mask) {
+	UDP->UDP_CSR[ep->number] |= mask;
+//	for(int i = 0; i < 1040; i++) nop();
+//	*ep->CSR = *ep->CSR | mask;
+//	uint32_t tmp = UDP->UDP_CSR[ep->number];
+	nop();
+//	while((*ep->CSR & mask) == 0);
+}
+
+void ep_control_clr(udp_ep_t *ep, uint32_t mask) {
+	UDP->UDP_CSR[ep->number] &= ~mask;
+//	*ep->CSR = *ep->CSR & (~mask);
+//	while((*ep->CSR & mask) != 0);
+}
+
 void ep_enable(udp_ep_t *ep) {
-	UDP->UDP_CSR[ep->number] |= UDP_CSR_EPEDS | UDP_CSR_DIR;
+	ep_control_set(ep, UDP_CSR_EPEDS);
 }
 
 void ep_disable(udp_ep_t *ep) {
-	UDP->UDP_CSR[ep->number] &= ~UDP_CSR_EPEDS;
+	ep_control_clr(ep, UDP_CSR_EPEDS);
 }
 
 void ep_set_interrupt(udp_ep_t *ep) {
@@ -93,10 +109,11 @@ int udp_push(udp_ep_t *ep) {
 // TODO: fix me
 //	for(uint32_t i = 0; i < size; i++) ep->FDR = *(ep->tx_buffer + ep->tx_count + i);
 //	for(uint32_t i = 0; i < size; i++) UDP->UDP_FDR[0] = *(ep->tx_buffer + ep->tx_count + i);
-	for(uint32_t i = 0; i < ep->tx_size; i++) UDP->UDP_FDR[0] = *(ep->tx_buffer + ep->tx_count + i);
+	uint32_t i;
+	for(i = 0; i < ep->tx_size; i++) UDP->UDP_FDR[0] = *(ep->tx_buffer + ep->tx_count + i);
 	ep->tx_count += size;
 	
-	*ep->CSR |= UDP_CSR_TXPKTRDY;
+	ep_control_set(ep, UDP_CSR_TXPKTRDY);
 	
 	return SUCCESS;	
 }
@@ -119,7 +136,7 @@ int udp_send(udp_ep_t *ep, uint8_t *data, uint32_t size) {
 void udp_setaddress_set(uint8_t type) {
 	udp_send(&ep_control, 0, 0);
 	
-	while(!(UDP->UDP_CSR[0] & UDP_CSR_TXCOMP) );
+//	while(!(UDP->UDP_CSR[0] & UDP_CSR_TXCOMP) );
 	
 	UDP->UDP_FADDR |= temp_addr | UDP_FADDR_FEN;
 	UDP->UDP_GLB_STAT |= UDP_GLB_STAT_FADDEN;

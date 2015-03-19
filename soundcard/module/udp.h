@@ -135,6 +135,8 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex);
 /* Endpoint processing functions */
 void ep_init(udp_ep_t *ep, uint8_t type, uint8_t size, uint8_t number);
 void ep_reset(udp_ep_t *ep, uint8_t ep_number, uint8_t ep_type, uint8_t ep_size);
+void ep_control_set(udp_ep_t *ep, uint32_t mask);
+void ep_control_clr(udp_ep_t *ep, uint32_t mask);
 void ep_set_buffer(udp_ep_t *ep, uint8_t *buffer, uint32_t size);
 void ep_set_interrupt(udp_ep_t *ep);
 //void ep_set_callback(udp_ep_t *ep);
