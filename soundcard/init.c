@@ -11,7 +11,7 @@
 #include "module/ad74111.h"
 #include "module/timer.h"
 #include "module/uart.h"
-#include "module/udp.h"
+#include "udp.h"
 
 void Init() {
 	/* From system_init() */

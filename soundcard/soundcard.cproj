@@ -176,6 +176,9 @@
     <Compile Include="include\system.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="include\udp.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="include\udp_request.h">
       <SubType>compile</SubType>
     </Compile>
@@ -192,6 +195,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="module\ad74111.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\endpoint.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="module\pio.c">
@@ -221,10 +227,10 @@
     <Compile Include="module\udp.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\udp.h">
+    <Compile Include="module\udp_isr.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\udp_isr.c">
+    <Compile Include="module\urb.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="module\usb.c">
