@@ -99,6 +99,10 @@ void ep_set_interrupt(udp_ep_t *ep) {
 	UDP->UDP_IER |= (1 << ep->number);
 }
 
+inline void udp_fifo_push(udp_ep_t *ep, uint8_t value) {
+	UDP->UDP_FDR[0] = value;
+}
+
 int udp_push(udp_ep_t *ep) {
 	if(ep->tx_size == ep->tx_count) return LAST_TRUNK;
 
@@ -147,15 +151,6 @@ int udp_send_stall(udp_ep_t *ep) {
 	*ep->CSR |= UDP_CSR_FORCESTALL;
 }
 
-void udp_setaddress_set(uint8_t type) {
-	udp_send_zlp(&ep_control);
-	
-	while(!(UDP->UDP_CSR[0] & UDP_CSR_TXCOMP) );
-	
-	UDP->UDP_GLB_STAT = UDP_GLB_STAT_FADDEN;
-	UDP->UDP_FADDR |= temp_addr | UDP_FADDR_FEN;
-}
-
 void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 	static count = 0;
 	count++;
@@ -167,10 +162,7 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 	// In current version of software index is not use.
 	switch(wValue >> 8) {
 		case UDP_wValue_DT_DEV	:		_p_desc = udp_dev_descriptor; _s_desc = *(_p_desc); break;
-		case UDP_wValue_DT_CONF :		
-			_p_desc = udp_conf_descriptor; 
-			_s_desc = _p_desc[2]; 
-			break; // TODO: fix this
+		case UDP_wValue_DT_CONF :		_p_desc = udp_conf_descriptor; _s_desc = *(_p_desc + 2); break; 
 //		case UDP_wValue_DT_STR	:		break;
 //		case UDP_wValue_DT_INT	:		_p_desc = udp_int_descriptor; break;
 //		case UDP_wValue_DT_EP	:		_p_desc = udp_ep0_descriptor; break;
@@ -181,16 +173,29 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 		break;
 	}
 
-//	udp_send(&ep_control, _p_desc, *(_p_desc)); // the first element of descriptor contain self size.
 	if(_s_desc > wLength) _s_desc = wLength;
 	udp_send(&ep_control, _p_desc, _s_desc);
 }
 
-inline void udp_fifo_push(udp_ep_t *ep, uint8_t value) {
-	UDP->UDP_FDR[0] = value;
+void udp_set_address(uint16_t wValue) {
+	udp_send_zlp(&ep_control);
+	
+	ep_control.wValue = wValue;
+	ep_control.callback = &_udp_set_address_callback;
+}
+
+void udp_set_configuration(uint16_t wValue) {
+//	ep_control.callback = &_udp_set_configuration_callback;
+}
+
+void _udp_set_address_callback() {
+	UDP->UDP_GLB_STAT = UDP_GLB_STAT_FADDEN;
+	UDP->UDP_FADDR |= (ep_control.wValue & 0x7f) | UDP_FADDR_FEN;
 }
 
 void udp_enumerate(const udp_setup_data_t *request) {
+	
+	ep_control.state = EP_STATE_SETUP;
 				
 	/* bmRequestType: type */
 	switch((request->bmRequestType & 0x60) >> 5) {
@@ -201,7 +206,11 @@ void udp_enumerate(const udp_setup_data_t *request) {
 					udp_get_descriptor(request->wValue, request->wIndex, request->wLength);
 					break;
 
-				case UDP_bRequest_GET_CONFIGURATION :
+				case UDP_bRequest_SET_CONFIGURATION :
+					/* If wIndex, wLength, or the upper byte of wValue is non-zero, 
+					then the behavior of this request is not specified. */
+					if((request->wLength == 0) || (request->wIndex == 0) || ((request->wValue & 0xff00) == 0x00)) break;
+					udp_set_configuration(request->wValue);
 					break;
 
 				case UDP_bRequest_GET_INTERFACE :
@@ -210,10 +219,9 @@ void udp_enumerate(const udp_setup_data_t *request) {
 				case UDP_bRequest_GET_STATUS :
 					break;
 				
-				case UDP_bRequest_SET_ADDRESS :
-					temp_addr = (request->wValue) & 0x7F;
-					udp_setaddress_set(0);
-					break;
+				case UDP_bRequest_SET_ADDRESS :	udp_set_address(request->wValue); break;
+				
+				default: ep_control.state = EP_STATE_IDLE; break;
 			}
 			
 	}
@@ -234,9 +242,17 @@ void ep_callback(udp_ep_t *ep) {
 	}
 	
 	if(*ep->CSR & UDP_CSR_TXCOMP) {
-//		if(udp_push(ep) == LAST_TRUNK) ep->state = EP_STATE_IDLE;
+		
+		if(ep->state == EP_STATE_SETUP) {
+			if(ep->callback != NULL) ep->callback();
+			ep->callback = NULL;
+			ep->state = EP_STATE_IDLE;
+		}
+		else if(ep->state == EP_STATE_TRANS) {
+			if(udp_push(ep) == LAST_TRUNK) ep->state = EP_STATE_IDLE;			
+		}
+
 		*ep->CSR &= ~UDP_CSR_TXCOMP;
-		udp_push(ep);
 	}
 	
 	if(*ep->CSR & UDP_CSR_STALLSENT) {

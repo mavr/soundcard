@@ -46,14 +46,14 @@ static uint8_t udp_dev_descriptor[] = {
 	0x01, // bDescriptorType
 	0x00, // bcdUSB
 	0x02,
-	0xff, // bDeviceClass - cdc
-	0x00, // bDeviceSubClass - cdc
-	0x00, // bDeviceProtocol - cdc
+	0xff, // bDeviceClass - vendor specific
+	0x00, // bDeviceSubClass - vendor specific
+	0x00, // bDeviceProtocol - vendor specific
 	0x40, // bMaxPacketSize0 - 64
-	0xAD, // idVendor
-	0xCD, 
-	0x00, // idProduct
-	0x08, 
+	0xCD, // idVendor
+	0xAD, 
+	0x08, // idProduct
+	0x10, 
 	0x10, // bcdDevice
 	0x01, 
 	0x01, // iManufacturer
@@ -76,11 +76,11 @@ static uint8_t udp_conf_descriptor[] = {
 /* interface */
 		0x09, // bLength
 		0x04, // bDescriptorType
-		0x00, // bInterfaceNumber
+		0x00, // bInterfaceNumber  // ??
 		0x00, // bAlternateSetting
 		0x00, // bNumEndpoints
-		0x02, // bInterfaceClass
-		0x02, // bInterfaceSubClass
+		0xFF, // bInterfaceClass - vendor specific
+		0x01, // bInterfaceSubClass
 		0x01, // bInterfaceProtocol
 		0x00,  // iInterface
 		
@@ -143,7 +143,7 @@ typedef struct {
 /* callback block */
 	void (*callback)(void);
 	
-	uint16_t value;
+	uint16_t wValue;
 
 /* register control block */
 	uint32_t interrupt_mask;
@@ -166,20 +166,18 @@ void udp_set_interrupt(void);
 void udp_ddp_pull_up(void);
 void udp_set_dev_addr(uint8_t address);
 
+/* Configuring process of the device. */
 void udp_enumerate(const udp_setup_data_t *request);
 
+/* Processing urb */
 void udp_read(uint8_t *data);
 void udp_setup(udp_ep_t *ep);
 
+void udp_fifo_push(udp_ep_t *ep, uint8_t value);
 int udp_push(udp_ep_t *ep);
 int udp_send(udp_ep_t *ep, uint8_t *data, uint32_t size);
 int udp_send_zlp(udp_ep_t *ep);
 int udp_send_stall(udp_ep_t *ep);
-
-
-void udp_fifo_push(udp_ep_t *ep, uint8_t value);
-
-void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength);
 
 /* Endpoint processing functions */
 void ep_init(udp_ep_t *ep, uint8_t type, uint8_t size, uint8_t number);
@@ -194,6 +192,14 @@ void ep_disable(udp_ep_t *ep);
 
 void ep_callback(udp_ep_t *ep);
 
+/* Processing requests */
+void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength);
+void udp_set_address(uint16_t wValue);
+void udp_set_configuration(uint16_t wValue);
+
+/* Callbacks for request */
+void _udp_set_address_callback(void);
+void _udp_set_configuration_callback(void);
 
 
 #endif /* UDP_H_ */
