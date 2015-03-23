@@ -34,7 +34,7 @@ typedef struct __attribute__((__packed)){
 	uint8_t bRequest;
 	uint16_t wValue;
 	uint16_t wIndex;
-	uint16_t wLenght;	
+	uint16_t wLength;	
 } udp_setup_data_t;
 
 typedef struct {
@@ -46,7 +46,7 @@ static uint8_t udp_dev_descriptor[] = {
 	0x01, // bDescriptorType
 	0x00, // bcdUSB
 	0x02,
-	0x02, // bDeviceClass - cdc
+	0xff, // bDeviceClass - cdc
 	0x00, // bDeviceSubClass - cdc
 	0x00, // bDeviceProtocol - cdc
 	0x40, // bMaxPacketSize0 - 64
@@ -62,6 +62,52 @@ static uint8_t udp_dev_descriptor[] = {
 	0x01  // bNumConfigurations
 };
 
+static uint8_t udp_conf_descriptor[] = { 
+	0x09, // bLength
+	0x02, // bDescriptorType
+	0x19, // wTotalLength
+	0x00,
+	0x01, // bNumInterface
+	0x01, // bConfigurationValue
+	0x00, // iConfiguration
+	0x80, // bmAttributes    
+	0xFA,  // bMaxPower
+	
+/* interface */
+		0x09, // bLength
+		0x04, // bDescriptorType
+		0x00, // bInterfaceNumber
+		0x00, // bAlternateSetting
+		0x00, // bNumEndpoints
+		0x02, // bInterfaceClass
+		0x02, // bInterfaceSubClass
+		0x01, // bInterfaceProtocol
+		0x00,  // iInterface
+		
+/* endpoint 0 */
+			0x07, // bLength
+			0x05, // bDescriptorType - ep
+			0x00, // bEndpointAddress - 0x00 for control
+			0x00, // bmAttributes - 0x00 for control and not iso
+			0x00, // wMaxPacketSize
+			0x40,
+			0x0A  // bInterval
+
+};
+
+
+static uint8_t udp_int_descriptor[] = {
+	0x09, // bLength
+	0x04, // bDescriptorType
+	0x00, // bInterfaceNumber
+	0x00, // bAlternateSetting
+	0x00, // bNumEndpoints
+	0x02, // bInterfaceClass
+	0x02, // bInterfaceSubClass
+	0x01, // bInterfaceProtocol
+	0x00  // iInterface
+};
+
 static uint8_t udp_ep0_descriptor[] = {
 	0x07, // bLength
 	0x05, // bDescriptorType - ep
@@ -72,7 +118,6 @@ static uint8_t udp_ep0_descriptor[] = {
 	0x0A  // bInterval
 };
 
-static uint8_t udp_conf_descriptor[] = { 0x00, 0x00 };
 
 enum ep_state { EP_STATE_NONE, EP_STATE_IDLE, EP_STATE_TRANS, EP_STATE_SETUP };
 
@@ -124,15 +169,17 @@ void udp_set_dev_addr(uint8_t address);
 void udp_enumerate(const udp_setup_data_t *request);
 
 void udp_read(uint8_t *data);
+void udp_setup(udp_ep_t *ep);
+
+int udp_push(udp_ep_t *ep);
 int udp_send(udp_ep_t *ep, uint8_t *data, uint32_t size);
 int udp_send_zlp(udp_ep_t *ep);
-int udp_push(udp_ep_t *ep);
-void udp_setup(udp_ep_t *ep);
+int udp_send_stall(udp_ep_t *ep);
 
 
 void udp_fifo_push(udp_ep_t *ep, uint8_t value);
 
-void udp_get_descriptor(uint16_t wValue, uint16_t wIndex);
+void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength);
 
 /* Endpoint processing functions */
 void ep_init(udp_ep_t *ep, uint8_t type, uint8_t size, uint8_t number);
