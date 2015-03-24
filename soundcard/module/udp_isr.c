@@ -18,6 +18,7 @@ void UDP_Handler() {
 		udp_ddp_pull_up();
 		
 		UDP->UDP_ICR |= UDP_ICR_ENDBUSRES;
+		udp_set_state(UDP_STATE_DEFAULT);
 		
 		return;
 	}

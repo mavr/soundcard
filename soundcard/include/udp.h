@@ -23,23 +23,17 @@
 /* Endpoint size */
 #define UDP_EP0_SIZE			64
 
-/* Endpoit buffers */
+/* Endpoint buffers */
 #define UDP_EP0_RX_BUFFER_SIZE	64
 #define UDP_EP0_TX_BUFFER_SIZE	64
 
-uint8_t temp_addr;
-
-typedef struct __attribute__((__packed)){
+typedef struct { // __attribute__((__packed))
 	uint8_t bmRequestType;
 	uint8_t bRequest;
 	uint16_t wValue;
 	uint16_t wIndex;
 	uint16_t wLength;	
 } udp_setup_data_t;
-
-typedef struct {
-	
-} udp_t;
 
 static uint8_t udp_dev_descriptor[] = {
 	0x12, // bLength
@@ -65,7 +59,7 @@ static uint8_t udp_dev_descriptor[] = {
 static uint8_t udp_conf_descriptor[] = { 
 	0x09, // bLength
 	0x02, // bDescriptorType
-	0x19, // wTotalLength
+	0x12, // wTotalLength
 	0x00,
 	0x01, // bNumInterface
 	0x01, // bConfigurationValue
@@ -82,42 +76,75 @@ static uint8_t udp_conf_descriptor[] = {
 		0xFF, // bInterfaceClass - vendor specific
 		0x01, // bInterfaceSubClass
 		0x01, // bInterfaceProtocol
-		0x00,  // iInterface
+		0x00  // iInterface
 		
 /* endpoint 0 */
-			0x07, // bLength
-			0x05, // bDescriptorType - ep
-			0x00, // bEndpointAddress - 0x00 for control
-			0x00, // bmAttributes - 0x00 for control and not iso
-			0x00, // wMaxPacketSize
-			0x40,
-			0x0A  // bInterval
+			//0x07, // bLength
+			//0x05, // bDescriptorType - ep
+			//0x00, // bEndpointAddress - 0x00 for control
+			//0x00, // bmAttributes - 0x00 for control and not iso
+			//0x00, // wMaxPacketSize
+			//0x40,
+			//0x0A  // bInterval
 
 };
 
 
-static uint8_t udp_int_descriptor[] = {
-	0x09, // bLength
-	0x04, // bDescriptorType
-	0x00, // bInterfaceNumber
-	0x00, // bAlternateSetting
-	0x00, // bNumEndpoints
-	0x02, // bInterfaceClass
-	0x02, // bInterfaceSubClass
-	0x01, // bInterfaceProtocol
-	0x00  // iInterface
+//static uint8_t udp_int_descriptor[] = {
+	//0x09, // bLength
+	//0x04, // bDescriptorType
+	//0x00, // bInterfaceNumber
+	//0x00, // bAlternateSetting
+	//0x00, // bNumEndpoints
+	//0x02, // bInterfaceClass
+	//0x02, // bInterfaceSubClass
+	//0x01, // bInterfaceProtocol
+	//0x00  // iInterface
+//};
+//
+//static uint8_t udp_ep0_descriptor[] = {
+	//0x07, // bLength
+	//0x05, // bDescriptorType - ep
+	//0x00, // bEndpointAddress - 0x00 for control
+	//0x00, // bmAttributes - 0x00 for control and not iso
+	//0x00, // wMaxPacketSize
+	//0x40, 
+	//0x0A  // bInterval
+//};
+
+static uint8_t udp_str_zero_descriptor[] = {
+	0x04,
+	0x03,
+	0x00,
+	0x01
+//	0x04,
+//	0x09
 };
 
-static uint8_t udp_ep0_descriptor[] = {
-	0x07, // bLength
-	0x05, // bDescriptorType - ep
-	0x00, // bEndpointAddress - 0x00 for control
-	0x00, // bmAttributes - 0x00 for control and not iso
-	0x00, // wMaxPacketSize
-	0x40, 
-	0x0A  // bInterval
+static uint8_t udp_str_empty_descriptor[] = {
+	0x02,
+	0x03
 };
 
+static uint8_t udp_str_manufactur_descriptor[] = {
+	0x1c, // bLenght
+	0x03, // bDescriptorType
+	'R', 0x00, 'a', 0x00, 'd', 0x00, 'i', 0x00, 'o', 0x00, 
+	'A', 0x00, 'v', 0x00, 'i', 0x00, 'o', 0x00, 'n', 0x00, 'i', 0x00, 'c', 0x00, 'a', 0x00
+};
+
+static uint8_t udp_str_product_descriptor[] = {
+	0x1a, 
+	0x03,
+	'A', 0x00, 'u', 0x00, 'd', 0x00, 'i', 0x00, 'o', 0x00, ' ', 0x00,
+	'd', 0x00, 'e', 0x00, 'v', 0x00, 'i', 0x00, 'c', 0x00, 'e', 0x00
+};
+
+static uint8_t udp_str_serial_descriptor[] = {
+	0x0a, 
+	0x03,
+	'0', 0x00, '.', 0x00, '0', 0x00, '1', 0x00
+};
 
 enum ep_state { EP_STATE_NONE, EP_STATE_IDLE, EP_STATE_TRANS, EP_STATE_SETUP };
 
@@ -147,8 +174,8 @@ typedef struct {
 
 /* register control block */
 	uint32_t interrupt_mask;
-	uint32_t *CSR;
-	uint32_t *FDR;
+	__IO uint32_t *CSR;
+	__IO uint32_t *FDR;
 } udp_ep_t;
 
 udp_ep_t ep_control;
@@ -159,12 +186,24 @@ uint8_t debug_arr[12];
 udp_ep_t ep_in;
 udp_ep_t ep_out;
 
+enum udp_state { UDP_STATE_POWER, UDP_STATE_DEFAULT, UDP_STATE_ADDRESS, UDP_STATE_CONFIGURE, UDP_STATE_SUSPEND };
+	
+typedef struct {
+	enum udp_state state;
+} udp_t;
+
+udp_t _udp;
+
 void udp_system(void);
 
 /* Main usb device port configuration */
 void udp_set_interrupt(void);
 void udp_ddp_pull_up(void);
 void udp_set_dev_addr(uint8_t address);
+
+/* UDP control block */
+enum udp_state udp_get_state(void);
+void udp_set_state(enum udp_state state);
 
 /* Configuring process of the device. */
 void udp_enumerate(const udp_setup_data_t *request);

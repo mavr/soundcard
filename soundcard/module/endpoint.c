@@ -56,11 +56,7 @@ void ep_reset(udp_ep_t *ep, uint8_t ep_number, uint8_t ep_type, uint8_t ep_size)
 
 void ep_control_set(udp_ep_t *ep, uint32_t mask) {
 	UDP->UDP_CSR[ep->number] |= mask;
-	//	for(int i = 0; i < 1040; i++) nop();
-	//	*ep->CSR = *ep->CSR | mask;
-	//	uint32_t tmp = UDP->UDP_CSR[ep->number];
-	nop();
-	//	while((*ep->CSR & mask) == 0);
+	for(int i = 0; i < 20; i++) nop();
 }
 
 void ep_control_clr(udp_ep_t *ep, uint32_t mask) {

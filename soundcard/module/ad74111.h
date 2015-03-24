@@ -81,7 +81,7 @@
 enum ad74111_mode { AD74111_MIXED, AD74111_DATA };
 enum ad74111_connect_mode { AD74111_SLAVE, AD74111_MASTER };
 
-typedef struct __attribute__((__packed)) {
+typedef struct { // __attribute__((__packed))
 	uint16_t crG;
 	uint16_t crC;
 	uint16_t crE;

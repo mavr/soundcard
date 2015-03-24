@@ -55,8 +55,11 @@ int udp_send_zlp(udp_ep_t *ep) {
 	//	if(ep->state != EP_STATE_IDLE) return ERRBUSY;
 	while(*ep->CSR & UDP_CSR_TXPKTRDY);
 	ep_control_set(ep, UDP_CSR_TXPKTRDY);
+	
+	return SUCCESS;
 }
 
 int udp_send_stall(udp_ep_t *ep) {
 	*ep->CSR |= UDP_CSR_FORCESTALL;
+	return SUCCESS;
 }
