@@ -85,7 +85,7 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 	}
 
 	if(_s_desc > wLength) _s_desc = wLength;
-	udp_send(&ep_control, _p_desc, _s_desc);
+	udp_send_setup(&ep_control, _p_desc, _s_desc);
 }
 
 void udp_set_address(uint16_t wValue) {
@@ -112,6 +112,7 @@ void _udp_set_configuration_callback() {
 	else if(udp_get_state() == UDP_STATE_CONFIGURE) udp_set_state(UDP_STATE_ADDRESS);
 	
 	// turn on endpoints
+	ep_enable(&ep_in);
 }
 
 void udp_enumerate(const udp_setup_data_t *request) {

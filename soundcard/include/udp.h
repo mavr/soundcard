@@ -12,16 +12,20 @@
 
 /* Endpoint addresses */
 #define UDP_EP_CONTROL		0
-#define UDP_EP_IN			1
-#define UDP_EP_OUT			2
+#define UDP_EP_IN			4
+#define UDP_EP_OUT			5
 
 /* Endpoint types */
 #define UDP_EP_TYPE_CONTROL		0
 #define UDP_EP_TYPE_BULK		1
 #define UDP_EP_TYPE_INT			2
+#define UDP_EP_TYPE_ISO_IN		3
+#define UDP_EP_TYPE_ISO_OUT		4
 
 /* Endpoint size */
 #define UDP_EP0_SIZE			64
+#define UDP_EP4_SIZE			512
+#define UDP_EP5_SIZE			512
 
 /* Endpoint buffers */
 #define UDP_EP0_RX_BUFFER_SIZE	64
@@ -44,7 +48,7 @@ static uint8_t udp_dev_descriptor[] = {
 	0x00, // bDeviceSubClass - vendor specific
 	0x00, // bDeviceProtocol - vendor specific
 	0x40, // bMaxPacketSize0 - 64
-	0xCD, // idVendor
+	0xCA, // idVendor
 	0xAD, 
 	0x08, // idProduct
 	0x10, 
@@ -59,7 +63,7 @@ static uint8_t udp_dev_descriptor[] = {
 static uint8_t udp_conf_descriptor[] = { 
 	0x09, // bLength
 	0x02, // bDescriptorType
-	0x12, // wTotalLength
+	0x19, // wTotalLength
 	0x00,
 	0x01, // bNumInterface
 	0x01, // bConfigurationValue
@@ -72,20 +76,20 @@ static uint8_t udp_conf_descriptor[] = {
 		0x04, // bDescriptorType
 		0x00, // bInterfaceNumber  // ??
 		0x00, // bAlternateSetting
-		0x00, // bNumEndpoints
+		0x01, // bNumEndpoints
 		0xFF, // bInterfaceClass - vendor specific
 		0x01, // bInterfaceSubClass
 		0x01, // bInterfaceProtocol
-		0x00  // iInterface
+		0x00,  // iInterface
 		
-/* endpoint 0 */
-			//0x07, // bLength
-			//0x05, // bDescriptorType - ep
-			//0x00, // bEndpointAddress - 0x00 for control
-			//0x00, // bmAttributes - 0x00 for control and not iso
-			//0x00, // wMaxPacketSize
-			//0x40,
-			//0x0A  // bInterval
+/* endpoint 1 - iso, in */
+			0x07, // bLength
+			0x05, // bDescriptorType - ep
+			0x81, // bEndpointAddress - IN direction, 1st address
+			0x01, // bmAttributes - 0x01 for isochronous ep, no synchronization, data
+			0x00, // wMaxPacketSize - 512 bytes
+			0x02,
+			0x0A  // bInterval
 
 };
 
@@ -179,10 +183,6 @@ typedef struct {
 } udp_ep_t;
 
 udp_ep_t ep_control;
-uint8_t ep0_rx_buffer[UDP_EP0_RX_BUFFER_SIZE];
-uint8_t ep0_tx_buffer[UDP_EP0_TX_BUFFER_SIZE];
-uint8_t debug_arr[12];
-
 udp_ep_t ep_in;
 udp_ep_t ep_out;
 
@@ -210,11 +210,12 @@ void udp_enumerate(const udp_setup_data_t *request);
 
 /* Processing urb */
 void udp_read(uint8_t *data);
-void udp_setup(udp_ep_t *ep);
 
 void udp_fifo_push(udp_ep_t *ep, uint8_t value);
 int udp_push(udp_ep_t *ep);
-int udp_send(udp_ep_t *ep, uint8_t *data, uint32_t size);
+int udp_stream_in(udp_ep_t *ep, uint8_t *data, uint32_t size);
+int udp_send_data(udp_ep_t *ep, uint8_t *data, uint32_t size);
+int udp_send_setup(udp_ep_t *ep, uint8_t *data, uint32_t size);
 int udp_send_zlp(udp_ep_t *ep);
 int udp_send_stall(udp_ep_t *ep);
 

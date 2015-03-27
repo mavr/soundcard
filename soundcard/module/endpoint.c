@@ -19,28 +19,23 @@ void ep_init(udp_ep_t *ep, uint8_t type, uint8_t size, uint8_t number) {
 	ep->size = size;
 	ep->number = number;
 	
-	//	ep->state = EP_STATE_IDLE;
-	//	ep->callback = NULL;
+	ep->state = EP_STATE_IDLE;
+	ep->callback = NULL;
 	
 	/* Buffer ? */
 
+	ep->CSR = &(UDP->UDP_CSR[ep->number]);
+	ep->FDR = &(UDP->UDP_FDR[ep->number]);
+		
 	switch(type) {
 		case UDP_EP_TYPE_CONTROL:
-		ep->CSR = &(UDP->UDP_CSR[0]);
-		ep->FDR = &(UDP->UDP_FDR[0]);
-		//			ep->rx_buffer = ep0_rx_buffer;
-		//			ep->tx_buffer = ep0_tx_buffer;
-		//ep->rx_buffer_size = 0;
-		//ep->tx_size = 0;
-		//ep->rx_bytes_ready = 0;
-		//ep->tx_count = 0;
-		break;
+			ep_control_set(ep, UDP_CSR_EPTYPE_CTRL);
+			break;
 		
-		case UDP_EP_TYPE_BULK:
-		break;
-		
-		case UDP_EP_TYPE_INT:
-		break;
+		case UDP_EP_TYPE_ISO_IN:
+			ep_control_set(ep, UDP_CSR_EPTYPE_ISO_IN);
+			ep_control_set(ep, UDP_CSR_DIR);
+			break;
 	}
 }
 
@@ -80,9 +75,7 @@ void ep_set_interrupt(udp_ep_t *ep) {
 void ep_callback(udp_ep_t *ep) {
 	if(*ep->CSR & UDP_CSR_RXSETUP) {
 		udp_setup_data_t request;
-		for(uint8_t i = 0; i < 8; i++)
-		//			*((uint8_t *) &request + i) = (uint8_t) *ep->FDR & 0xffffff00;
-		*((uint8_t *) &request + i) = (uint8_t) UDP->UDP_FDR[0];
+		for(uint8_t i = 0; i < 8; i++) *((uint8_t *) &request + i) = (uint8_t) UDP->UDP_FDR[0];
 		
 		if(request.bmRequestType & 0x80) *ep->CSR |= UDP_CSR_DIR;
 		*ep->CSR &= ~UDP_CSR_RXSETUP;
@@ -98,8 +91,12 @@ void ep_callback(udp_ep_t *ep) {
 			ep->callback = NULL;
 			ep->state = EP_STATE_IDLE;
 		}
-		else if(ep->state == EP_STATE_TRANS) {
-			if(udp_push(ep) == LAST_TRUNK) ep->state = EP_STATE_IDLE;
+//		else if(ep->state == EP_STATE_TRANS) {
+//			if(udp_push(ep) == LAST_TRUNK) ep->state = EP_STATE_IDLE;
+//		}
+
+		if(ep->number == 4) {
+			*ep->CSR &= ~UDP_CSR_TXCOMP;
 		}
 
 		*ep->CSR &= ~UDP_CSR_TXCOMP;

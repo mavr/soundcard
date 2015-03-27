@@ -20,16 +20,7 @@ int udp_push(udp_ep_t *ep) {
 	
 	uint32_t size = (ep->size < (ep->tx_size - ep->tx_count)) ? ep->size : (ep->tx_size - ep->tx_count);
 
-	// TODO: fix me
-	//	for(uint32_t i = 0; i < size; i++) ep->FDR = *(ep->tx_buffer + ep->tx_count + i);
-	//	for(uint32_t i = 0; i < size; i++) UDP->UDP_FDR[0] = *(ep->tx_buffer + ep->tx_count + i);
-	uint32_t i;
-	uint8_t tmp;
-	for(i = 0; i < size; i++) {
-		tmp =  (uint8_t) *(ep->tx_buffer + ep->tx_count + i);
-		debug_arr[i] = tmp;
-		UDP->UDP_FDR[0] = tmp; //(uint8_t) *(udp_dev_descriptor + ep->tx_count + i);
-	}
+	for(uint32_t i = 0; i < size; i++) *ep->FDR = (uint8_t) *(ep->tx_buffer + ep->tx_count + i);
 	ep->tx_count += size;
 	
 	ep_control_set(ep, UDP_CSR_TXPKTRDY);
@@ -37,11 +28,26 @@ int udp_push(udp_ep_t *ep) {
 	return SUCCESS;
 }
 
-int udp_send(udp_ep_t *ep, uint8_t *data, uint32_t size) {
+int udp_stream_in(udp_ep_t *ep, uint8_t *data, uint32_t size) {
+	for(uint32_t i = 0; i < size; i++) {
+		if( ((*ep->CSR >> 16) & 0x00ff) == 0)
+			if(!(*ep->CSR & UDP_CSR_TXPKTRDY)) 
+				ep_control_set(ep, UDP_CSR_TXPKTRDY);
+		if(!(*ep->CSR & UDP_CSR_TXPKTRDY))
+			 *ep->FDR = *(data + i);
+	}
+}
+
+int udp_send_data(udp_ep_t *ep, uint8_t *data, uint32_t size) {
+	
+}
+
+int udp_send_setup(udp_ep_t *ep, uint8_t *data, uint32_t size) {
 	//	if(ep->state != EP_STATE_IDLE) return ERRBUSY;
 	//	ep->state = EP_STATE_TRANS;
 	
-	//	if(size > UDP_EP0_TX_BUFFER_SIZE) return ERRMEMOVER;
+	// anti collision condition
+	if(_udp.state == UDP_STATE_POWER) return ERRPOSIBLE;
 
 	ep->tx_buffer = data;
 	ep->tx_size = size;

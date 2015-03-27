@@ -14,7 +14,7 @@
 
 #define ERRBUSY			-1
 #define ERRMEMOVER		-2
-
+#define ERRPOSIBLE		-3
 
 
 
