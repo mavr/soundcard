@@ -18,7 +18,7 @@ void UDP_Handler() {
 		udp_set_interrupt();
 		udp_ddp_pull_up();
 		
-		UDP->UDP_ICR |= UDP_ICR_ENDBUSRES;
+		UDP->UDP_ICR |= UDP_ICR_ENDBUSRES | UDP_ICR_SOFINT;
 		udp_set_state(UDP_STATE_DEFAULT);
 		
 		return;
@@ -29,7 +29,13 @@ void UDP_Handler() {
 		UDP->UDP_ICR |= UDP_IMR_EP0INT;
 	}
 	
+	if(UDP->UDP_ISR & UDP_IMR_EP4INT) {
+		ep_callback(&ep_in);
+		UDP->UDP_ICR |= UDP_IMR_EP4INT;
+	}
+	
 	if(UDP->UDP_ISR & (UDP_ISR_EXTRSM | UDP_ISR_RXRSM | UDP_ISR_RXSUSP | UDP_ISR_SOFINT | UDP_ISR_WAKEUP)) {
 		UDP->UDP_ICR |= UDP_ISR_EXTRSM | UDP_ISR_RXRSM | UDP_ISR_RXSUSP | UDP_ISR_SOFINT | UDP_ISR_WAKEUP;
+		UDP->UDP_ICR |= UDP_ICR_SOFINT;
 	}
 }

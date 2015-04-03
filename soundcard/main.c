@@ -21,10 +21,12 @@ int main(void) {
 	/* Initialize the SAM system */
 	Init();
 	
+	uint8_t buffer[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	
 	uint8_t i = 0;
 	while(1) {
 		if(_udp.state == UDP_STATE_CONFIGURE)
-			udp_stream_in(&ep_in, &i, 1);
+			udp_stream_in(&ep_in, buffer, 8);
 			i++;
 	}
 }

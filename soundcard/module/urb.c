@@ -29,13 +29,15 @@ int udp_push(udp_ep_t *ep) {
 }
 
 int udp_stream_in(udp_ep_t *ep, uint8_t *data, uint32_t size) {
+	if(*ep->CSR & UDP_CSR_TXPKTRDY) return 0;
 	for(uint32_t i = 0; i < size; i++) {
-		if( ((*ep->CSR >> 16) & 0x00ff) == 0)
-			if(!(*ep->CSR & UDP_CSR_TXPKTRDY)) 
-				ep_control_set(ep, UDP_CSR_TXPKTRDY);
-		if(!(*ep->CSR & UDP_CSR_TXPKTRDY))
-			 *ep->FDR = *(data + i);
+//		if( ((*ep->CSR >> 16) & 0x00ff) == 0)
+//			if(!(*ep->CSR & UDP_CSR_TXPKTRDY)) 
+//				ep_control_set(ep, UDP_CSR_TXPKTRDY);
+		*ep->FDR = *(data + i);
 	}
+	ep_control_set(ep, UDP_CSR_TXPKTRDY);
+	return size;
 }
 
 int udp_send_data(udp_ep_t *ep, uint8_t *data, uint32_t size) {

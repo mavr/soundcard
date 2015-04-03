@@ -34,7 +34,7 @@ void ep_init(udp_ep_t *ep, uint8_t type, uint8_t size, uint8_t number) {
 		
 		case UDP_EP_TYPE_ISO_IN:
 			ep_control_set(ep, UDP_CSR_EPTYPE_ISO_IN);
-			ep_control_set(ep, UDP_CSR_DIR);
+//			ep_control_set(ep, UDP_CSR_DIR);
 			break;
 	}
 }
@@ -72,7 +72,13 @@ void ep_set_interrupt(udp_ep_t *ep) {
 	UDP->UDP_IER |= (1 << ep->number);
 }
 
+volatile tmp;
 void ep_callback(udp_ep_t *ep) {
+// TODO : fix this. only for debug
+	if(ep->number == 4) {
+		tmp = 8;
+	}
+	
 	if(*ep->CSR & UDP_CSR_RXSETUP) {
 		udp_setup_data_t request;
 		for(uint8_t i = 0; i < 8; i++) *((uint8_t *) &request + i) = (uint8_t) UDP->UDP_FDR[0];
@@ -108,5 +114,6 @@ void ep_callback(udp_ep_t *ep) {
 	
 	if(*ep->CSR & (UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1)) {
 		// read and clear udp_csr_rx_data_bkx
+		*ep->CSR &= ~(UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1);
 	}
 }

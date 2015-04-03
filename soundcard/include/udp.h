@@ -24,8 +24,8 @@
 
 /* Endpoint size */
 #define UDP_EP0_SIZE			64
-#define UDP_EP4_SIZE			512
-#define UDP_EP5_SIZE			512
+#define UDP_EP4_SIZE			8
+#define UDP_EP5_SIZE			8
 
 /* Endpoint buffers */
 #define UDP_EP0_RX_BUFFER_SIZE	64
@@ -87,8 +87,10 @@ static uint8_t udp_conf_descriptor[] = {
 			0x05, // bDescriptorType - ep
 			0x81, // bEndpointAddress - IN direction, 1st address
 			0x01, // bmAttributes - 0x01 for isochronous ep, no synchronization, data
-			0x00, // wMaxPacketSize - 512 bytes
-			0x02,
+//			0x00, // wMaxPacketSize - 512 bytes
+//			0x02,
+			0x10,
+			0x00,
 			0x0A  // bInterval
 
 };
