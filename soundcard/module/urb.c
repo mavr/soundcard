@@ -14,7 +14,10 @@ inline void udp_fifo_push(udp_ep_t *ep, uint8_t value) {
 }
 
 int udp_push(udp_ep_t *ep) {
-	if(ep->tx_size == ep->tx_count) return LAST_TRUNK;
+	//TODO: fix dbg
+	int dbg = 0;
+	if(ep->tx_size == ep->tx_count) 
+		return EP_STATE_IDLE;
 
 	while(*ep->CSR & UDP_CSR_TXPKTRDY);
 	
@@ -25,23 +28,23 @@ int udp_push(udp_ep_t *ep) {
 	
 	ep_control_set(ep, UDP_CSR_TXPKTRDY);
 	
-	return SUCCESS;
+	return EP_STATE_TRANS;
 }
 
 int udp_stream_in(udp_ep_t *ep, uint8_t *data, uint32_t size) {
 	if(*ep->CSR & UDP_CSR_TXPKTRDY) return 0;
-	for(uint32_t i = 0; i < size; i++) {
-//		if( ((*ep->CSR >> 16) & 0x00ff) == 0)
-//			if(!(*ep->CSR & UDP_CSR_TXPKTRDY)) 
-//				ep_control_set(ep, UDP_CSR_TXPKTRDY);
-		*ep->FDR = *(data + i);
-	}
-	ep_control_set(ep, UDP_CSR_TXPKTRDY);
+	
+	udp_send_data(ep, data, size);
 	return size;
 }
 
 int udp_send_data(udp_ep_t *ep, uint8_t *data, uint32_t size) {
+	ep->tx_buffer = data;
+	ep->tx_size = size;
+	ep->tx_count = 0;
 	
+	ep->state = udp_push(ep);
+	return SUCCESS;
 }
 
 int udp_send_setup(udp_ep_t *ep, uint8_t *data, uint32_t size) {

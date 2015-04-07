@@ -12,20 +12,21 @@
 
 /* Endpoint addresses */
 #define UDP_EP_CONTROL		0
-#define UDP_EP_IN			4
-#define UDP_EP_OUT			5
+#define UDP_EP_IN			1
+#define UDP_EP_OUT			2
 
 /* Endpoint types */
 #define UDP_EP_TYPE_CONTROL		0
-#define UDP_EP_TYPE_BULK		1
-#define UDP_EP_TYPE_INT			2
-#define UDP_EP_TYPE_ISO_IN		3
-#define UDP_EP_TYPE_ISO_OUT		4
+#define UDP_EP_TYPE_BULK_IN		1
+#define UDP_EP_TYPE_BULK_OUT	2
+#define UDP_EP_TYPE_INT			3
+#define UDP_EP_TYPE_ISO_IN		4
+#define UDP_EP_TYPE_ISO_OUT		5
 
 /* Endpoint size */
 #define UDP_EP0_SIZE			64
-#define UDP_EP4_SIZE			8
-#define UDP_EP5_SIZE			8
+#define UDP_EP4_SIZE			16
+#define UDP_EP5_SIZE			32
 
 /* Endpoint buffers */
 #define UDP_EP0_RX_BUFFER_SIZE	64
@@ -63,7 +64,7 @@ static uint8_t udp_dev_descriptor[] = {
 static uint8_t udp_conf_descriptor[] = { 
 	0x09, // bLength
 	0x02, // bDescriptorType
-	0x19, // wTotalLength
+	0x20, // wTotalLength
 	0x00,
 	0x01, // bNumInterface
 	0x01, // bConfigurationValue
@@ -76,7 +77,7 @@ static uint8_t udp_conf_descriptor[] = {
 		0x04, // bDescriptorType
 		0x00, // bInterfaceNumber  // ??
 		0x00, // bAlternateSetting
-		0x01, // bNumEndpoints
+		0x02, // bNumEndpoints
 		0xFF, // bInterfaceClass - vendor specific
 		0x01, // bInterfaceSubClass
 		0x01, // bInterfaceProtocol
@@ -86,13 +87,23 @@ static uint8_t udp_conf_descriptor[] = {
 			0x07, // bLength
 			0x05, // bDescriptorType - ep
 			0x81, // bEndpointAddress - IN direction, 1st address
-			0x01, // bmAttributes - 0x01 for isochronous ep, no synchronization, data
+			0x02, // bmAttributes - 0x01 for isochronous ep, no synchronization, data
 //			0x00, // wMaxPacketSize - 512 bytes
 //			0x02,
+			UDP_EP4_SIZE,
+			0x00,
+			0x0A,  // bInterval
+
+			/* endpoint 2 - iso, out */
+			0x07, // bLength
+			0x05, // bDescriptorType - ep
+			0x02, // bEndpointAddress - IN direction, 1st address
+			0x02, // bmAttributes - 0x01 for isochronous ep, no synchronization, data
+			//			0x00, // wMaxPacketSize - 512 bytes
+			//			0x02,
 			0x10,
 			0x00,
-			0x0A  // bInterval
-
+			0x0A,  // bInterval
 };
 
 

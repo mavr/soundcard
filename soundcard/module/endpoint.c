@@ -36,6 +36,10 @@ void ep_init(udp_ep_t *ep, uint8_t type, uint8_t size, uint8_t number) {
 			ep_control_set(ep, UDP_CSR_EPTYPE_ISO_IN);
 //			ep_control_set(ep, UDP_CSR_DIR);
 			break;
+			
+		case UDP_EP_TYPE_BULK_IN:
+			ep_control_set(ep, UDP_CSR_EPTYPE_BULK_IN);
+			break;
 	}
 }
 
@@ -73,12 +77,7 @@ void ep_set_interrupt(udp_ep_t *ep) {
 }
 
 volatile tmp;
-void ep_callback(udp_ep_t *ep) {
-// TODO : fix this. only for debug
-	if(ep->number == 4) {
-		tmp = 8;
-	}
-	
+void ep_callback(udp_ep_t *ep) {	
 	if(*ep->CSR & UDP_CSR_RXSETUP) {
 		udp_setup_data_t request;
 		for(uint8_t i = 0; i < 8; i++) *((uint8_t *) &request + i) = (uint8_t) UDP->UDP_FDR[0];
@@ -90,19 +89,14 @@ void ep_callback(udp_ep_t *ep) {
 		return;
 	}
 	
-	if(*ep->CSR & UDP_CSR_TXCOMP) {
-		
+	if(*ep->CSR & UDP_CSR_TXCOMP) {		
 		if(ep->state == EP_STATE_SETUP) {
 			if(ep->callback != NULL) ep->callback();
 			ep->callback = NULL;
 			ep->state = EP_STATE_IDLE;
 		}
-//		else if(ep->state == EP_STATE_TRANS) {
-//			if(udp_push(ep) == LAST_TRUNK) ep->state = EP_STATE_IDLE;
-//		}
-
-		if(ep->number == 4) {
-			*ep->CSR &= ~UDP_CSR_TXCOMP;
+		else if(ep->state == EP_STATE_TRANS) {
+			ep->state = udp_push(ep);
 		}
 
 		*ep->CSR &= ~UDP_CSR_TXCOMP;

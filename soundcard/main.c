@@ -19,15 +19,19 @@
  */
 int main(void) {
 	/* Initialize the SAM system */
+	dbg_tx_counter = 0;
 	Init();
 	
-	uint8_t buffer[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	uint8_t buffer[128];
+	for(int j = 0, i = 0; j < sizeof(buffer); j++, i++) *(buffer + j) = i;
+	while(_udp.state != UDP_STATE_CONFIGURE);
+	udp_stream_in(&ep_in, buffer, sizeof(buffer));
+//	udp_stream_in(&ep_in, buffer, 35);
 	
-	uint8_t i = 0;
+	
 	while(1) {
-		if(_udp.state == UDP_STATE_CONFIGURE)
-			udp_stream_in(&ep_in, buffer, 8);
-			i++;
+		//if(_udp.state == UDP_STATE_CONFIGURE) {
+		//}
 	}
 }
 
@@ -35,7 +39,7 @@ int main(void) {
 
 volatile uint16_t sound_tmp, count_tmp = 0;
 void SSC_Handler() {
-	if(SSC->SSC_SR & SSC_SR_TXRDY) {
+	if(SSC->SSC_SR & SSC_SR_TXRDY){ 
 		/*  Init codec block */
 		if(ad74111.mode == AD74111_MIXED) {
 			SSC->SSC_THR = (uint16_t) *( ((uint16_t *) &ad74111.registers ) + ad74111.tdata_counter / 2) | AD74111_CR_W;

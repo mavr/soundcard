@@ -11,6 +11,7 @@
 
 #define nop() __asm __volatile ("nop"); 
 
+uint32_t dbg_tx_counter;
 
 
 #endif /* SYSTEM_H_ */
