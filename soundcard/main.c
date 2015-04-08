@@ -25,17 +25,17 @@ int main(void) {
 	uint8_t buffer[128];
 	for(int j = 0, i = 0; j < sizeof(buffer); j++, i++) *(buffer + j) = i;
 	while(_udp.state != UDP_STATE_CONFIGURE);
-	udp_stream_in(&ep_in, buffer, sizeof(buffer));
+	ep_control_set(&ep_in, UDP_CSR_TXPKTRDY);
+//	udp_stream_in(&ep_in, buffer, sizeof(buffer));
 //	udp_stream_in(&ep_in, buffer, 35);
 	
 	
+//	udp_stream_in(0x55aa);
+	uint16_t value = 0x4445;
 	while(1) {
-		//if(_udp.state == UDP_STATE_CONFIGURE) {
-		//}
+		udp_stream_in(value++);
 	}
 }
-
-
 
 volatile uint16_t sound_tmp, count_tmp = 0;
 void SSC_Handler() {

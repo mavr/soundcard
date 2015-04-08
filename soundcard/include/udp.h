@@ -12,7 +12,7 @@
 
 /* Endpoint addresses */
 #define UDP_EP_CONTROL		0
-#define UDP_EP_IN			1
+#define UDP_EP_IN			4
 #define UDP_EP_OUT			2
 
 /* Endpoint types */
@@ -25,8 +25,8 @@
 
 /* Endpoint size */
 #define UDP_EP0_SIZE			64
-#define UDP_EP4_SIZE			16
-#define UDP_EP5_SIZE			32
+#define UDP_EP4_SIZE			512
+#define UDP_EP5_SIZE			64
 
 /* Endpoint buffers */
 #define UDP_EP0_RX_BUFFER_SIZE	64
@@ -86,12 +86,10 @@ static uint8_t udp_conf_descriptor[] = {
 /* endpoint 1 - iso, in */
 			0x07, // bLength
 			0x05, // bDescriptorType - ep
-			0x81, // bEndpointAddress - IN direction, 1st address
+			0x84, // bEndpointAddress - IN direction, 1st address
 			0x02, // bmAttributes - 0x01 for isochronous ep, no synchronization, data
-//			0x00, // wMaxPacketSize - 512 bytes
-//			0x02,
-			UDP_EP4_SIZE,
-			0x00,
+			0x00, // wMaxPacketSize - 512 bytes
+			0x02,
 			0x0A,  // bInterval
 
 			/* endpoint 2 - iso, out */
@@ -226,7 +224,7 @@ void udp_read(uint8_t *data);
 
 void udp_fifo_push(udp_ep_t *ep, uint8_t value);
 int udp_push(udp_ep_t *ep);
-int udp_stream_in(udp_ep_t *ep, uint8_t *data, uint32_t size);
+int udp_stream_in(uint16_t value);
 int udp_send_data(udp_ep_t *ep, uint8_t *data, uint32_t size);
 int udp_send_setup(udp_ep_t *ep, uint8_t *data, uint32_t size);
 int udp_send_zlp(udp_ep_t *ep);

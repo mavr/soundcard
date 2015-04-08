@@ -30,7 +30,7 @@ void UDP_Handler() {
 		UDP->UDP_ICR |= UDP_IMR_EP0INT;
 	}
 	
-	if(UDP->UDP_ISR & UDP_IMR_EP1INT) {
+	if(UDP->UDP_ISR & UDP_IMR_EP4INT) {
 		ep_callback(&ep_in);
 		UDP->UDP_ICR |= UDP_IMR_EP1INT;
 	}

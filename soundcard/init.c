@@ -55,7 +55,7 @@ void Init() {
 	/* After initializing ssc interface and enable codec's clock turn on codec. */
 	codec_init();
 	
-//	NVIC_EnableIRQ(SSC_IRQn);
+	NVIC_EnableIRQ(SSC_IRQn);
 	
 //	PMC->PMC_PCER0 |= (1UL << ID_UART0);
 //	uart_system();

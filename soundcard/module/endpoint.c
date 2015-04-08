@@ -98,8 +98,15 @@ void ep_callback(udp_ep_t *ep) {
 		else if(ep->state == EP_STATE_TRANS) {
 			ep->state = udp_push(ep);
 		}
+		
+
 
 		*ep->CSR &= ~UDP_CSR_TXCOMP;
+		
+		//if(ep->number == UDP_EP_IN) {
+			//for(int i = 0; i < 32; i++) *ep->FDR = i;
+			//ep_control_set(&ep_in, UDP_CSR_TXPKTRDY);
+		//}
 	}
 	
 	if(*ep->CSR & UDP_CSR_STALLSENT) {

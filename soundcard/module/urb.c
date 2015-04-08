@@ -14,10 +14,7 @@ inline void udp_fifo_push(udp_ep_t *ep, uint8_t value) {
 }
 
 int udp_push(udp_ep_t *ep) {
-	//TODO: fix dbg
-	int dbg = 0;
-	if(ep->tx_size == ep->tx_count) 
-		return EP_STATE_IDLE;
+	if(ep->tx_size == ep->tx_count) return EP_STATE_IDLE;
 
 	while(*ep->CSR & UDP_CSR_TXPKTRDY);
 	
@@ -31,11 +28,20 @@ int udp_push(udp_ep_t *ep) {
 	return EP_STATE_TRANS;
 }
 
-int udp_stream_in(udp_ep_t *ep, uint8_t *data, uint32_t size) {
-	if(*ep->CSR & UDP_CSR_TXPKTRDY) return 0;
-	
-	udp_send_data(ep, data, size);
-	return size;
+int udp_stream_in(uint16_t value) {
+	static int c = 0;
+	static int v = 0;
+//	if(*ep_in.CSR & UDP_CSR_TXPKTRDY) return 0;
+
+//	*ep_in.FDR = (uint8_t) (value >> 8);
+	*ep_in.FDR = (uint8_t) v++;
+	c++;
+	if(c == 512) {
+//	if((*ep_in.CSR >> 16) == 0) {
+//		*ep->CSR = 
+		ep_control_set(&ep_in, UDP_CSR_TXPKTRDY);
+		c = 0;
+	}
 }
 
 int udp_send_data(udp_ep_t *ep, uint8_t *data, uint32_t size) {
