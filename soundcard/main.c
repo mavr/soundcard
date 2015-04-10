@@ -33,11 +33,11 @@ int main(void) {
 //	udp_stream_in(0x55aa);
 	uint16_t value = 0x4445;
 	while(1) {
-		udp_stream_in(value++);
 	}
 }
 
 volatile uint16_t sound_tmp, count_tmp = 0;
+uint8_t tmp = 0;
 void SSC_Handler() {
 	if(SSC->SSC_SR & SSC_SR_TXRDY){ 
 		/*  Init codec block */
@@ -49,8 +49,10 @@ void SSC_Handler() {
 			}
 		} else {			
 			/* Here need transmit digital data to headphone */
-			sound_tmp = SSC->SSC_RHR;
-			SSC->SSC_THR = sound_tmp;
+			udp_stream_in(tmp++);
+//			udp_stream_in(tmp++);
+//			sound_tmp = SSC->SSC_RHR;
+			SSC->SSC_THR = sound_tmp++;
 		}
 	}
 

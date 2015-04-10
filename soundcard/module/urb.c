@@ -33,9 +33,9 @@ int udp_stream_in(uint16_t value) {
 	static int v = 0;
 //	if(*ep_in.CSR & UDP_CSR_TXPKTRDY) return 0;
 
-//	*ep_in.FDR = (uint8_t) (value >> 8);
+	*ep_in.FDR = (uint8_t) (value >> 8);
 	*ep_in.FDR = (uint8_t) v++;
-	c++;
+	c += 2;
 	if(c == 512) {
 //	if((*ep_in.CSR >> 16) == 0) {
 //		*ep->CSR = 
