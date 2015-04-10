@@ -8,12 +8,22 @@
 #include "sam.h"
 #include "uart.h"
 
+#include "../core/fifo.h"
+
 void uart_system() {
 	/* For uart0 : */
-	/* Baudrate 57600 : CD = 763.(8) / 16 = 47.74 */
-	UART0->UART_MR = UART_MR_PAR_MARK | UART_MR_CHMODE_NORMAL;
-	UART0->UART_BRGR = 300; //361
+	/* Baudrate 115200 */
+	UART0->UART_MR = UART_MR_PAR_NO | UART_MR_CHMODE_NORMAL;
+	UART0->UART_BRGR = 27; //361
 	
+	fifo_init(&uart0_rx_data, uart0_rx_buf, UART0_RX_SIZE);
+	
+	uart_interrupt();
+}
+
+void uart_interrupt() {
+	UART0->UART_IER = UART_IER_RXRDY;
+
 }
 
 void uart_tx_enable() {
@@ -22,4 +32,22 @@ void uart_tx_enable() {
 
 void uart_rx_enable() {
 	UART0->UART_CR |= UART_CR_RXEN;
+}
+
+uint8_t write_16b(uint16_t value) {
+	static uint8_t busy = 0;
+	
+	if(busy) return UART_WRITE_BUSY;
+	
+	busy = 1;
+
+// TODO : recode this shit	
+	while(!(UART0->UART_SR & UART_SR_TXRDY));
+	UART0->UART_THR = (uint8_t) value;
+	while(!(UART0->UART_SR & UART_SR_TXRDY));
+	UART0->UART_THR = value >> 8;
+	
+	busy = 0;
+	
+	return UART_SEND_OK;
 }

@@ -8,8 +8,10 @@
 #include "sam.h"
 #include "module/ssc.h"
 #include "module/ad74111.h"
+#include "module/uart.h"
 #include "init.h"
-
+#include "system.h"
+#include "udp.h"
 /**
  * \brief Application entry point.
  *
@@ -17,54 +19,51 @@
  */
 int main(void) {
 	/* Initialize the SAM system */
+
+	dbg_tx_counter = 0;
 	Init();
 	
+	uint8_t buffer[128];
+	for(int j = 0, i = 0; j < sizeof(buffer); j++, i++) *(buffer + j) = i;
+	while(_udp.state != UDP_STATE_CONFIGURE);
+	ep_control_set(&ep_in, UDP_CSR_TXPKTRDY);
+//	udp_stream_in(&ep_in, buffer, sizeof(buffer));
+//	udp_stream_in(&ep_in, buffer, 35);
+	
+	
+//	udp_stream_in(0x55aa);
+	uint16_t value = 0x4445;
 	while(1) {
-		PIOA->PIO_SODR |= PIO_SODR_P1;
-		PIOA->PIO_CODR |= PIO_SODR_P1;
-		//if(UART0->UART_SR & UART_SR_ENDTX) 
-			//UART0->UART_THR = 0xFF;
-//			TC0->TC_CHANNEL[0].TC_CCR = TC_CCR_CLKEN | TC_CCR_SWTRG;
 	}
 }
 
-
-
-volatile uint32_t sound_tmp;
+volatile uint16_t sound_tmp, count_tmp = 0;
+uint8_t tmp = 0;
 void SSC_Handler() {
-	static long counter_t, counter_r;
-	uint16_t tmp;
-	if(SSC->SSC_SR & SSC_SR_TXRDY) {
+	if(SSC->SSC_SR & SSC_SR_TXRDY){ 
 		/*  Init codec block */
 		if(ad74111.mode == AD74111_MIXED) {
 			SSC->SSC_THR = (uint16_t) *( ((uint16_t *) &ad74111.registers ) + ad74111.tdata_counter / 2) | AD74111_CR_W;
 			if(ad74111.tdata_counter++ == sizeof(ad74111.registers)) {
 				ad74111.mode = AD74111_DATA;
-				counter_r = 0;
-				counter_t = 0;
+				sound_tmp = 0;
 			}
-		} else {
-			counter_t++;
-			
+		} else {			
 			/* Here need transmit digital data to headphone */
-			ad74111.tdata_counter = ((ad74111.tdata_counter + 1) & 0x0FFF) | 0x001F;
-//			SSC->SSC_THR = ad74111.tdata_counter++ & 0x0FFF;
-			sound_tmp = SSC->SSC_RHR;
-			SSC->SSC_THR = sound_tmp;
+			udp_stream_in(tmp++);
+//			udp_stream_in(tmp++);
+//			sound_tmp = SSC->SSC_RHR;
+			SSC->SSC_THR = sound_tmp++;
 		}
 	}
 
-	//if(SSC->SSC_SR & SSC_IER_RXRDY) {
-		//counter_r++;
-		//if(ad74111.mode == AD74111_DATA) {
-			//sound_tmp = SSC->SSC_RHR;
-			//if(sound_tmp != 0x00) SSC->SSC_THR = sound_tmp;
-			////SSC->SSC_THR = sound_tmp;
-		//}
-	//}
+//	if(SSC->SSC_SR & SSC_IER_RXRDY) {
+//	}
 }
 
-void PIOC_Handler() {
-	
+void UART0_Handler() {
+	if(UART0->UART_SR & UART_SR_RXRDY) {
+		
+	}
 	
 }

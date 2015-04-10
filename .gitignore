@@ -1,0 +1,4 @@
+soundcard.atsuo
+soundcard/Debug/*
+soundcard/Release/*
+soundcard/cmsis/*

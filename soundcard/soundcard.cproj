@@ -19,7 +19,7 @@
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
-    <ProgFlashFromRam>true</ProgFlashFromRam>
+    <ProgFlashFromRam>false</ProgFlashFromRam>
     <RamSnippetAddress>0x20000000</RamSnippetAddress>
     <UncachedRange />
     <OverrideVtorValue>exception_table</OverrideVtorValue>
@@ -42,7 +42,7 @@
     <com_atmel_avrdbg_tool_edbg>
       <ToolOptions>
         <InterfaceProperties>
-          <SwdClock>4000000</SwdClock>
+          <SwdClock>2000000</SwdClock>
         </InterfaceProperties>
         <InterfaceName>SWD</InterfaceName>
       </ToolOptions>
@@ -50,6 +50,7 @@
       <ToolNumber>ATML1803040200001864</ToolNumber>
       <ToolName>EDBG</ToolName>
     </com_atmel_avrdbg_tool_edbg>
+    <preserveEEPROM>true</preserveEEPROM>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -120,9 +121,9 @@
       <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel</Value>
       <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel\CMSIS\Include</Value>
       <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel\Device\ATMEL</Value>
+      <Value>../include</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
-  <armgcc.compiler.optimization.level>Optimize (-O1)</armgcc.compiler.optimization.level>
   <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
   <armgcc.compiler.optimization.DebugLevel>Maximum (-g3)</armgcc.compiler.optimization.DebugLevel>
   <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
@@ -137,6 +138,7 @@
     </ListValues>
   </armgcc.linker.libraries.LibrarySearchPaths>
   <armgcc.linker.optimization.GarbageCollectUnusedSections>True</armgcc.linker.optimization.GarbageCollectUnusedSections>
+  <armgcc.linker.memorysettings.ExternalRAM />
   <armgcc.linker.miscellaneous.LinkerFlags>-Tsam4sd32c_flash.ld</armgcc.linker.miscellaneous.LinkerFlags>
   <armgcc.assembler.debugging.DebugLevel>Default (-g)</armgcc.assembler.debugging.DebugLevel>
   <armgcc.preprocessingassembler.general.IncludePaths>
@@ -153,12 +155,32 @@
     <UsesExternalMakeFile>False</UsesExternalMakeFile>
     <BuildTarget>all</BuildTarget>
     <CleanTarget>clean</CleanTarget>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="cmsis\src\startup_sam4s.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="cmsis\src\system_sam4s.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="core\fifo.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="core\fifo.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\error_code.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\system.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\udp.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\udp_request.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="init.c">
@@ -174,6 +196,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="module\ad74111.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\endpoint.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="module\pio.c">
@@ -200,12 +225,29 @@
     <Compile Include="module\uart.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="module\udp.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\udp_isr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\urb.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\usb.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\usb.h">
+      <SubType>compile</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="cmsis\" />
     <Folder Include="cmsis\linkerScripts\" />
     <Folder Include="cmsis\src\" />
     <Folder Include="module\" />
+    <Folder Include="core\" />
+    <Folder Include="include" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cmsis\linkerScripts\sam4sd32c_flash.ld">
