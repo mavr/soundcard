@@ -12,26 +12,11 @@
 #include "init.h"
 #include "system.h"
 #include "udp.h"
-/**
- * \brief Application entry point.
- *
- * \return Unused (ANSI-C compatibility).
- */
-int main(void) {
-	/* Initialize the SAM system */
-	dbg_tx_counter = 0;
+
+
+int main(void) {	
 	Init();
 	
-	uint8_t buffer[128];
-	for(int j = 0, i = 0; j < sizeof(buffer); j++, i++) *(buffer + j) = i;
-	while(_udp.state != UDP_STATE_CONFIGURE);
-	ep_control_set(&ep_in, UDP_CSR_TXPKTRDY);
-//	udp_stream_in(&ep_in, buffer, sizeof(buffer));
-//	udp_stream_in(&ep_in, buffer, 35);
-	
-	
-//	udp_stream_in(0x55aa);
-	uint16_t value = 0x4445;
 	while(1) {
 	}
 }
@@ -49,7 +34,8 @@ void SSC_Handler() {
 			}
 		} else {			
 			/* Here need transmit digital data to headphone */
-			udp_stream_in(tmp++);
+			if(_udp.state == UDP_STATE_CONFIGURE) 
+				udp_stream_in(tmp++);
 //			udp_stream_in(tmp++);
 //			sound_tmp = SSC->SSC_RHR;
 			SSC->SSC_THR = sound_tmp++;

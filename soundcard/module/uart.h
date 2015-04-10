@@ -9,6 +9,14 @@
 #ifndef UART_H_
 #define UART_H_
 
+/* Initialiazing uart system in Init */
+/* Example */
+//	PMC->PMC_PCER0 |= (1UL << ID_UART0);
+//	uart_system();
+//	uart_tx_enable();
+//	uart_rx_enable();
+//	NVIC_EnableIRQ(UART0_IRQn);
+
 #include "sam4.h"
 #include "../core/fifo.h"
 
