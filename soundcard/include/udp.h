@@ -224,7 +224,8 @@ void udp_read(uint8_t *data);
 
 void udp_fifo_push(udp_ep_t *ep, uint8_t value);
 int udp_push(udp_ep_t *ep);
-int udp_stream_in(uint16_t value);
+int udp_audio_stream_in(uint16_t value);
+uint16_t udp_audio_stream_out(void);
 int udp_send_data(udp_ep_t *ep, uint8_t *data, uint32_t size);
 int udp_send_setup(udp_ep_t *ep, uint8_t *data, uint32_t size);
 int udp_send_zlp(udp_ep_t *ep);

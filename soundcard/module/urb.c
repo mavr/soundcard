@@ -28,7 +28,7 @@ int udp_push(udp_ep_t *ep) {
 	return EP_STATE_TRANS;
 }
 
-int udp_stream_in(uint16_t value) {
+int udp_audio_stream_in(uint16_t value) {
 	static int c = 0;
 	static int v = 0;
 //	if(*ep_in.CSR & UDP_CSR_TXPKTRDY) return 0;
@@ -42,6 +42,11 @@ int udp_stream_in(uint16_t value) {
 		ep_control_set(&ep_in, UDP_CSR_TXPKTRDY);
 		c = 0;
 	}
+}
+
+uint16_t udp_audio_stream_out() {
+	static uint16_t sound_tmp = 0;
+	return (sound_tmp++ & 0x0fff) | 0x00ff ;
 }
 
 int udp_send_data(udp_ep_t *ep, uint8_t *data, uint32_t size) {
