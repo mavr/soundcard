@@ -7,6 +7,7 @@
 
 #include "sam.h"
 #include "udp.h"
+#include "usb.h"
 #include "error_code.h"
 
 inline void udp_fifo_push(udp_ep_t *ep, uint8_t value) {
@@ -28,26 +29,6 @@ int udp_push(udp_ep_t *ep) {
 	return EP_STATE_TRANS;
 }
 
-int udp_audio_stream_in(uint16_t value) {
-	static int c = 0;
-	static int v = 0;
-//	if(*ep_in.CSR & UDP_CSR_TXPKTRDY) return 0;
-
-	*ep_in.FDR = (uint8_t) (value >> 8);
-	*ep_in.FDR = (uint8_t) v++;
-	c += 2;
-	if(c == 512) {
-//	if((*ep_in.CSR >> 16) == 0) {
-//		*ep->CSR = 
-		ep_control_set(&ep_in, UDP_CSR_TXPKTRDY);
-		c = 0;
-	}
-}
-
-uint16_t udp_audio_stream_out() {
-	static uint16_t sound_tmp = 0;
-	return (sound_tmp++ & 0x0fff) | 0x00ff ;
-}
 
 int udp_send_data(udp_ep_t *ep, uint8_t *data, uint32_t size) {
 	ep->tx_buffer = data;

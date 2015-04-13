@@ -8,6 +8,7 @@
 #include "sam.h"
 #include "system.h"
 #include "udp.h"
+#include "usb.h"
 #include "udp_request.h"
 #include "error_code.h"
 #include <string.h>
@@ -34,11 +35,13 @@ void ep_init(udp_ep_t *ep, uint8_t type, uint8_t size, uint8_t number) {
 		
 		case UDP_EP_TYPE_ISO_IN:
 			ep_control_set(ep, UDP_CSR_EPTYPE_ISO_IN);
+			ep_control_set(ep, UDP_CSR_TXPKTRDY);
 //			ep_control_set(ep, UDP_CSR_DIR);
 			break;
 			
 		case UDP_EP_TYPE_BULK_IN:
 			ep_control_set(ep, UDP_CSR_EPTYPE_BULK_IN);
+			ep_control_set(ep, UDP_CSR_TXPKTRDY);
 			break;
 	}
 }
