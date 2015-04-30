@@ -46,69 +46,69 @@ typedef struct { // __attribute__((__packed))
 	uint16_t wLength;
 } udp_setup_data_t;
 
-static uint8_t udp_dev_descriptor[] = {
-	0x12, // bLength
-	0x01, // bDescriptorType
-	0x00, // bcdUSB
-	0x02,
-	0xff, // bDeviceClass - vendor specific
-	0x00, // bDeviceSubClass - vendor specific
-	0x00, // bDeviceProtocol - vendor specific
-	0x40, // bMaxPacketSize0 - 64
-	0xCA, // idVendor
-	0xAD,
-	0x08, // idProduct
-	0x10,
-	0x10, // bcdDevice
-	0x01,
-	0x01, // iManufacturer
-	0x02, // iProduct
-	0x03, // iSerialNumber
-	0x01  // bNumConfigurations
-};
-
-static uint8_t udp_conf_descriptor[] = {
-	0x09, // bLength
-	0x02, // bDescriptorType
-	0x20, // wTotalLength
-	0x00,
-	0x01, // bNumInterface
-	0x01, // bConfigurationValue
-	0x00, // iConfiguration
-	0x80, // bmAttributes
-	0xFA,  // bMaxPower
-	
-	/* interface */
-	0x09, // bLength
-	0x04, // bDescriptorType
-	0x00, // bInterfaceNumber  // ??
-	0x00, // bAlternateSetting
-	0x02, // bNumEndpoints
-	0xFF, // bInterfaceClass - vendor specific
-	0x01, // bInterfaceSubClass
-	0x01, // bInterfaceProtocol
-	0x00,  // iInterface
-	
-	/* endpoint 1 - iso, in */
-	0x07, // bLength
-	0x05, // bDescriptorType - ep
-	0x84, // bEndpointAddress - IN direction, 1st address
-	0x02, // bmAttributes - 0x01 for isochronous ep, no synchronization, data
-	0x00, // wMaxPacketSize - 512 bytes
-	0x02,
-	0x0A,  // bInterval
-
-	/* endpoint 2 - iso, out */
-	0x07, // bLength
-	0x05, // bDescriptorType - ep
-	0x02, // bEndpointAddress - IN direction, 1st address
-	0x02, // bmAttributes - 0x01 for isochronous ep, no synchronization, data
-	//			0x00, // wMaxPacketSize - 512 bytes
-	//			0x02,
-	0x10,
-	0x00,
-	0x0A,  // bInterval
-};
+//static uint8_t udp_dev_descriptor[] = {
+	//0x12, // bLength
+	//0x01, // bDescriptorType
+	//0x00, // bcdUSB
+	//0x02,
+	//0xff, // bDeviceClass - vendor specific
+	//0x00, // bDeviceSubClass - vendor specific
+	//0x00, // bDeviceProtocol - vendor specific
+	//0x40, // bMaxPacketSize0 - 64
+	//0xCA, // idVendor
+	//0xAD,
+	//0x08, // idProduct
+	//0x10,
+	//0x10, // bcdDevice
+	//0x01,
+	//0x01, // iManufacturer
+	//0x02, // iProduct
+	//0x03, // iSerialNumber
+	//0x01  // bNumConfigurations
+//};
+//
+//static uint8_t udp_conf_descriptor[] = {
+	//0x09, // bLength
+	//0x02, // bDescriptorType
+	//0x20, // wTotalLength
+	//0x00,
+	//0x01, // bNumInterface
+	//0x01, // bConfigurationValue
+	//0x00, // iConfiguration
+	//0x80, // bmAttributes
+	//0xFA,  // bMaxPower
+	//
+	///* interface */
+	//0x09, // bLength
+	//0x04, // bDescriptorType
+	//0x00, // bInterfaceNumber  // ??
+	//0x00, // bAlternateSetting
+	//0x02, // bNumEndpoints
+	//0xFF, // bInterfaceClass - vendor specific
+	//0x01, // bInterfaceSubClass
+	//0x01, // bInterfaceProtocol
+	//0x00,  // iInterface
+	//
+	///* endpoint 1 - iso, in */
+	//0x07, // bLength
+	//0x05, // bDescriptorType - ep
+	//0x84, // bEndpointAddress - IN direction, 1st address
+	//0x02, // bmAttributes - 0x01 for isochronous ep, no synchronization, data
+	//0x00, // wMaxPacketSize - 512 bytes
+	//0x02,
+	//0x0A,  // bInterval
+//
+	///* endpoint 2 - iso, out */
+	//0x07, // bLength
+	//0x05, // bDescriptorType - ep
+	//0x02, // bEndpointAddress - IN direction, 1st address
+	//0x02, // bmAttributes - 0x01 for isochronous ep, no synchronization, data
+	////			0x00, // wMaxPacketSize - 512 bytes
+	////			0x02,
+	//0x10,
+	//0x00,
+	//0x0A,  // bInterval
+//};
 
 
 //static uint8_t udp_int_descriptor[] = {
@@ -215,7 +215,6 @@ void udp_ddp_pull_up(void);
 void udp_set_dev_addr(uint8_t address);
 
 /* UDP control block */
-enum udp_state udp_get_state(void);
 void udp_set_state(enum udp_state state);
 
 /* Configuring process of the device. */

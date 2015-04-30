@@ -12,6 +12,7 @@
 #include "error_code.h"
 #include "system.h"
 #include <string.h>
+#include "udp-audio.h"
 
 void udp_set_interrupt() {
 	UDP->UDP_IER = UDP_IER_SOFINT | UDP_ISR_RXSUSP;

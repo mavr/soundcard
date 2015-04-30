@@ -20,9 +20,8 @@
 int main(void) {
 	/* Initialize the SAM system */
 	Init();
-	
-	while(udp_get_state() != UDP_STATE_CONFIGURE);
 
+	while(udp_get_state() != UDP_STATE_CONFIGURE);	
 	while(1) {
 	}
 }

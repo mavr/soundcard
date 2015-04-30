@@ -29,11 +29,11 @@ inline enum udp_state udp_get_state() {
 
 int udp_audio_stream_in(uint16_t value) {
 	static int c = 0;
-	static int v = 0;
+	static int v = 3;
 	//	if(*ep_in.CSR & UDP_CSR_TXPKTRDY) return 0;
 
-	*ep_in.FDR = (uint8_t) (v >> 8);
-	*ep_in.FDR = (uint8_t) v++;
+	*ep_in.FDR = (uint8_t) (value >> 8);
+	*ep_in.FDR = (uint8_t) value;
 	c += 2;
 	if(c == 512) {
 		//	if((*ep_in.CSR >> 16) == 0) {
