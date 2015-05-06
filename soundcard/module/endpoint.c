@@ -94,9 +94,11 @@ void ep_callback(udp_ep_t *ep) {
 	
 	if(*ep->CSR & UDP_CSR_TXCOMP) {		
 		if(ep->state == EP_STATE_SETUP) {
-			if(ep->callback != NULL) ep->callback();
-			ep->callback = NULL;
-			ep->state = EP_STATE_IDLE;
+			if(udp_push(ep) == EP_STATE_IDLE) {
+				if(ep->callback != NULL) ep->callback();
+				ep->callback = NULL;
+				ep->state = EP_STATE_IDLE;
+			}
 		}
 		else if(ep->state == EP_STATE_TRANS) {
 			ep->state = udp_push(ep);

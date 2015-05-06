@@ -26,6 +26,8 @@ int udp_push(udp_ep_t *ep) {
 	
 	ep_control_set(ep, UDP_CSR_TXPKTRDY);
 	
+	if(ep->state == EP_STATE_SETUP) return EP_STATE_SETUP;
+	
 	return EP_STATE_TRANS;
 }
 
@@ -41,7 +43,7 @@ int udp_send_data(udp_ep_t *ep, uint8_t *data, uint32_t size) {
 
 int udp_send_setup(udp_ep_t *ep, uint8_t *data, uint32_t size) {
 	//	if(ep->state != EP_STATE_IDLE) return ERRBUSY;
-	//	ep->state = EP_STATE_TRANS;
+	ep->state = EP_STATE_TRANS;
 	
 	// anti collision condition
 	if(_udp.state == UDP_STATE_POWER) return ERRPOSIBLE;
