@@ -35,7 +35,7 @@ static uint8_t udp_conf_descriptor[] = {
 	/* Configuration Descriptor */
 	0x09, // bLength
 	0x02, // bDescriptorType
-	0x62, // wTotalLength (83)
+	0x64, // wTotalLength (83)
 	0x00,
 	0x02, // bNumInterface
 	0x01, // bConfigurationValue
@@ -48,7 +48,7 @@ static uint8_t udp_conf_descriptor[] = {
 		0x04, // bDescriptorType
 		0x00, // bInterfaceNumber
 		0x00, // bAlternateSetting (none)
-		0x00, // bNumEndpoints (1)
+		0x00, // bNumEndpoints (0) - describes in standard interface desc for AC dev.
 		0x01, // bInterfaceClass (AUDIO)
 		0x01, // bInterfaceSubClass (AUDIO_CONTROL)
 		0x00, // bInterfaceProtocol (none)
@@ -73,7 +73,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x10, // wTerminalType (radio receiver)
 			0x07,
 			0x00, // bAssocTerminal (none)
-			0x02, // bNrChannels (2)
+			0x01, // bNrChannels (2)
 			0x00, // wChannelConfig (mono)
 			0x00,
 			0x00, // iChannelNames (none)
@@ -110,7 +110,7 @@ static uint8_t udp_conf_descriptor[] = {
 		0x01, // bInterfaceNumber
 		0x01, // bAlternateSetting
 		0x01, // bNumEndpoints
-		0x00, // bInterfaceClass
+		0x01, // bInterfaceClass
 		0x02, // bInterfaceSubClass
 		0x00, // bInterfaceProtocol (none) 
 		0x00, // iInterface (none)
@@ -121,8 +121,8 @@ static uint8_t udp_conf_descriptor[] = {
 			0x01, // bDescriptorSubtype (AS_GENERAL)
 			0x01, // bTerminalLink (terminal 1)
 			0x00, // bDelay (none)
-			0x00, // wFormatTag (PCM format)
-			0x01,
+			0x01, // wFormatTag (PCM format)
+			0x00,
 		
 	/* Format Type Audio Descriptor */
 			0x0B, // bLength (11)
