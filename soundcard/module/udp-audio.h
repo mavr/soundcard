@@ -9,6 +9,8 @@
 #ifndef UDP_AUDIO_H_
 #define UDP_AUDIO_H_
 
+
+
 static uint8_t udp_dev_descriptor[] = {
 	/* Device Descriptor */
 	0x12, // bLength
@@ -80,15 +82,27 @@ static uint8_t udp_conf_descriptor[] = {
 			0x00, // iTerminal (none)
 			
 	/* Feature Unit Descriptor */
-			0x09, // bLength (9)
+			0x09, // bLength (13)
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x06, // bDescriptorSubtype (FEATURE_UNIT)
-			0x02, // bUnitID
-			0x01, // bSourceID (ID of terminal which connected)
-			0x01, // bControlSize (1)
-			0x02, // controls : (Volume)
-			0x00, // bmzContorls : channel 1
-			0x00, // iFeature (index of str descriptor)
+			0x02, // bUnitID (2)
+			0x01, // bSourceID (input terminal 1)
+			0x02, // bControlSize (2 bytes)
+			0xff, // Master controls
+			0xff,
+			
+			0x00, // iFeature (none)
+			//0x0e, // bLength (13)
+			//0x24, // bDescriptorType (CS_INTERFACE)
+			//0x06, // bDescriptorSubtype (FEATURE_UNIT)
+			//0x41, // bUnitID (41)
+			//0x01, // bSourceID (input terminal 1)
+			//0x0F, 0x0f, 0x0f, 0x0f, /* bmaControls(0)(0x0000000F): Master Channel 0
+										 //0b11: Mute read/write
+										 //0b11: Volume read/write */
+			//0x00, 0x00, 0x00, 0x00, /* bmaControls(1)(0x00000000): Logical Channel 1
+			//*/
+			//0x00, 
 			
 			
 	/* Audio Stream interface descriptor */
