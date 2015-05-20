@@ -11,7 +11,8 @@
 #include "module/uart.h"
 #include "init.h"
 #include "system.h"
-#include "udp.h"
+//#include "udp.h"
+#include "module/usb.h"
 /**
  * \brief Application entry point.
  *
@@ -21,7 +22,8 @@ int main(void) {
 	/* Initialize the SAM system */
 	Init();
 
-	while(udp_get_state() != UDP_STATE_CONFIGURE);	
+//	while(udp_get_state() != UDP_STATE_DEFAULT);	
+
 	while(1) {
 	}
 }

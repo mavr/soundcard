@@ -33,7 +33,7 @@
 #define UDP_bRequest_GET_CONFIGURATION		0x08
 #define UDP_bRequest_SET_CONFIGURATION		0x09
 #define UDP_bRequest_GET_INTERFACE			0x10
-#define UDP_bRequest_SET_INTERFACE			0x11
+#define UDP_bRequest_SET_INTERFACE			0x0b
 #define UDP_bRequest_SYNCH_FRAME			0x12
 
 /** wValue **/

@@ -14,7 +14,15 @@
 /* User API for usb device */
 
 /* Possible states of usb device */
-enum udp_state { UDP_STATE_POWER, UDP_STATE_DEFAULT, UDP_STATE_ADDRESS, UDP_STATE_CONFIGURE, UDP_STATE_SUSPEND };
+enum udp_state { 
+	UDP_STATE_ATTACHED, 
+	UDP_STATE_POWERED, 
+	UDP_STATE_DEFAULT, 
+	UDP_STATE_ADDRESS, 
+	UDP_STATE_CONFIGURED, 
+	UDP_STATE_SUSPENDED 
+};
+
 enum udp_state udp_get_state(void);
 
 /* Init UDP system hardware. And turn on it. */

@@ -29,11 +29,11 @@
 /* Endpoint size */
 #define UDP_EP0_SIZE			64
 #define UDP_EP4_SIZE			512
-#define UDP_EP5_SIZE			64
+#define UDP_EP5_SIZE			512
 
 /* Endpoint buffers */
-#define UDP_EP0_RX_BUFFER_SIZE	64
-#define UDP_EP0_TX_BUFFER_SIZE	64
+#define UDP_EP0_RX_BUFFER_SIZE	512
+#define UDP_EP0_TX_BUFFER_SIZE	512
 
 /* Possible states of endpoint */
 enum ep_state { EP_STATE_NONE, EP_STATE_IDLE, EP_STATE_TRANS, EP_STATE_SETUP };
@@ -201,6 +201,8 @@ udp_ep_t ep_control;
 udp_ep_t ep_in;
 udp_ep_t ep_out;
 
+uint8_t _ep_in_tx_buffer[16];
+
 
 typedef struct {
 	enum udp_state state;
@@ -248,6 +250,7 @@ void ep_callback(udp_ep_t *ep);
 void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength);
 void udp_set_address(uint16_t wValue);
 void udp_set_configuration(uint16_t wValue);
+void udp_set_interface(uint16_t wValue);
 
 /* Callbacks for request */
 void _udp_set_address_callback(void);

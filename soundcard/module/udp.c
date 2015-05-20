@@ -13,7 +13,7 @@ void udp_system() {
 	PMC->PMC_PCER1 |= 1 << (ID_UDP - 32); // UDP id = 34
 	PMC->PMC_SCER |= PMC_SCER_UDP;
 	
-	udp_set_state(UDP_STATE_POWER);
+	udp_set_state(UDP_STATE_POWERED);
 	
 	// interrupt enable.
 	NVIC_EnableIRQ(UDP_IRQn);
@@ -28,19 +28,22 @@ inline enum udp_state udp_get_state() {
 }
 
 int udp_audio_stream_in(uint16_t value) {
-	static int c = 0;
-	static int v = 3;
-	//	if(*ep_in.CSR & UDP_CSR_TXPKTRDY) return 0;
-
-	*ep_in.FDR = (uint8_t) (value >> 8);
-	*ep_in.FDR = (uint8_t) value;
-	c += 2;
-	if(c == 512) {
-		//	if((*ep_in.CSR >> 16) == 0) {
-		//		*ep->CSR =
-		ep_control_set(&ep_in, UDP_CSR_TXPKTRDY);
-		c = 0;
-	}
+	if(ep_in.tx_count == 16) return 0;
+	
+	
+	ep_in.tx_buffer[ep_in.tx_count] = (uint8_t) (value >> 8);
+	ep_in.tx_count++;
+	
+	ep_in.tx_buffer[ep_in.tx_count] = (uint8_t) value;
+	ep_in.tx_count++;
+	
+	//if(ep_in.tx_count++) {
+		//ep_control_set(&ep_in, UDP_CSR_TXPKTRDY);
+		//ep_control_clr(&ep_in, UDP_CSR_TXCOMP);
+		//count = 0;
+	//}
+			
+	return;
 }
 
 uint16_t udp_audio_stream_out() {

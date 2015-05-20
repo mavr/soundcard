@@ -9,14 +9,42 @@
 #ifndef UDP_AUDIO_H_
 #define UDP_AUDIO_H_
 
+typedef struct { // __attribute__((__packed))
+	uint8_t bLenght;
+	
+} udp_configuration_desc_t;
 
+typedef struct {
+	
+} udp_audio_conf_desc_t;
+
+/**
+	--- Descriptor Hierarchy ---
+	Device Descriptor
+
+	Configuration Descriptor
+	** interface 0 **
+		-- AC interface Descriptor
+			-- Header Descriptor
+			-- Input Terminal (Microphone)
+			-- Output Terminal
+	** interface 1 **
+		-- AS interface alternate 0
+		-- AS interface alternate 1
+			-- General
+			-- Type I Format
+		-- Endpoint Descriptor
+			-- Endpoint specific Descriptor
+		
+
+**/
 
 static uint8_t udp_dev_descriptor[] = {
 	/* Device Descriptor */
 	0x12, // bLength
 	0x01, // bDescriptorType
-	0x10, // bcdUSB
-	0x00,
+	0x00, // bcdUSB
+	0x01,
 	0x00, // bDeviceClass - vendor specific
 	0x00, // bDeviceSubClass - vendor specific
 	0x00, // bDeviceProtocol - vendor specific
@@ -60,9 +88,9 @@ static uint8_t udp_conf_descriptor[] = {
 			0x09, // bLength (9)
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x01, // bDescriptorSubtype (HEADER)
-			0x01, // bcdADC (1.0)
-			0x00,
-			0x15, // wTotalLength (36)
+			0x00, // bcdADC (1.0)
+			0x01,
+			0x1e, // wTotalLength (36)
 			0x00,
 			0x01, // bInCollection (1 streaming interface)
 			0x01, // baInterfaceNr (interface 1 is stream)
@@ -72,37 +100,25 @@ static uint8_t udp_conf_descriptor[] = {
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x02, // bDescriptorSubtype (INPUT_TERMINAL)
 			0x01, // bTerminalID (1)
-			0x10, // wTerminalType (radio receiver)
-			0x07,
+			0x01, // wTerminalType (microphone)
+			0x02,
 			0x00, // bAssocTerminal (none)
-			0x01, // bNrChannels (2)
+			0x01, // bNrChannels (1)
 			0x00, // wChannelConfig (mono)
 			0x00,
 			0x00, // iChannelNames (none)
 			0x00, // iTerminal (none)
 			
-	/* Feature Unit Descriptor */
-			0x09, // bLength (13)
+	/* Output terminal Audio Class Descriptor */
+			0x09, // bLength (12)
 			0x24, // bDescriptorType (CS_INTERFACE)
-			0x06, // bDescriptorSubtype (FEATURE_UNIT)
-			0x02, // bUnitID (2)
-			0x01, // bSourceID (input terminal 1)
-			0x02, // bControlSize (2 bytes)
-			0xff, // Master controls
-			0xff,
-			
-			0x00, // iFeature (none)
-			//0x0e, // bLength (13)
-			//0x24, // bDescriptorType (CS_INTERFACE)
-			//0x06, // bDescriptorSubtype (FEATURE_UNIT)
-			//0x41, // bUnitID (41)
-			//0x01, // bSourceID (input terminal 1)
-			//0x0F, 0x0f, 0x0f, 0x0f, /* bmaControls(0)(0x0000000F): Master Channel 0
-										 //0b11: Mute read/write
-										 //0b11: Volume read/write */
-			//0x00, 0x00, 0x00, 0x00, /* bmaControls(1)(0x00000000): Logical Channel 1
-			//*/
-			//0x00, 
+			0x03, // bDescriptorSubtype (OUTPUT_TERMINAL)
+			0x02, // bTerminalID (1)
+			0x01, // wTerminalType (usb streaming)
+			0x01,
+			0x00, // bAssocTerminal (none)
+			0x01, // bSourceID (1)
+			0x00, // iTerminal (none)
 			
 			
 	/* Audio Stream interface descriptor */
@@ -133,8 +149,8 @@ static uint8_t udp_conf_descriptor[] = {
 			0x07, // bLenght
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x01, // bDescriptorSubtype (AS_GENERAL)
-			0x01, // bTerminalLink (terminal 1)
-			0x00, // bDelay (none)
+			0x02, // bTerminalLink (terminal 1)
+			0x01, // bDelay (none)
 			0x01, // wFormatTag (PCM format)
 			0x00,
 		
@@ -148,17 +164,18 @@ static uint8_t udp_conf_descriptor[] = {
 			// The next field should be 10, but 16 works with more standard software
 			0x10, // bBitResolution (16)
 			0x01, // bSamFreqType (1 sampling frequency)
-			0x40, // 8,000 Hz (byte 0)
-			0x1f, // 8,000 Hz (byte 1)
+			0x40, // 8,000 Hz (byte 0) 0x1f40
+			0x1f, // 8,000 Hz (byte 1) 0x841e
 			0x00, // 8,000 Hz (byte 2)
 				
-	/* Isochronous Endpoint Descriptor */
+	/* Isochronous Endpoint Descriptor */  
 			0x09, // bLenght
 			0x05, // bDescriptionType (endpoint)
-			0x02, // bEndpointAddress (EP2 out)
-			0x05, // bmAttributes (asynchronous)
-			0x00, // wMaxPacketSize (512)
-			0x02,
+			0x84, // bEndpointAddress (EP4 in)
+			0x01, // bmAttributes (asynchronous)
+			0x10, // wMaxPacketSize (2 x 512) 
+//			0x01, //	second bank - ( 1 << 12 )
+			0x00,
 			0x01, // bInterwal (1 ms)
 			0x00, // bRefresh (0)
 			0x00, // bSyncAddress (no synchronization)			
@@ -168,7 +185,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x25, // bDescriptorType (CS_ENDPOINT)
 			0x01, // bDescriptorSubtype (EP_GENERAL)
 			0x00, // bmAttributes (none)
-			0x02, // bLockDelayUnits (PCM samples)
+			0x00, // bLockDelayUnits (PCM samples)
 			0x00, // wLockDelay (0)	
 			0x00, 
 		

@@ -27,7 +27,7 @@ void udp_set_state(enum udp_state state) {
 	uint32_t reg = UDP->UDP_GLB_STAT & 0xfffc;
 	switch(state) {
 		case UDP_STATE_ADDRESS : reg |= UDP_GLB_STAT_FADDEN; break;
-		case UDP_STATE_CONFIGURE : reg |= UDP_GLB_STAT_CONFG; break;
+		case UDP_STATE_CONFIGURED : reg |= UDP_GLB_STAT_CONFG; break;
 		default: break;
 	};
 	
@@ -81,6 +81,10 @@ void udp_set_configuration(uint16_t wValue) {
 	ep_control.callback = &_udp_set_configuration_callback;
 }
 
+void udp_set_interface(uint16_t wValue) {
+	udp_send_zlp(&ep_control);
+}
+
 /* Callbacks */
 
 void _udp_set_address_callback() {
@@ -89,11 +93,12 @@ void _udp_set_address_callback() {
 }
 
 void _udp_set_configuration_callback() {
-	if(udp_get_state() == UDP_STATE_ADDRESS) udp_set_state(UDP_STATE_CONFIGURE);
-	else if(udp_get_state() == UDP_STATE_CONFIGURE) udp_set_state(UDP_STATE_ADDRESS);
+	if(udp_get_state() == UDP_STATE_ADDRESS) udp_set_state(UDP_STATE_CONFIGURED);
+	else if(udp_get_state() == UDP_STATE_CONFIGURED) udp_set_state(UDP_STATE_ADDRESS);
 	
 	// turn on endpoints
 	ep_enable(&ep_in);
+	ep_control_set(&ep_in, UDP_CSR_TXPKTRDY);
 }
 
 void udp_enumerate(const udp_setup_data_t *request) {
@@ -117,6 +122,10 @@ void udp_enumerate(const udp_setup_data_t *request) {
 					break;
 
 				case UDP_bRequest_GET_INTERFACE :
+					break;
+				
+				case UDP_bRequest_SET_INTERFACE :
+					udp_set_interface(request->wValue);
 					break;
 
 				case UDP_bRequest_GET_STATUS :

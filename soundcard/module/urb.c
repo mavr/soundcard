@@ -46,7 +46,7 @@ int udp_send_setup(udp_ep_t *ep, uint8_t *data, uint32_t size) {
 	ep->state = EP_STATE_TRANS;
 	
 	// anti collision condition
-	if(_udp.state == UDP_STATE_POWER) return ERRPOSIBLE;
+	if(_udp.state == UDP_STATE_POWERED) return ERRPOSIBLE;
 
 	ep->tx_buffer = data;
 	ep->tx_size = size;
