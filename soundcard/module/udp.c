@@ -48,5 +48,10 @@ int udp_audio_stream_in(uint16_t value) {
 
 uint16_t udp_audio_stream_out() {
 	static uint16_t sound_tmp = 0;
-	return (sound_tmp++ & 0x0fff) | 0x00ff ;
+	if((*ep_out.CSR & UDP_CSR_RXBYTECNT_Msk) >> UDP_CSR_RXBYTECNT_Pos) {
+		sound_tmp = *(ep_out.FDR);
+		sound_tmp |= *(ep_out.FDR) << 8;
+	}
+//	return (sound_tmp++ & 0x0fff) | 0x00ff ;
+	return sound_tmp;
 }

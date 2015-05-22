@@ -6,7 +6,7 @@
  */ 
 
 #include "fifo.h"
-#include "../module/uart.h"
+//#include "module/uart.h"
 #include <string.h>
 
 void fifo_init(fifo_t *fifo, T_fifo *buffer, uint32_t size) {

@@ -38,7 +38,11 @@ void ep_init(udp_ep_t *ep, uint8_t type, uint8_t size, uint8_t number) {
 			ep->tx_buffer = _ep_in_tx_buffer;
 			ep->tx_size = 16;
 			ep->tx_count = 0;
-//			ep_control_set(ep, UDP_CSR_DIR);
+			break;
+			
+		case UDP_EP_TYPE_ISO_OUT:
+			ep_control_set(ep, UDP_CSR_EPTYPE_ISO_OUT);
+//			ep->rx_buffer = 
 			break;
 			
 		case UDP_EP_TYPE_BULK_IN:
@@ -120,10 +124,6 @@ void ep_callback(udp_ep_t *ep) {
 
 		*ep->CSR &= ~UDP_CSR_TXCOMP;
 		
-		//if(ep->number == UDP_EP_IN) {
-			//for(int i = 0; i < 32; i++) *ep->FDR = i;
-			//ep_control_set(&ep_in, UDP_CSR_TXPKTRDY);
-		//}
 	}
 	
 	if(*ep->CSR & UDP_CSR_STALLSENT) {
@@ -132,6 +132,9 @@ void ep_callback(udp_ep_t *ep) {
 	
 	if(*ep->CSR & (UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1)) {
 		// read and clear udp_csr_rx_data_bkx
+		if(ep->number == UDP_EP_OUT) {
+			
+		}
 		*ep->CSR &= ~(UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1);
 	}
 }

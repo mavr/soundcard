@@ -16,7 +16,7 @@
 /* Endpoint addresses */
 #define UDP_EP_CONTROL		0
 #define UDP_EP_IN			4
-#define UDP_EP_OUT			2
+#define UDP_EP_OUT			5
 
 /* Endpoint types */
 #define UDP_EP_TYPE_CONTROL		0

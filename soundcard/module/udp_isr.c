@@ -36,9 +36,9 @@ void UDP_Handler() {
 		UDP->UDP_ICR |= UDP_IMR_EP1INT;
 	}
 	
-	if(UDP->UDP_ISR & UDP_IMR_EP2INT) {
+	if(UDP->UDP_ISR & UDP_IMR_EP5INT) {
 		ep_callback(&ep_out);
-		UDP->UDP_ICR |= UDP_IMR_EP2INT;
+		UDP->UDP_ICR |= UDP_IMR_EP5INT;
 	}
 	
 	if(UDP->UDP_ISR & (UDP_ISR_EXTRSM | UDP_ISR_RXRSM | UDP_ISR_RXSUSP | UDP_ISR_SOFINT | UDP_ISR_WAKEUP)) {
