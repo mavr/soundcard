@@ -7,39 +7,18 @@
 
 #include "usb.h"
 #include "sam.h"
-#include "udp.h"
-#include "udp_request.h"
-#include "error_code.h"
-#include "system.h"
+#include "include/udp.h"
+#include "udp/udp_request.h"
+#include "include/error_code.h"
+#include "include/system.h"
+#include "udp/udp-audio.h"
 #include <string.h>
-#include "udp-audio.h"
-
-void udp_set_interrupt() {
-	UDP->UDP_IER = UDP_IER_SOFINT | UDP_ISR_RXSUSP;
-}
-
-void udp_ddp_pull_up() {
-	UDP->UDP_TXVC =	UDP_TXVC_PUON;
-}
-
-void udp_set_state(enum udp_state state) {
-// TODO: I dont know what about suspend mode and remote wake up control
-	uint32_t reg = UDP->UDP_GLB_STAT & 0xfffc;
-	switch(state) {
-		case UDP_STATE_ADDRESS : reg |= UDP_GLB_STAT_FADDEN; break;
-		case UDP_STATE_CONFIGURED : reg |= UDP_GLB_STAT_CONFG; break;
-		default: break;
-	};
-	
-	UDP->UDP_GLB_STAT = reg;
-	_udp.state = state;
-}
 
 
 /* Descriptor processing */
 
 void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
-	uint8_t *_p_desc = 0;
+	const uint8_t * _p_desc = 0;
 	uint32_t _s_desc = 0;
 		
 	// Type of descriptor is contains in high byte. Low byte contains index of descriptor.
@@ -93,17 +72,19 @@ void _udp_set_address_callback() {
 }
 
 void _udp_set_configuration_callback() {
-	if(udp_get_state() == UDP_STATE_ADDRESS) udp_set_state(UDP_STATE_CONFIGURED);
-	else if(udp_get_state() == UDP_STATE_CONFIGURED) udp_set_state(UDP_STATE_ADDRESS);
+//TODO: udp_get_state()
+//	if(udp_get_state() == UDP_STATE_ADDRESS) udp_set_state(UDP_STATE_CONFIGURED);
+//	else if(udp_get_state() == UDP_STATE_CONFIGURED) udp_set_state(UDP_STATE_ADDRESS);
 	
 	// turn on endpoints
-	ep_enable(&ep_in);
-	ep_control_set(&ep_in, UDP_CSR_TXPKTRDY);
+	ep_enable(&ep_in.ep);
+	__ep_ctrl_set(&ep_in.ep, UDP_CSR_TXPKTRDY);
 }
 
 void udp_enumerate(const udp_setup_data_t *request) {
 	
-	ep_control.state = EP_STATE_SETUP;
+	//TODO: state
+	//ep_control.state = EP_STATE_SETUP;
 				
 	/* bmRequestType: type */
 	switch((request->bmRequestType & 0x60) >> 5) {
@@ -133,7 +114,9 @@ void udp_enumerate(const udp_setup_data_t *request) {
 				
 				case UDP_bRequest_SET_ADDRESS :	udp_set_address(request->wValue); break;
 				
-				default: ep_control.state = EP_STATE_IDLE; break;
+				default: 
+					//ep_control.state = EP_STATE_IDLE; 
+					break;
 			}
 			
 	}

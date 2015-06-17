@@ -9,10 +9,10 @@
 #include "module/ssc.h"
 #include "module/ad74111.h"
 #include "module/uart.h"
+#include "include/udp.h"
 #include "init.h"
-#include "system.h"
-//#include "udp.h"
-#include "module/usb.h"
+#include "include/system.h"
+
 /**
  * \brief Application entry point.
  *
@@ -29,7 +29,7 @@ int main(void) {
 }
 
 void SSC_Handler() {
-	if(SSC->SSC_SR & SSC_SR_TXRDY){ 
+	if(SSC->SSC_SR & SSC_SR_TXRDY) { 
 		/*  Init codec block */
 		if(ad74111.mode == AD74111_MIXED) {
 			SSC->SSC_THR = (uint16_t) *( ((uint16_t *) &ad74111.registers ) + ad74111.tdata_counter / 2) | AD74111_CR_W;

@@ -121,7 +121,8 @@
       <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel</Value>
       <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel\CMSIS\Include</Value>
       <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel\Device\ATMEL</Value>
-      <Value>../include</Value>
+      <Value>../module</Value>
+      <Value>..</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
@@ -180,9 +181,6 @@
     <Compile Include="include\udp.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="include\udp_request.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="init.c">
       <SubType>compile</SubType>
     </Compile>
@@ -196,9 +194,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="module\ad74111.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="module\endpoint.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="module\pio.c">
@@ -225,22 +220,46 @@
     <Compile Include="module\uart.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\udp-audio.h">
+    <Compile Include="module\udp\endpoint.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\udp.c">
+    <Compile Include="module\udp\endpoint.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\udp_isr.c">
+    <Compile Include="module\udp\udp-audio.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\urb.c">
+    <Compile Include="module\udp\udp.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\usb.c">
+    <Compile Include="module\udp\udp.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\usb.h">
+    <Compile Include="module\udp\udp_isr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\udp\udp_product_descriptors.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\udp\udp_request.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\udp\udp_stream.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\udp\udp_stream.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\udp\urb.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\udp\urb.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\udp\usb.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\udp\usb.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
@@ -251,6 +270,7 @@
     <Folder Include="module\" />
     <Folder Include="core\" />
     <Folder Include="include" />
+    <Folder Include="module\udp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cmsis\linkerScripts\sam4sd32c_flash.ld">

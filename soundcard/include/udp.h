@@ -6,35 +6,36 @@
  */ 
 
 
-#ifndef UDP_H_
-#define UDP_H_
+#ifndef INC_UDP_H_
+#define INC_UDP_H_
 
 #include "sam.h"
+#include "udp/endpoint.h"
 
 /* User API for usb device */
 
-/* Possible states of usb device */
-enum udp_state { 
-	UDP_STATE_ATTACHED, 
-	UDP_STATE_POWERED, 
-	UDP_STATE_DEFAULT, 
-	UDP_STATE_ADDRESS, 
-	UDP_STATE_CONFIGURED, 
-	UDP_STATE_SUSPENDED 
-};
-
-enum udp_state udp_get_state(void);
+/* Endpoints */
+udp_ep_setup_t ep_control;
+/* Isochronous audio data streams */
+udp_ep_audio_t ep_in;
+udp_ep_audio_t ep_out;
 
 /* Init UDP system hardware. And turn on it. */
 void udp_system(void);
 
-/**		User API audio block 
+/* Initializing fifo buffers for endpoints.	 */
+void codec_stream_init(udp_ep_audio_t *ep);
+
+/**			User API audio block			**/
+
+/*  Return true if device connected and configured. Else - false. */
+uint8_t udp_ready(void);
+
+/**
 *	In both functions return and incoming values is 16bit data
 *	from/to ADC/DAC in codec's format. Nothing else.
 **/
-int udp_audio_stream_in(uint16_t value);
+void udp_audio_stream_in(uint16_t value);
 uint16_t udp_audio_stream_out(void);
-
-
 
 #endif /* UDP_H_ */
