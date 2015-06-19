@@ -28,7 +28,13 @@ typedef struct {
 	
 } _codec_stream_t;
 
-void udp_stream_init(_codec_stream_t *stream, uint16_t *stream_buffer, uint32_t size_buffer);
+void stream_init(_codec_stream_t *stream, uint16_t *stream_buffer, uint32_t size_buffer);
+
+uint32_t udp_stream_get_avalable_data_size(_codec_stream_t *stream);
+
+uint16_t stream_get(_codec_stream_t *stream);
+
+void stream_put(_codec_stream_t *stream, uint16_t value);
 
 
 #endif /* CFIFO_H_ */

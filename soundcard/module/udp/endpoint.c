@@ -41,11 +41,11 @@ void ep_init(void *ep, uint8_t ep_type, uint16_t ep_size, uint8_t ep_number) {
 			
 			if(__core->type == UDP_EP_TYPE_ISO_IN) {
 				__ep_ctrl_set(&(__ep_audio->ep), UDP_CSR_EPTYPE_ISO_IN);
-				udp_stream_init(&(__ep_audio->stream), __ep_audio_in, EP_AUDIO_BUFFER_SIZE);
+				stream_init(&(__ep_audio->stream), __ep_audio_in, EP_AUDIO_BUFFER_SIZE);
 			}
 			else {
 				 __ep_ctrl_set(&(__ep_audio->ep), UDP_CSR_EPTYPE_ISO_OUT);
-				 udp_stream_init(&(__ep_audio->stream), __ep_audio_out, EP_AUDIO_BUFFER_SIZE);
+				 stream_init(&(__ep_audio->stream), __ep_audio_out, EP_AUDIO_BUFFER_SIZE);
 			}
 			
 			break;
@@ -165,8 +165,13 @@ void ep_callback(udp_ep_audio_t *ep) {
 	
 	if(*ep->ep.CSR & (UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1)) {
 		// read and clear udp_csr_rx_data_bkx
+		uint16_t u16 = 0;
 		if(ep->ep.number == UDP_EP_OUT) {
-			
+			//while( ((*(ep->ep.CSR) & 0x7ff0000) >> 16) != 0 ) {
+				//u16 = *ep->ep.FDR;
+				//u16 |= (*ep->ep.FDR << 8);
+				//stream_put(&ep->stream, u16);
+			//}
 		}
 		*ep->ep.CSR &= ~(UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1);
 	}

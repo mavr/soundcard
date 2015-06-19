@@ -24,7 +24,8 @@ udp_ep_audio_t ep_out;
 void udp_system(void);
 
 /* Initializing fifo buffers for endpoints.	 */
-void codec_stream_init(udp_ep_audio_t *ep);
+// ?? is this needful
+//void codec_stream_init(udp_ep_audio_t *ep);
 
 /**			User API audio block			**/
 
