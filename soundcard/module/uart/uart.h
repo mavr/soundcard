@@ -34,7 +34,7 @@ void uart_tx_enable(void);
 void uart_rx_disable(void);
 void uart_tx_disable(void);
 
-uint8_t write(uint8_t value);
+void uart_write(char *msg);
 
 uint8_t write_16b(uint16_t value);
 uint8_t write_32b(uint32_t value);

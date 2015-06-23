@@ -172,6 +172,15 @@
     <Compile Include="core\fifo.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="core\syslog.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="core\syslog.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\ascii-logo.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="include\error_code.h">
       <SubType>compile</SubType>
     </Compile>
@@ -214,10 +223,10 @@
     <Compile Include="module\timer.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\uart.c">
+    <Compile Include="module\uart\uart.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\uart.h">
+    <Compile Include="module\uart\uart.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="module\udp\endpoint.c">
@@ -270,6 +279,7 @@
     <Folder Include="module\" />
     <Folder Include="core\" />
     <Folder Include="include" />
+    <Folder Include="module\uart" />
     <Folder Include="module\udp" />
   </ItemGroup>
   <ItemGroup>

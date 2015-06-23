@@ -112,7 +112,9 @@ void udp_enumerate(const udp_setup_data_t *request) {
 				case UDP_bRequest_GET_STATUS :
 					break;
 				
-				case UDP_bRequest_SET_ADDRESS :	udp_set_address(request->wValue); break;
+				case UDP_bRequest_SET_ADDRESS :	
+					udp_set_address(request->wValue); 
+					break;
 				
 				default: 
 					//ep_control.state = EP_STATE_IDLE; 

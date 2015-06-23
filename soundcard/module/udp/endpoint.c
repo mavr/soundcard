@@ -80,7 +80,8 @@ void ep_set_interrupt(udp_ep_core_t *ep) {
 }
 
 void __ep_ctrl_set(udp_ep_core_t *ep, uint32_t mask) {
-	UDP->UDP_CSR[ep->number] |= mask;
+	*ep->CSR |= mask;
+//	UDP->UDP_CSR[ep->number] |= mask;
 	for(int i = 0; i < 20; i++) nop();
 }
 
@@ -165,7 +166,7 @@ void ep_callback(udp_ep_audio_t *ep) {
 	
 	if(*ep->ep.CSR & (UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1)) {
 		// read and clear udp_csr_rx_data_bkx
-		uint16_t u16 = 0;
+		//uint16_t u16 = 0;
 		if(ep->ep.number == UDP_EP_OUT) {
 			//while( ((*(ep->ep.CSR) & 0x7ff0000) >> 16) != 0 ) {
 				//u16 = *ep->ep.FDR;

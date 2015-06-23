@@ -10,8 +10,9 @@
 #include "module/ssc.h"
 #include "module/ad74111.h"
 #include "module/timer.h"
-#include "module/uart.h"
+#include "core/syslog.h"
 #include "include/udp.h"
+#include "include/ascii-logo.h"
 
 void Init() {
 	/* From system_init() */
@@ -19,6 +20,9 @@ void Init() {
 	
 	pmc_system();
 	pio_system();
+	
+	syslog_uart_start(ravion_logo_ascii);
+	__DEBUG(LOG_LVL_LOW, "\r\n\r\nRadioAvionica. Usb soundcard device starting. Syslog system.");
 	
 	/* Configure watchdog ( disable ) */
 	wdt_disable();

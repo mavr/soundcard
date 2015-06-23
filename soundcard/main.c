@@ -8,7 +8,7 @@
 #include "sam.h"
 #include "module/ssc.h"
 #include "module/ad74111.h"
-#include "module/uart.h"
+#include "uart/uart.h"
 #include "include/udp.h"
 #include "init.h"
 #include "include/system.h"
@@ -21,7 +21,7 @@
 int main(void) {
 	/* Initialize the SAM system */
 	Init();
-
+	
 //	while(udp_get_state() != UDP_STATE_DEFAULT);	
 
 	while(1) {
