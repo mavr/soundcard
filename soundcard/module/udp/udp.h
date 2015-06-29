@@ -22,6 +22,12 @@ typedef uint8_t	udp_state;
 #define	UDP_STATE_CONFIGURED	0x04
 #define	UDP_STATE_SUSPENDED		0x05
 
+
+typedef struct {
+	udp_state state;
+} udp_t;
+udp_t _udp;
+
 /** 
 	This function there is in udp api block of the usb stack.
 	You can find description of this in include/udp.h header file.

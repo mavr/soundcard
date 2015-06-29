@@ -53,15 +53,12 @@ void udp_set_state(udp_state state) {
 	};
 	
 	UDP->UDP_GLB_STAT = reg;
-//	_udp.state = state;
+	_udp.state = state;
 }
 
-//inline udp_state udp_get_state() {
-	// TODO:udp_get_state
-	// may be possible to compare with UDP_GLB_STAT ?
-	// UDP->UDP_GLB_STAT & 0x0003
-//	return _udp.state;
-//}
+inline udp_state udp_get_state() {
+	return _udp.state;
+}
 
 void UDP_Handler() {
 

@@ -17,12 +17,24 @@ void udp_audio_stream_in(uint16_t value) {
 	stream_put(stream, value);
 	
 	if(count == 16) {
+		uint32_t i;
+		uint16_t value;
+		for(i = 0; i < 16; i++) {
+			value = stream_get(stream);
+			*ep_in.ep.FDR = value & 0x00ff;
+			*ep_in.ep.FDR = (value & 0xff00) >> 16;
+		}
 		
+		__ep_ctrl_set(&ep_in.ep, UDP_CSR_TXPKTRDY);
 	}
 }
 
 uint16_t udp_audio_stream_out() {
-	return stream_get(&ep_out.stream);
+	static uint16_t noise = 0x00;
+	noise = ++noise | 0x03ff;
+	
+	return noise;
+//	return stream_get(&ep_out.stream);
 }
 
 void stream_init(_codec_stream_t *stream, uint16_t *stream_buffer, uint32_t size_buffer) {
