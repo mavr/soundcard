@@ -17,10 +17,12 @@ void udp_system() {
 	udp_set_state(UDP_STATE_POWERED);
 	
 	NVIC_EnableIRQ(UDP_IRQn);
+	__UDP_DEBUG(LOG_LVL_LOW, "Started.");
 }
 
 void udp_set_interrupt() {
-	UDP->UDP_IER = UDP_IER_SOFINT | UDP_ISR_RXSUSP;
+//	UDP->UDP_IER = UDP_IER_SOFINT | UDP_IER_RXSUSP;
+	UDP->UDP_IER = UDP_IER_RXSUSP;
 }
 
 void udp_ddp_pull_up() {
@@ -30,6 +32,18 @@ void udp_ddp_pull_up() {
 //void udp_set_dev_addr(uint8_t address) {}
 
 void udp_set_state(udp_state state) {
+	#ifdef UART_DEBUG
+		switch(state) {
+			case UDP_STATE_ATTACHED :		__UDP_DEBUG(LOG_LVL_HIGH, "State -> attached."); break;
+			case UDP_STATE_POWERED :		__UDP_DEBUG(LOG_LVL_HIGH, "State -> powered."); break;
+			case UDP_STATE_DEFAULT :		__UDP_DEBUG(LOG_LVL_HIGH, "State -> default."); break;
+			case UDP_STATE_ADDRESS :		__UDP_DEBUG(LOG_LVL_HIGH, "State -> address."); break;
+			case UDP_STATE_CONFIGURED :		__UDP_DEBUG(LOG_LVL_HIGH, "State -> configure."); break;
+			case UDP_STATE_SUSPENDED :		__UDP_DEBUG(LOG_LVL_HIGH, "State -> suspend."); break;
+			default:	__UDP_DEBUG(LOG_LVL_HIGH, "Error! State -> uknown."); break;
+		}
+	#endif
+	
 	// TODO: I dont know what about suspend mode and remote wake up control
 	uint32_t reg = UDP->UDP_GLB_STAT & 0xfffc;
 	switch(state) {
@@ -59,6 +73,7 @@ void UDP_Handler() {
 		
 		udp_set_interrupt();
 		udp_ddp_pull_up();
+		__UDP_DEBUG(LOG_LVL_HIGH, "Get Reset signal");
 		
 		UDP->UDP_ICR |= UDP_ICR_ENDBUSRES | UDP_ICR_SOFINT;
 		udp_set_state(UDP_STATE_DEFAULT);

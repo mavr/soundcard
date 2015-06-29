@@ -62,6 +62,10 @@ void uart_write(char *msg) {
 		while(!(UART0->UART_SR & UART_SR_TXRDY));
 		UART0->UART_THR = *(msg + i);
 	}
+}
+
+void uart_writeln(char *msg) {
+	uart_write(msg);
 	
 	while(!(UART0->UART_SR & UART_SR_TXRDY));
 	UART0->UART_THR = 0x0d;

@@ -12,6 +12,7 @@
 #include "include/udp.h"
 #include "init.h"
 #include "include/system.h"
+#include "core/syslog.h"
 
 /**
  * \brief Application entry point.
@@ -22,6 +23,7 @@ int main(void) {
 	/* Initialize the SAM system */
 	Init();
 	
+	__DEBUG(LOG_LVL_HIGH, "System initialized.");
 //	while(udp_get_state() != UDP_STATE_DEFAULT);	
 
 	while(1) {

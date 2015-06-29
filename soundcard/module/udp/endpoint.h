@@ -31,6 +31,8 @@
 #define UDP_EP4_SIZE			512
 #define UDP_EP5_SIZE			512
 
+#define UDP_EP_CTRL0_SIZE		UDP_EP0_SIZE
+
 /* Endpoint buffers */
 #define EP_CTRL_BUFFER_SIZE		4
 #define EP_AUDIO_BUFFER_SIZE	512
@@ -69,6 +71,11 @@ typedef struct {
 	
 	// wValue =)
 	uint16_t wValue;
+	
+	// Inside variables for transferring setup packages.
+	uint32_t tx_count;
+	uint32_t tx_size;
+	uint8_t *tx_buffer;
 	
 	/* callback for setup pkg processing */
 	void (*callback)(void);

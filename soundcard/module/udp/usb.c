@@ -23,9 +23,16 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 		
 	// Type of descriptor is contains in high byte. Low byte contains index of descriptor.
 	switch(wValue >> 8) {
-		case UDP_wValue_DT_DEV	:		_p_desc = udp_dev_descriptor; _s_desc = *(_p_desc); break;
-		case UDP_wValue_DT_CONF :		_p_desc = udp_conf_descriptor; _s_desc = *(_p_desc + 2); break; 
+		case UDP_wValue_DT_DEV	:		
+				_p_desc = udp_dev_descriptor; _s_desc = *(_p_desc); 
+				__UDP_DEBUG(LOG_LVL_HIGH, "Receive: GET device descriptor.");
+				break;
+		case UDP_wValue_DT_CONF :
+				_p_desc = udp_conf_descriptor; _s_desc = *(_p_desc + 2); 
+				__UDP_DEBUG(LOG_LVL_HIGH, "Receive: GET configuration descriptor.");
+				break; 
 		case UDP_wValue_DT_STR	:		
+				__UDP_DEBUG(LOG_LVL_HIGH, "Receive: GET string descriptor.");
 			switch(wValue & 0x00ff) {
 				case 0x00: _p_desc = udp_str_zero_descriptor; _s_desc = *(_p_desc); break;
 				case 0x01: _p_desc = udp_str_manufactur_descriptor; _s_desc = *(_p_desc); break;
@@ -41,6 +48,7 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 		/* UDP_wValue_DT_DEV_QUAL , UDP_wValue_DT_INT_POWER */
 		default: 
 			udp_send_stall(&ep_control);
+			__UDP_DEBUG(LOG_LVL_HIGH, "Error! Receive: GET uknown descriptor.");
 		break;
 	}
 
@@ -51,11 +59,13 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 void udp_set_address(uint16_t wValue) {
 	udp_send_zlp(&ep_control);
 	
+	__UDP_DEBUG(LOG_LVL_HIGH, "Receive: SET address.");
 	ep_control.wValue = wValue;
 	ep_control.callback = &_udp_set_address_callback;
 }
 
 void udp_set_configuration(uint16_t wValue) {
+	__UDP_DEBUG(LOG_LVL_HIGH, "Receive: SET configuratuion.");
 	udp_send_zlp(&ep_control);
 	ep_control.callback = &_udp_set_configuration_callback;
 }
@@ -84,7 +94,7 @@ void _udp_set_configuration_callback() {
 void udp_enumerate(const udp_setup_data_t *request) {
 	
 	//TODO: state
-	//ep_control.state = EP_STATE_SETUP;
+	//ep_control.ep.state = EP_STATE_SETUP;
 				
 	/* bmRequestType: type */
 	switch((request->bmRequestType & 0x60) >> 5) {

@@ -12,6 +12,7 @@
 #include "module/timer.h"
 #include "core/syslog.h"
 #include "include/udp.h"
+#include "uart/uart.h"
 #include "include/ascii-logo.h"
 
 void Init() {
@@ -21,8 +22,8 @@ void Init() {
 	pmc_system();
 	pio_system();
 	
-	syslog_uart_start(ravion_logo_ascii);
-	__DEBUG(LOG_LVL_LOW, "\r\n\r\nRadioAvionica. Usb soundcard device starting. Syslog system.");
+	syslog_uart_start((char *) ravion_logo_ascii);
+	__DEBUG(LOG_LVL_LOW, "\r\nRadioAvionica. Usb soundcard device starting. Syslog system.\r\n");
 	
 	/* Configure watchdog ( disable ) */
 	wdt_disable();

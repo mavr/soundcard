@@ -19,11 +19,11 @@
 /* Define here one of the log level or comment this. */
 #define UART_DEBUG			LOG_LVL_HIGH
 
-//#ifdef UART_DEBUG
-	#define __DEBUG(lvl,msg) if( lvl <= UART_DEBUG ) { uart_write(msg); uart_write("\r\n"); }
-//#else
-//	#define DEBUG(lvl,msg) 
-//#endif
+#ifdef UART_DEBUG
+	#define __DEBUG(lvl,msg) if( lvl <= UART_DEBUG ) uart_writeln(msg);
+#else
+	#define DEBUG(lvl,msg) 
+#endif
 			
 void syslog_uart_start(char *msg);
 

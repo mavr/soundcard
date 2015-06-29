@@ -7,9 +7,10 @@
 
 #include "sam.h"
 #include "include/system.h"
-#include "udp.h"
-#include "udp/udp_request.h"
 #include "include/error_code.h"
+#include "core/syslog.h"
+#include "include/udp.h"
+#include "udp/udp_request.h"
 #include "udp/usb.h"
 #include <string.h>
 
@@ -117,6 +118,7 @@ void ep_callback_setup(udp_ep_setup_t *ep) {
 	}
 	
 	if(*ep->ep.CSR & UDP_CSR_TXCOMP) {
+//		__UDP_DEBUG(LOG_LVL_HIGH, "Control point: interrupt txcomp");
 		if(udp_push(ep) == EP_STATE_IDLE) {
 			// in case of endpoint requires additional actions run callback() for this ep.
 			if(ep->callback != NULL) ep->callback();
@@ -124,6 +126,7 @@ void ep_callback_setup(udp_ep_setup_t *ep) {
 			ep->callback = NULL;
 			ep->ep.state = EP_STATE_IDLE;
 		}
+		*ep->ep.CSR &= ~UDP_CSR_TXCOMP;
 	}
 	
 	if(*ep->ep.CSR & UDP_CSR_STALLSENT) {

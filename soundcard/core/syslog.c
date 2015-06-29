@@ -12,5 +12,5 @@ void syslog_uart_start(char *msg) {
 	uart_system();
 	uart_tx_enable();
 	
-	uart_write(msg);
+	uart_writeln(msg);
 }
