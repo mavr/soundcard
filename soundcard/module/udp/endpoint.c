@@ -27,6 +27,7 @@ void ep_init(void *ep, uint8_t ep_type, uint16_t ep_size, uint8_t ep_number) {
 			__ep_control->callback = NULL;
 			
 			__ep_ctrl_set(&(__ep_control->ep), UDP_CSR_EPTYPE_CTRL);
+			__UDP_DEBUG(LOG_LVL_HIGH, "Endpoint: init control");
 			
 //			udp_stream_init(&(__ep_control->stream), __ep_ctrl_buffer, EP_CTRL_BUFFER_SIZE);
 			break;
@@ -40,13 +41,15 @@ void ep_init(void *ep, uint8_t ep_type, uint16_t ep_size, uint8_t ep_number) {
 			//TODO: initializing stream
 			//__ep->stream
 			
-			if(__core->type == UDP_EP_TYPE_ISO_IN) {
+			if(ep_type == UDP_EP_TYPE_ISO_IN) {
 				__ep_ctrl_set(&(__ep_audio->ep), UDP_CSR_EPTYPE_ISO_IN);
 				stream_init(&(__ep_audio->stream), __ep_audio_in, EP_AUDIO_BUFFER_SIZE);
+				__UDP_DEBUG(LOG_LVL_HIGH, "Endpoint: init isochronous in");
 			}
 			else {
 				 __ep_ctrl_set(&(__ep_audio->ep), UDP_CSR_EPTYPE_ISO_OUT);
 				 stream_init(&(__ep_audio->stream), __ep_audio_out, EP_AUDIO_BUFFER_SIZE);
+				 __UDP_DEBUG(LOG_LVL_HIGH, "Endpoint: init isochronous out");
 			}
 			
 			break;
@@ -118,7 +121,6 @@ void ep_callback_setup(udp_ep_setup_t *ep) {
 	}
 	
 	if(*ep->ep.CSR & UDP_CSR_TXCOMP) {
-//		__UDP_DEBUG(LOG_LVL_HIGH, "Control point: interrupt txcomp");
 		if(udp_push(ep) == EP_STATE_IDLE) {
 			// in case of endpoint requires additional actions run callback() for this ep.
 			if(ep->callback != NULL) ep->callback();
@@ -142,6 +144,7 @@ void ep_callback_setup(udp_ep_setup_t *ep) {
 
 void ep_callback(udp_ep_audio_t *ep) {	
 	if(*ep->ep.CSR & UDP_CSR_RXSETUP) {
+		__UDP_DEBUG(LOG_LVL_HIGH, "Error! ep_callback() : isr rxsetup. this time which cant happen.");
 		// this case should never happen
 		*ep->ep.CSR &= ~UDP_CSR_RXSETUP;		
 		return;
@@ -149,10 +152,16 @@ void ep_callback(udp_ep_audio_t *ep) {
 	
 	if(*ep->ep.CSR & UDP_CSR_TXCOMP) {		
 		if(ep->ep.number == UDP_EP_IN) {
-			//TODO: need to read from streaming and send to host
-			//for(int i = 0; i < ep->tx_count; i++)
-				//UDP->UDP_FDR[4] = *(ep->tx_buffer + i);
-			//ep->tx_count = 0;
+			uint32_t i = 0;
+			uint16_t value;
+			if(udp_stream_get_avalable_data_size(&ep->stream) == 0) {
+				__UDP_DEBUG(LOG_LVL_HIGH, "no available data in stream");
+			}
+			for(i = 0; i < udp_stream_get_avalable_data_size(&ep->stream); i++) {
+				value = stream_get(&ep->stream);
+				*ep_in.ep.FDR = value & 0x00ff;
+				*ep_in.ep.FDR = (value & 0xff00) >> 8;
+			}
 			
 			__ep_ctrl_set(&(ep->ep), UDP_CSR_TXPKTRDY);
 			__ep_ctrl_clr(&(ep->ep), UDP_CSR_TXCOMP);

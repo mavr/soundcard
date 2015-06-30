@@ -9,29 +9,16 @@
 #include "udp_stream.h"
 
 void udp_audio_stream_in(uint16_t value) {
-	static uint16_t count = 0;
-	
-	count++;
-	// Add value to the buffer
 	_codec_stream_t *stream = &(ep_in.stream);
-	stream_put(stream, value);
 	
-	if(count == 16) {
-		uint32_t i;
-		uint16_t value;
-		for(i = 0; i < 16; i++) {
-			value = stream_get(stream);
-			*ep_in.ep.FDR = value & 0x00ff;
-			*ep_in.ep.FDR = (value & 0xff00) >> 16;
-		}
-		
-		__ep_ctrl_set(&ep_in.ep, UDP_CSR_TXPKTRDY);
-	}
+	//TODO: think about this
+	// in other way stream buffers may be not init
+	if(udp_ready())	stream_put(stream, value);
 }
 
 uint16_t udp_audio_stream_out() {
 	static uint16_t noise = 0x00;
-	noise = ++noise | 0x03ff;
+	noise = (noise + 1) | 0x03ff;
 	
 	return noise;
 //	return stream_get(&ep_out.stream);
@@ -61,7 +48,7 @@ inline void stream_put(_codec_stream_t *stream, uint16_t value) {
 }
 
 inline uint16_t stream_get(_codec_stream_t *stream) {
-	uint16_t value = stream->__out;
+	uint16_t value = *( stream->__buffer + stream->__out );
 	if(stream->__in != stream->__out) {
 		stream->__out = (stream->__out + 1) & stream->__size_msk;
 	}

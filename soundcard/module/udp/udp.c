@@ -22,7 +22,8 @@ void udp_system() {
 
 void udp_set_interrupt() {
 //	UDP->UDP_IER = UDP_IER_SOFINT | UDP_IER_RXSUSP;
-	UDP->UDP_IER = UDP_IER_RXSUSP;
+	UDP->UDP_IER = UDP_IER_RXSUSP | UDP_IER_EP0INT | UDP_IER_EP4INT 
+					| UDP_IER_EP5INT | UDP_IER_SOFINT;
 }
 
 void udp_ddp_pull_up() {
@@ -58,6 +59,10 @@ void udp_set_state(udp_state state) {
 
 inline udp_state udp_get_state() {
 	return _udp.state;
+}
+
+inline uint8_t udp_ready() {
+	return (udp_get_state() == UDP_STATE_CONFIGURED);
 }
 
 void UDP_Handler() {

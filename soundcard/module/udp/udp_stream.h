@@ -24,7 +24,7 @@ typedef struct {
 	
 	uint32_t __in; 
 	uint32_t __out;
-	uint32_t __avalable; // ?
+	uint32_t __avalable;
 	
 } _codec_stream_t;
 

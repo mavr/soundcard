@@ -77,17 +77,20 @@ void udp_set_interface(uint16_t wValue) {
 /* Callbacks */
 
 void _udp_set_address_callback() {
-	UDP->UDP_GLB_STAT = UDP_GLB_STAT_FADDEN;
+	udp_set_state(UDP_STATE_ADDRESS);
+//	UDP->UDP_GLB_STAT = UDP_GLB_STAT_FADDEN;
 	UDP->UDP_FADDR |= (ep_control.wValue & 0x7f) | UDP_FADDR_FEN;
 }
 
 void _udp_set_configuration_callback() {
-//TODO: udp_get_state()
-//	if(udp_get_state() == UDP_STATE_ADDRESS) udp_set_state(UDP_STATE_CONFIGURED);
-//	else if(udp_get_state() == UDP_STATE_CONFIGURED) udp_set_state(UDP_STATE_ADDRESS);
+	if(udp_get_state() == UDP_STATE_ADDRESS) udp_set_state(UDP_STATE_CONFIGURED);
+	else if(udp_get_state() == UDP_STATE_CONFIGURED) udp_set_state(UDP_STATE_ADDRESS);
 	
 	// turn on endpoints
+	__UDP_DEBUG(LOG_LVL_HIGH, "Configuration setted. Enable audio in ep.");
 	ep_enable(&ep_in.ep);
+	//*ep_in.ep.FDR = 0x88;
+	UDP->UDP_FDR[4] = 0x88;
 	__ep_ctrl_set(&ep_in.ep, UDP_CSR_TXPKTRDY);
 }
 
