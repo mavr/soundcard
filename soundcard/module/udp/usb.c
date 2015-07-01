@@ -71,6 +71,7 @@ void udp_set_configuration(uint16_t wValue) {
 }
 
 void udp_set_interface(uint16_t wValue) {
+	__UDP_DEBUG(LOG_LVL_HIGH, "Receive: SET interface.");
 	udp_send_zlp(&ep_control);
 }
 

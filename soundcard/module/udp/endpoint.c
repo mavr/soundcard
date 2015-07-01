@@ -178,13 +178,14 @@ void ep_callback(udp_ep_audio_t *ep) {
 	
 	if(*ep->ep.CSR & (UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1)) {
 		// read and clear udp_csr_rx_data_bkx
-		//uint16_t u16 = 0;
+		uint16_t u16 = 0;
+		uint32_t i, rsize;
 		if(ep->ep.number == UDP_EP_OUT) {
-			//while( ((*(ep->ep.CSR) & 0x7ff0000) >> 16) != 0 ) {
-				//u16 = *ep->ep.FDR;
-				//u16 |= (*ep->ep.FDR << 8);
-				//stream_put(&ep->stream, u16);
-			//}
+			for(i = 0; i < (*(ep->ep.CSR) & 0x7ff0000) >> 16 ; i++) {
+				u16 = *ep->ep.FDR;
+				u16 |= (*ep->ep.FDR << 8);
+				stream_put(&ep->stream, u16);
+			}
 		}
 		*ep->ep.CSR &= ~(UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1);
 	}
