@@ -112,34 +112,71 @@ udp_setup_data_t ep_get_setup_pkg(udp_ep_setup_t *ep) {
 
 
 void ep_callback_setup(udp_ep_setup_t *ep) {
+	
+	/* Our data delivered */
+	if(*ep->ep.CSR & UDP_CSR_TXCOMP) {
+		switch(ep->ep.state) {
+			case EP_STATE_TRANS :
+			// Send data or complete transaction by calling callback() function.
+			if(udp_push(ep) == EP_STATE_IDLE) {
+				if(ep->callback != NULL) ep->callback();
+				ep->callback = NULL;
+				ep->ep.state = EP_STATE_IDLE;
+			}
+			break;
+			
+			case EP_STATE_ZLP :
+			if(ep->callback != NULL) ep->callback();
+			ep->callback = NULL;
+			ep->ep.state = EP_STATE_IDLE;
+			break;
+			
+			default:
+			__UDP_DEBUG(LOG_LVL_LOW, "Error! EP receive TXCOMP ir but has not trans or zlp state");
+			__UDP_ERROR;
+			break;
+		}
+		
+		__ep_ctrl_clr(&ep->ep, UDP_CSR_TXCOMP);
+	}
+
+/* Setup package comes to us. */
 	if(*ep->ep.CSR & UDP_CSR_RXSETUP) {
+		// Get setup package.
 		udp_setup_data_t request = ep_get_setup_pkg(ep);
 		if(request.bmRequestType & 0x80) *ep->ep.CSR |= UDP_CSR_DIR;
 		*ep->ep.CSR &= ~UDP_CSR_RXSETUP;
 		
+		// Processing setup package.
 		udp_enumerate(&request);
-	}
-	
-	if(*ep->ep.CSR & UDP_CSR_TXCOMP) {
-		if(udp_push(ep) == EP_STATE_IDLE) {
-			// in case of endpoint requires additional actions run callback() for this ep.
-			if(ep->callback != NULL) ep->callback();
 		
-			ep->callback = NULL;
-			ep->ep.state = EP_STATE_IDLE;
-		}
-		*ep->ep.CSR &= ~UDP_CSR_TXCOMP;
+		//#ifdef UART_DEBUG
+			//// At this moment ep can has just 
+			//switch(ep->ep.state) {
+				//case EP_STATE_IDLE	: __UDP_DEBUG(LOG_LVL_MED, "URB : Control EP state = IDLE"); break;
+				//case EP_STATE_NONE	: __UDP_DEBUG(LOG_LVL_MED, "URB : Control EP state = NONE"); break;
+				//case EP_STATE_TRANS : __UDP_DEBUG(LOG_LVL_MED, "URB : Control EP state = TRANS"); break;
+				//case EP_STATE_SETUP : __UDP_DEBUG(LOG_LVL_MED, "URB : Control EP state = SETUP"); break;
+				//case EP_STATE_ZLP	: __UDP_DEBUG(LOG_LVL_MED, "URB : Control EP state = ZLP"); break;
+				//case EP_STATE_STALL : __UDP_DEBUG(LOG_LVL_MED, "URB : Control EP state = STALL"); break;
+				//default : __UDP_DEBUG(LOG_LVL_MED, "URB : Control EP state = uknown."); break;
+			//}
+		//#endif
+	
 	}
 	
+/* Our mistake delivered */
 	if(*ep->ep.CSR & UDP_CSR_STALLSENT) {
-		*ep->ep.CSR &= ~UDP_CSR_STALLSENT;
+		__ep_ctrl_clr(&ep->ep, UDP_CSR_FORCESTALL);
+		__ep_ctrl_clr(&ep->ep, UDP_CSR_STALLSENT);
+		
+		ep->ep.state = EP_STATE_IDLE;
 	}
 	
+/* We get data or just delivery report. */
 	if(*ep->ep.CSR & (UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1)) {
 		*ep->ep.CSR &= ~(UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1);
 	}
-	
-	
 }
 
 void ep_callback(udp_ep_audio_t *ep) {	
@@ -179,7 +216,7 @@ void ep_callback(udp_ep_audio_t *ep) {
 	if(*ep->ep.CSR & (UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1)) {
 		// read and clear udp_csr_rx_data_bkx
 		uint16_t u16 = 0;
-		uint32_t i, rsize;
+		uint32_t i;
 		if(ep->ep.number == UDP_EP_OUT) {
 			for(i = 0; i < (*(ep->ep.CSR) & 0x7ff0000) >> 16 ; i++) {
 				u16 = *ep->ep.FDR;

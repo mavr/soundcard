@@ -16,9 +16,18 @@
 
 /* User API for usb device */
 
-#define __UDP_DEBUG(lvl,msg) {\
-	uart_write("[udp]\t"); \
-	__DEBUG(lvl,msg); }
+#ifdef UART_DEBUG
+	#define __UDP_DEBUG(lvl,msg) {\
+		uart_write("[udp]\t"); \
+		__DEBUG(lvl,msg); }
+#else
+	#define __UDP_DEBUG(lvl,msg)
+#endif
+
+//#define  __UDP_DEBUG(lvl,msg)
+
+/* For future */
+#define __UDP_ERROR
 
 /* Endpoints */
 udp_ep_setup_t ep_control;

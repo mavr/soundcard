@@ -23,8 +23,9 @@ int main(void) {
 	/* Initialize the SAM system */
 	Init();
 	
-	__DEBUG(LOG_LVL_HIGH, "System initialized.");
-//	while(udp_get_state() != UDP_STATE_DEFAULT);	
+	while(!udp_ready());
+	
+	__DEBUG(LOG_LVL_LOW, "System during operation.");
 
 	while(1) {
 	}

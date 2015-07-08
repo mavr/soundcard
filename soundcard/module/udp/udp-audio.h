@@ -65,7 +65,7 @@ static uint8_t udp_conf_descriptor[] = {
 	/* Configuration Descriptor */
 	0x09, // bLength
 	0x02, // bDescriptorType
-	0xAE, // wTotalLength (83)
+	0xc0, // wTotalLength (83)
 	0x00,
 	0x03, // bNumInterface
 	0x01, // bConfigurationValue
@@ -90,7 +90,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x01, // bDescriptorSubtype (HEADER)
 			0x00, // bcdADC (1.0)
 			0x01,
-			0x95, // wTotalLength ()
+			0x45, // wTotalLength ()
 			0x00,
 			0x02, // bInCollection (1 streaming interface)
 			0x01, // baInterfaceNr (interface 1 is stream)
@@ -112,7 +112,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x00, // iTerminal (none)
 			
 	/* Output terminal Audio Class Descriptor */
-			0x09, // bLength (12)
+			0x09, // bLength (9)
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x03, // bDescriptorSubtype (OUTPUT_TERMINAL)
 			0x02, // bTerminalID (2)
@@ -136,9 +136,9 @@ static uint8_t udp_conf_descriptor[] = {
 			0x00,
 			0x00, // iChannelNames (none)
 			0x00, // iTerminal (none)
-			
+
 	/* Output terminal Audio Class Descriptor */
-			0x09, // bLength (12)
+			0x09, // bLength (9)
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x03, // bDescriptorSubtype (OUTPUT_TERMINAL)
 			0x04, // bTerminalID (4)
@@ -148,6 +148,27 @@ static uint8_t udp_conf_descriptor[] = {
 			0x03, // bSourceID (3)
 			0x00, // iTerminal (none)
 			
+	/* Feature unit Audio Class Descriptor */
+			0x09, // bLength (9)
+			0x24, // bDescriptorType (CS_INTERFACE)
+			0x06, // bDescriptorSubtype (FEATURE_UNIT)
+			0x05, // bUnitID (5)
+			0x01, // bSourceID (1)
+			0x01, // bControlSize (1)
+			0x03, // bmaContorls(0) : Mute, Volume
+			0x00, // bmaContorls(1)
+			0x00, // iTerminal (none)		
+
+	/* Feature unit Audio Class Descriptor */
+			0x09, // bLength (9)
+			0x24, // bDescriptorType (CS_INTERFACE)
+			0x06, // bDescriptorSubtype (FEATURE_UNIT)
+			0x06, // bUnitID (6)
+			0x03, // bSourceID (3)
+			0x01, // bControlSize (1)
+			0x03, // bmaContorls(0) : Mute, Volume
+			0x00, // bmaContorls(1)
+			0x00, // iTerminal (none)
 			
 	/** Interface number 1 **/
 	/* Audio Stream interface descriptor */

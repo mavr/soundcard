@@ -38,7 +38,13 @@
 #define EP_AUDIO_BUFFER_SIZE	512
 
 /* Possible states of endpoint */
-enum ep_state { EP_STATE_NONE, EP_STATE_IDLE, EP_STATE_TRANS, EP_STATE_SETUP };
+enum ep_state { EP_STATE_NONE, 
+				EP_STATE_IDLE, 
+				EP_STATE_TRANS, 
+				EP_STATE_SETUP, // ?
+				EP_STATE_ZLP,
+				EP_STATE_STALL
+		};
 	
 /* core endpoint structure  */
 typedef struct {

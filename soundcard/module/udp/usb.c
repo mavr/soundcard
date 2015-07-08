@@ -97,9 +97,6 @@ void _udp_set_configuration_callback() {
 
 void udp_enumerate(const udp_setup_data_t *request) {
 	
-	//TODO: state
-	//ep_control.ep.state = EP_STATE_SETUP;
-				
 	/* bmRequestType: type */
 	switch((request->bmRequestType & 0x60) >> 5) {
 		case UDP_bmRequestType_Type_STANDART :
@@ -117,6 +114,7 @@ void udp_enumerate(const udp_setup_data_t *request) {
 					break;
 
 				case UDP_bRequest_GET_INTERFACE :
+					__UDP_DEBUG(LOG_LVL_HIGH, "Control EP: GET interface");
 					break;
 				
 				case UDP_bRequest_SET_INTERFACE :
@@ -124,6 +122,7 @@ void udp_enumerate(const udp_setup_data_t *request) {
 					break;
 
 				case UDP_bRequest_GET_STATUS :
+					__UDP_DEBUG(LOG_LVL_HIGH, "Control EP: GET status");
 					break;
 				
 				case UDP_bRequest_SET_ADDRESS :	
@@ -131,9 +130,16 @@ void udp_enumerate(const udp_setup_data_t *request) {
 					break;
 				
 				default: 
+					__UDP_DEBUG(LOG_LVL_HIGH, "Contorl EP: uknown request.");
 					//ep_control.state = EP_STATE_IDLE; 
 					break;
+			
 			}
+			break;
+			
+		default :
+			__UDP_DEBUG(LOG_LVL_HIGH, "Control EP: Non standart request");
+			break;
 			
 	}
 }
