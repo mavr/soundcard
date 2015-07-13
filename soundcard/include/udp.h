@@ -18,7 +18,7 @@
 
 #ifdef UART_DEBUG
 	#define __UDP_DEBUG(lvl,msg) {\
-		uart_write("[udp]\t"); \
+		syslog_prefix("[udp]\t"); \
 		__DEBUG(lvl,msg); }
 #else
 	#define __UDP_DEBUG(lvl,msg)

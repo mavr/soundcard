@@ -47,8 +47,3 @@ void SSC_Handler() {
 	}
 }
 
-//void UART0_Handler() {
-//	if(UART0->UART_SR & UART_SR_RXRDY) {
-//		
-//	}
-//}

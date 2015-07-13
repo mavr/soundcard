@@ -22,8 +22,9 @@ void Init() {
 	pmc_system();
 	pio_system();
 	
-	syslog_uart_start((char *) ravion_logo_ascii);
-	__DEBUG(LOG_LVL_LOW, "\r\nRadioAvionica. Usb soundcard device starting. Syslog system.\r\n");
+//	syslog_uart_start((char *) ravion_logo_ascii);
+	syslog_start("\r\nRadioAvionica. Usb soundcard device starting. Syslog system.\r\n");
+//	__DEBUG(LOG_LVL_LOW, "\r\nRadioAvionica. Usb soundcard device starting. Syslog system.\r\n");
 	
 	/* Configure watchdog ( disable ) */
 	wdt_disable();

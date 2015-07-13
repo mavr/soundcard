@@ -10,6 +10,10 @@
 #define SYSLOG_H_
 
 #include <sam.h>
+#include "core/stream.h"
+
+// 1k syslog buffer
+#define SYSLOG_BUFFER_SIZE 0x400
 
 /* Array of the possible levels of logging. */
 #define LOG_LVL_LOW		0x01
@@ -20,15 +24,33 @@
 #define UART_DEBUG			LOG_LVL_HIGH
 
 #ifdef UART_DEBUG
-	#define __DEBUG(lvl,msg) if( lvl <= UART_DEBUG ) uart_writeln(msg);
+	#define __DEBUG(lvl,msg) if( lvl <= UART_DEBUG ) syslog_send(msg);
 #else
 	#define DEBUG(lvl,msg) 
 #endif
-			
-void syslog_uart_start(char *msg);
 
+/** Just syslog_t **/
+typedef struct {
+	stream8_t stream;
+} syslog_t;
 
+syslog_t syslog;
 
+uint8_t _syslog_buffer[SYSLOG_BUFFER_SIZE];
+
+/**
+* Warning!
+* Syslog provided by uart0 port and always run in interrupt.
+* In order not to be interfere with primary system, syslog has 
+* the lowest priority in irq system. 
+* As result as in case main system want to send any message, it 
+* will be processed and transfer when syslog take his time slice.
+**/			
+void syslog_start(char *msg);
+
+void syslog_send(char *msg);
+
+void syslog_prefix(char *msg);
 
 
 #endif /* SYSLOG_H_ */

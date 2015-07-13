@@ -172,6 +172,12 @@
     <Compile Include="core\fifo.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="core\stream.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="core\stream.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="core\syslog.c">
       <SubType>compile</SubType>
     </Compile>
@@ -179,6 +185,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\ascii-logo.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\comtypes.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\error_code.h">
