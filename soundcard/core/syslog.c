@@ -7,6 +7,7 @@
 
 #include "syslog.h"
 #include "uart/uart.h"
+#include "include/ascii-logo.h"
 #include <string.h>
 
 void syslog_start(char *msg) {
@@ -18,6 +19,8 @@ void syslog_start(char *msg) {
 	// Set the lowest priority for uart0 irq.
 	// see NVIC_IPR register in sam4s manual for more information.
 	
+	// Show logo and greeting message.
+	syslog_send((char *) ravion_logo_ascii);
 	syslog_send(msg);
 	
 	NVIC_SetPriority(UART0_IRQn, 0x0f);

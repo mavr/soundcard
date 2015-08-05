@@ -28,6 +28,8 @@ int main(void) {
 	__DEBUG(LOG_LVL_LOW, "System during operation.");
 
 	while(1) {
+		// Warning! 
+		// Watchdog may not work here. Because syslog.
 	}
 }
 

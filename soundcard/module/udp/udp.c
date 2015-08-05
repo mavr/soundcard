@@ -35,13 +35,13 @@ void udp_ddp_pull_up() {
 void udp_set_state(udp_state state) {
 	#ifdef UART_DEBUG
 		switch(state) {
-			case UDP_STATE_ATTACHED :		__UDP_DEBUG(LOG_LVL_HIGH, "State -> attached."); break;
-			case UDP_STATE_POWERED :		__UDP_DEBUG(LOG_LVL_HIGH, "State -> powered."); break;
-			case UDP_STATE_DEFAULT :		__UDP_DEBUG(LOG_LVL_HIGH, "State -> default."); break;
-			case UDP_STATE_ADDRESS :		__UDP_DEBUG(LOG_LVL_HIGH, "State -> address."); break;
-			case UDP_STATE_CONFIGURED :		__UDP_DEBUG(LOG_LVL_HIGH, "State -> configure."); break;
-			case UDP_STATE_SUSPENDED :		__UDP_DEBUG(LOG_LVL_HIGH, "State -> suspend."); break;
-			default:	__UDP_DEBUG(LOG_LVL_HIGH, "Error! State -> uknown."); break;
+			case UDP_STATE_ATTACHED :		__UDP_DEBUG(LOG_LVL_LOW, "State -> attached."); break;
+			case UDP_STATE_POWERED :		__UDP_DEBUG(LOG_LVL_LOW, "State -> powered."); break;
+			case UDP_STATE_DEFAULT :		__UDP_DEBUG(LOG_LVL_LOW, "State -> default."); break;
+			case UDP_STATE_ADDRESS :		__UDP_DEBUG(LOG_LVL_LOW, "State -> address."); break;
+			case UDP_STATE_CONFIGURED :		__UDP_DEBUG(LOG_LVL_LOW "State -> configure."); break;
+			case UDP_STATE_SUSPENDED :		__UDP_DEBUG(LOG_LVL_LOW, "State -> suspend."); break;
+			default:	__UDP_DEBUG(LOG_LVL_LOW, "Error! State -> uknown."); break;
 		}
 	#endif
 	
@@ -75,7 +75,7 @@ void UDP_Handler() {
 		
 		udp_set_interrupt();
 		udp_ddp_pull_up();
-		__UDP_DEBUG(LOG_LVL_HIGH, "Get Reset signal");
+		__UDP_DEBUG(LOG_LVL_LOW, "Get Reset signal");
 		
 		UDP->UDP_ICR |= UDP_ICR_ENDBUSRES | UDP_ICR_SOFINT;
 		udp_set_state(UDP_STATE_DEFAULT);
