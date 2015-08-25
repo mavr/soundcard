@@ -6,8 +6,8 @@
  */ 
 
 #include "sam.h"
-#include "ssc.h"
-#include "ad74111.h"
+#include "ssc/ssc.h"
+#include "codec/ad74111.h"
 
 void codec_init() {
 	ad74111.mode = AD74111_MIXED;

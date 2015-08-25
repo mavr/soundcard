@@ -7,9 +7,9 @@
 
 #include "sam.h"
 #include "init.h"
-#include "module/ssc.h"
-#include "module/ad74111.h"
-#include "module/timer.h"
+#include "ssc/ssc.h"
+#include "codec/ad74111.h"
+#include "timer/timer.h"
 #include "core/syslog.h"
 #include "include/udp.h"
 #include "uart/uart.h"

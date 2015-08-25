@@ -39,7 +39,7 @@ void udp_set_state(udp_state state) {
 			case UDP_STATE_POWERED :		__UDP_DEBUG(LOG_LVL_LOW, "State -> powered."); break;
 			case UDP_STATE_DEFAULT :		__UDP_DEBUG(LOG_LVL_LOW, "State -> default."); break;
 			case UDP_STATE_ADDRESS :		__UDP_DEBUG(LOG_LVL_LOW, "State -> address."); break;
-			case UDP_STATE_CONFIGURED :		__UDP_DEBUG(LOG_LVL_LOW "State -> configure."); break;
+			case UDP_STATE_CONFIGURED :		__UDP_DEBUG(LOG_LVL_LOW, "State -> configure."); break;
 			case UDP_STATE_SUSPENDED :		__UDP_DEBUG(LOG_LVL_LOW, "State -> suspend."); break;
 			default:	__UDP_DEBUG(LOG_LVL_LOW, "Error! State -> uknown."); break;
 		}

@@ -208,28 +208,28 @@
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\ad74111.c">
+    <Compile Include="module\codec\ad74111.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\ad74111.h">
+    <Compile Include="module\codec\ad74111.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\pio.c">
+    <Compile Include="module\pio\pio.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\pio.h">
+    <Compile Include="module\pio\pio.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\ssc.c">
+    <Compile Include="module\ssc\ssc.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\ssc.h">
+    <Compile Include="module\ssc\ssc.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\timer.c">
+    <Compile Include="module\timer\timer.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="module\timer.h">
+    <Compile Include="module\timer\timer.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="module\uart\uart.c">
@@ -288,6 +288,10 @@
     <Folder Include="module\" />
     <Folder Include="core\" />
     <Folder Include="include" />
+    <Folder Include="module\codec" />
+    <Folder Include="module\timer" />
+    <Folder Include="module\ssc" />
+    <Folder Include="module\pio" />
     <Folder Include="module\uart" />
     <Folder Include="module\udp" />
   </ItemGroup>
