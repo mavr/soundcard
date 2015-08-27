@@ -77,6 +77,14 @@ void ssc_system() {
 	codec_reset();
 }
 
+inline void ssc_irq() {
+	NVIC_EnableIRQ(SSC_IRQn);
+}
+
+inline void ssc_noirq() {
+	NVIC_DisableIRQ(SSC_IRQn);
+}
+
 inline void ssc_tx_enable() {
 	SSC->SSC_CR &= ~(SSC_CR_TXDIS);
 }
@@ -93,9 +101,9 @@ void ssc_rx_disable() {
 	SSC->SSC_CR |= SSC_CR_RXDIS;
 }
 
-void ssc_reset() {
-
-}
+//void ssc_reset() {
+//
+//}
 
 void ssc_int_enable() {	
 	SSC->SSC_IER = SSC_IER_TXRDY; // | SSC_IER_RXRDY; //SSC_IER_OVRUN

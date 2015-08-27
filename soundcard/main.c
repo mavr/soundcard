@@ -6,19 +6,10 @@
  */ 
 
 #include "sam.h"
-#include "ssc/ssc.h"
-#include "codec/ad74111.h"
-#include "uart/uart.h"
-#include "include/udp.h"
 #include "init.h"
-#include "include/system.h"
+#include "include/udp.h"
 #include "core/syslog.h"
 
-/**
- * \brief Application entry point.
- *
- * \return Unused (ANSI-C compatibility).
- */
 int main(void) {
 	/* Initialize the SAM system */
 	Init();

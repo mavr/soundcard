@@ -35,11 +35,14 @@ ssc_t ssc_interface;
 **/
 void ssc_system(void);
 
+void ssc_irq(void);
+void ssc_noirq(void);
+
 /**
 	Function start ssc interface.
 **/
-void ssc_start(void);
-void ssc_reset(void);
+//void ssc_start(void);
+//void ssc_reset(void);
 
 void ssc_rx_enable(void);
 void ssc_tx_enable(void);
