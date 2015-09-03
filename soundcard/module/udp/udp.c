@@ -18,12 +18,14 @@ void udp_system() {
 	
 	NVIC_EnableIRQ(UDP_IRQn);
 	__UDP_DEBUG(LOG_LVL_LOW, "Started.");
+	
+	udp_set_interrupt();
+	udp_ddp_pull_up();
 }
 
 void udp_set_interrupt() {
 //	UDP->UDP_IER = UDP_IER_SOFINT | UDP_IER_RXSUSP;
-	UDP->UDP_IER = UDP_IER_RXSUSP | UDP_IER_EP0INT | UDP_IER_EP4INT 
-					| UDP_IER_EP5INT | UDP_IER_SOFINT;
+	UDP->UDP_IER = UDP_IER_RXSUSP | UDP_IER_EP0INT | UDP_IER_EP4INT | UDP_IER_EP5INT;
 }
 
 void udp_ddp_pull_up() {
@@ -73,8 +75,6 @@ void UDP_Handler() {
 		ep_reset(&ep_in, UDP_EP_IN, UDP_EP_TYPE_ISO_IN, UDP_EP4_SIZE);
 		ep_reset(&ep_out, UDP_EP_OUT, UDP_EP_TYPE_ISO_OUT, UDP_EP4_SIZE);
 		
-		udp_set_interrupt();
-		udp_ddp_pull_up();
 		__UDP_DEBUG(LOG_LVL_LOW, "Get Reset signal");
 		
 		UDP->UDP_ICR |= UDP_ICR_ENDBUSRES | UDP_ICR_SOFINT;

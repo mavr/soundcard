@@ -20,7 +20,7 @@ void uart_system() {
 	/* For uart0 : */
 	/* Baudrate 115200, no parity, normal mode. */
 	UART0->UART_MR = UART_MR_PAR_NO | UART_MR_CHMODE_NORMAL;
-	UART0->UART_BRGR = 26; //361
+	UART0->UART_BRGR = 52;
 	
 	memset((void *) &serial_dbg, 0x00, sizeof(serial_dbg));
 	serial_dbg.tx.buffer = uart0_tx_buffer;
