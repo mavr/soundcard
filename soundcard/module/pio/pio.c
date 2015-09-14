@@ -8,6 +8,7 @@
 #include "sam.h"
 #include "pio.h"
 #include "ssc/ssc.h"
+#include "spi/spi.h"
 
 void pio_system() {
 	PMC->PMC_PCER0 |= (1UL << ID_PIOA);
@@ -51,4 +52,10 @@ void pio_system() {
 	//PIOC->PIO_PER |= PIO_PC24;
 	//PIOC->PIO_IER |= PIO_PC24;
 	//NVIC_EnableIRQ(PIOC_IRQn);
+	
+	
+	/*
+	*	PA11, PA12(x), PA13, PA14
+	*/
+	spi_pio();
 }

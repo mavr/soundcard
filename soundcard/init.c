@@ -10,11 +10,12 @@
 
 // modules
 #include "ssc/ssc.h"
-#include "codec/ad74111.h"
+#include "codec/pcm3793.h"
 #include "timer/timer.h"
 #include "core/syslog.h"
 #include "pio/pio.h"
 #include "uart/uart.h"
+#include "spi/spi.h"
 
 #include "include/udp.h"
 
@@ -33,11 +34,14 @@ void Init() {
 	
 	/* Configure watchdog ( disable ) */
 	wdt_disable();
+	
+	/* spi */
+	spi_system();
 		
 	ssc_system();
 	
 	/* After initializing ssc interface and enable codec's clock turn on codec. */
-	codec_init();
+	pcm3793_init();
 	ssc_irq();
 
 	/* Starting usb system. */	
@@ -71,7 +75,7 @@ void pmc_system() {
 	PMC->PMC_USB = PMC_USB_USBDIV(0); // PLLA and div 1
 	
 	
-		//pck - p13
+	//pck - p13
 	PIOA->PIO_IDR |= PIO_IDR_P6;
 	PIOA->PIO_OER |= PIO_OER_P6;
 	//uint32_t last = PIOB->PIO_ABCDSR[0];

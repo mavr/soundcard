@@ -230,10 +230,22 @@
     <Compile Include="module\codec\ad74111.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="module\codec\pcm3793.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\codec\pcm3793.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="module\pio\pio.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="module\pio\pio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\spi\spi.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\spi\spi.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="module\ssc\ssc.c">
@@ -305,6 +317,7 @@
     <Folder Include="core\" />
     <Folder Include="include" />
     <Folder Include="module\codec" />
+    <Folder Include="module\spi" />
     <Folder Include="module\timer" />
     <Folder Include="module\ssc" />
     <Folder Include="module\pio" />
