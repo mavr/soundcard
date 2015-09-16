@@ -13,7 +13,7 @@ void spi_system(void);
 
 void spi_pio(void);
 
-void spi_send(uint8_t byte);
+void spi_send(uint16_t value);
 
 
 #endif /* SPI_H_ */

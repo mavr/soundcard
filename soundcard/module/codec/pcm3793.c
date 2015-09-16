@@ -37,8 +37,17 @@ void pcm3793_init() {
 	pcm3793_write(PCM_ANALOG_IN_SEL, 0x11);
 	pcm3793_write(PCM_VOLUME_ADC_IN_Lch, 0x0c);
 	pcm3793_write(PCM_VOLUME_ADC_IN_Rch, 0x0c);
+	pcm3793_write(PCM_MASTER_MODE, 0x04);
 	
 	/* wait 450 ms */
+	//TODO: remade this shit
+	volatile unsigned long long i = 0;
+	for(i = 0; i < 1000000; i++) {
+		__NOP;
+	}
+	for(i = 0; i < 100000; i++) {
+		__NOP;
+	}
 	pcm3793_write(PCM_DAC_SPA_HPA, 0xff);
 	
 	
@@ -46,6 +55,5 @@ void pcm3793_init() {
 }
 
 void pcm3793_write(uint8_t reg, uint8_t value) {
-	spi_send(0xaaff);
-//	spi_send( ( ((uint16_t) reg) << 8 ) | value );
+	spi_send( ( ((uint16_t) reg) << 8 ) | value );
 }

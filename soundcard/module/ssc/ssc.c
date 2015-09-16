@@ -74,7 +74,7 @@ void ssc_system() {
 	SSC->SSC_CR |= SSC_CR_RXEN | SSC_CR_TXEN;
 
 	ssc_int_enable();
-	codec_reset();
+//	codec_reset();
 }
 
 inline void ssc_irq() {
