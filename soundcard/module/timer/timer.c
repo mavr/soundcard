@@ -7,6 +7,7 @@
 
 #include "sam.h"
 #include "timer.h"
+#include "core/syslog.h"
 
 int timer_configure(Tc *timer, short channel, timer_mode_t mode, void * settings) {
 	
@@ -36,4 +37,5 @@ void wdt_disable() {
 	WDT->WDT_MR |= WDT_MR_WDDIS;
 	PMC->PMC_PCDR0 |= (1UL << ID_WDT);
 	
+	syslog_send("[wdt]\tWatchdog disabled");
 }

@@ -39,14 +39,14 @@ void Init() {
 	spi_system();
 
 		
-	//ssc_system();
+	ssc_system();
 	
 	/* After initializing ssc interface and enable codec's clock turn on codec. */
 	pcm3793_init();
-	//ssc_irq();
+	ssc_irq();
 
 	/* Starting usb system. */	
-//	udp_system();
+	udp_system();
 }
 
 /* power management controller */

@@ -61,12 +61,23 @@ void ssc_system() {
 //	SSC->SSC_TFMR = SSC_TFMR_DATLEN(15) | SSC_TFMR_FSLEN(1) ;
 
 /* Master */
-	SSC->SSC_RCMR = SSC_RCMR_CKS_RK | SSC_RCMR_CKO_NONE | SSC_RCMR_CKI | SSC_RCMR_CKG_CONTINUOUS | SSC_RCMR_START_CONTINUOUS | SSC_TCMR_PERIOD(128);
-	SSC->SSC_RFMR = SSC_RFMR_DATLEN(15) | SSC_RFMR_FSEDGE_POSITIVE | SSC_RCMR_CKS_MCK | SSC_RFMR_FSLEN(0) | SSC_RFMR_FSOS_NONE | SSC_RFMR_DATNB(0) | SSC_RFMR_MSBF;
+//	SSC->SSC_RCMR = SSC_RCMR_CKS_RK | SSC_RCMR_CKO_NONE | SSC_RCMR_CKI | SSC_RCMR_CKG_CONTINUOUS | SSC_RCMR_START_CONTINUOUS | SSC_TCMR_PERIOD(128);
+//	SSC->SSC_RFMR = SSC_RFMR_DATLEN(15) | SSC_RFMR_FSEDGE_POSITIVE | SSC_RCMR_CKS_MCK | SSC_RFMR_FSLEN(0) | SSC_RFMR_FSOS_NONE | SSC_RFMR_DATNB(0) | SSC_RFMR_MSBF;
 
-	SSC->SSC_TCMR = SSC_TCMR_CKS_RK | SSC_TCMR_CKO_NONE | SSC_TCMR_CKG_CONTINUOUS | SSC_TCMR_START_TF_FALLING | SSC_TCMR_PERIOD(16) | SSC_TCMR_CKI;
+
+/* 
+	SSC_RCMR_CKG_EN_RF_LOW - change channel
+	SSC_RCMR_CKI  - ?
+*/
+	SSC->SSC_RCMR = SSC_RCMR_CKS_TK | SSC_RCMR_CKO_NONE | SSC_RCMR_CKG_EN_RF_LOW | SSC_RCMR_START_TRANSMIT | SSC_TCMR_STTDLY(4) ;
+	SSC->SSC_RFMR = SSC_RFMR_DATLEN(15) | SSC_RFMR_MSBF ;
+	
+	SSC->SSC_TCMR = SSC_TCMR_CKS_TK | SSC_TCMR_CKO_NONE | SSC_TCMR_START_TF_FALLING |  SSC_TCMR_STTDLY(4) ;
+	SSC->SSC_TFMR = SSC_TFMR_DATLEN(15) | SSC_RFMR_MSBF;
+
+//	SSC->SSC_TCMR = SSC_TCMR_CKS_TK | SSC_TCMR_CKO_NONE | SSC_TCMR_CKG_CONTINUOUS | SSC_TCMR_START_TF_FALLING | SSC_TCMR_PERIOD(16) | SSC_TCMR_CKI;
 //	SSC->SSC_TFMR = SSC_TFMR_DATLEN(15) | SSC_TFMR_FSLEN(0) | SSC_TFMR_FSOS_NONE | SSC_TFMR_DATDEF | SSC_TFMR_DATNB(1);
-	SSC->SSC_TFMR = SSC_RFMR_DATLEN(15) | SSC_TFMR_FSEDGE_POSITIVE | SSC_RFMR_FSLEN(0) | SSC_RFMR_FSOS_NONE | SSC_TFMR_MSBF |  SSC_RFMR_DATNB(0);
+//	SSC->SSC_TFMR = SSC_RFMR_DATLEN(15) | SSC_TFMR_FSEDGE_POSITIVE | SSC_RFMR_FSLEN(0) | SSC_RFMR_FSOS_NONE | SSC_TFMR_MSBF |  SSC_RFMR_DATNB(0);
 //	SSC->SSC_TFMR = SSC_TFMR_FSDEN;
 
 	PDC_SSC->PERIPH_PTCR |= PERIPH_PTCR_RXTEN | PERIPH_PTCR_TXTEN;
@@ -74,11 +85,14 @@ void ssc_system() {
 	SSC->SSC_CR |= SSC_CR_RXEN | SSC_CR_TXEN;
 
 	ssc_int_enable();
+	
+	__DEBUG(LOG_LVL_HIGH, "[ssc]\tConfigured");
 //	codec_reset();
 }
 
 inline void ssc_irq() {
 	NVIC_EnableIRQ(SSC_IRQn);
+	__DEBUG(LOG_LVL_HIGH, "[ssc]\tStarted");
 }
 
 inline void ssc_noirq() {
@@ -106,21 +120,22 @@ void ssc_rx_disable() {
 //}
 
 void ssc_int_enable() {	
-	SSC->SSC_IER = SSC_IER_TXRDY; // | SSC_IER_RXRDY; //SSC_IER_OVRUN
+	SSC->SSC_IER = SSC_IER_TXRDY;
 }
 
 void SSC_Handler() {
+	//if(SSC->SSC_SR & SSC_SR_TXRDY) {
+		//udp_audio_stream_in(SSC->SSC_RHR);
+	//}
+	
+	static uint16_t sound = 0;
 	if(SSC->SSC_SR & SSC_SR_TXRDY) {
-		/*  Init codec block */
-		if(ad74111.mode == AD74111_MIXED) {
-			SSC->SSC_THR = (uint16_t) *( ((uint16_t *) &ad74111.registers ) + ad74111.tdata_counter / 2) | AD74111_CR_W;
-			if(ad74111.tdata_counter++ == sizeof(ad74111.registers)) {
-				ad74111.mode = AD74111_DATA;
-			}
-			} else {
-			/* Here need transmit digital data to headphone */
-			udp_audio_stream_in(SSC->SSC_RHR);
-			SSC->SSC_THR = udp_audio_stream_out();
-		}
+		/* Here need transmit digital data to headphone */
+		uint16_t tmp = SSC->SSC_RHR;
+		udp_audio_stream_in(tmp);
+		//SSC->SSC_THR = udp_audio_stream_out();
+		
+		//SSC->SSC_THR = 0xffff;
+		SSC->SSC_THR = tmp;
 	}
 }

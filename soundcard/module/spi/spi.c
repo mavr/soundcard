@@ -6,6 +6,7 @@
  */ 
 
 #include "sam.h"
+#include "core/syslog.h"
 
 void spi_system() {
 	PMC->PMC_PCER0 |= (1UL << ID_SPI);
@@ -26,6 +27,7 @@ void spi_system() {
     SPI->SPI_CR &= ~SPI_CR_SPIDIS;
 	SPI->SPI_CR |= SPI_CR_SPIEN;
 	
+	__DEBUG(LOG_LVL_HIGH, "[spi]\tStarted");
 }
 
 void spi_pio() {
