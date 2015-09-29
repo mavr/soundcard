@@ -31,6 +31,7 @@
 #define PCM_BCK					0x56
 #define PCM_ANALOG_IN_SEL		0x57
 #define PCM_ANALOG_MIX_SW		0x58
+#define PCM_PG56_GAIN			0x59
 #define PCM_MIC_BOOST			0x5a
 #define PCM_MASTER_MODE			0x54
 

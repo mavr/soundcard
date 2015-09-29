@@ -72,7 +72,7 @@ void ssc_system() {
 	SSC->SSC_RCMR = SSC_RCMR_CKS_TK | SSC_RCMR_CKO_NONE | SSC_RCMR_CKG_EN_RF_LOW | SSC_RCMR_START_TRANSMIT | SSC_TCMR_STTDLY(4) ;
 	SSC->SSC_RFMR = SSC_RFMR_DATLEN(15) | SSC_RFMR_MSBF ;
 	
-	SSC->SSC_TCMR = SSC_TCMR_CKS_TK | SSC_TCMR_CKO_NONE | SSC_TCMR_START_TF_FALLING |  SSC_TCMR_STTDLY(4) ;
+	SSC->SSC_TCMR = SSC_TCMR_CKS_TK | SSC_TCMR_CKO_NONE | SSC_TCMR_START_TF_EDGE |  SSC_TCMR_STTDLY(4) ;
 	SSC->SSC_TFMR = SSC_TFMR_DATLEN(15) | SSC_RFMR_MSBF;
 
 //	SSC->SSC_TCMR = SSC_TCMR_CKS_TK | SSC_TCMR_CKO_NONE | SSC_TCMR_CKG_CONTINUOUS | SSC_TCMR_START_TF_FALLING | SSC_TCMR_PERIOD(16) | SSC_TCMR_CKI;
@@ -133,9 +133,9 @@ void SSC_Handler() {
 		/* Here need transmit digital data to headphone */
 		uint16_t tmp = SSC->SSC_RHR;
 		udp_audio_stream_in(tmp);
-		//SSC->SSC_THR = udp_audio_stream_out();
+		SSC->SSC_THR = udp_audio_stream_out();
 		
-		//SSC->SSC_THR = 0xffff;
+//		SSC->SSC_THR = 0xffff;
 		SSC->SSC_THR = tmp;
 	}
 }
