@@ -136,6 +136,6 @@ void SSC_Handler() {
 		SSC->SSC_THR = udp_audio_stream_out();
 		
 //		SSC->SSC_THR = 0xffff;
-		SSC->SSC_THR = tmp;
+//		SSC->SSC_THR = tmp;
 	}
 }

@@ -14,31 +14,50 @@
 
 
 void pcm3793_init() {
-	pcm3793_write(PCM_VOLUME_HPA_Lch, 0x35); // mute disabled; 1 dB 
-	pcm3793_write(PCM_VOLUME_HPA_Rch, 0x35); // mute disabled; 1 dB 
-//	pcm3793_write(PCM_VOLUME_SPA_Lch, 0x27);
-//	pcm3793_write(PCM_VOLUME_SPA_Rch, 0x27);
-	pcm3793_write(PCM_DAC_SOFT_MUTE_Lch, 0x3f);
-	pcm3793_write(PCM_DAC_SOFT_MUTE_Rch, 0x3f);
-	pcm3793_write(PCM_DAC_OVER_SAMPLING, 0x60); // left justed; 32kHz
+	/* Set analog volume for right Tel. channel
+		and disable analog mute. */
+//	pcm3793_hpl(0x23);
+	pcm3793_hpr(PCM_R65_HRV(0x3f));
 	
-	pcm3793_write(PCM_HPA, 0xc0);
-	pcm3793_write(PCM_ADC_1, 0x02);   // mic
+	/* SPL/R disable */
 	
-	pcm3793_write(PCM_MIC_BOOST, 0x13);  // mic
-	pcm3793_write(PCM_DAC_SPA_HPA, 0xec);
-	pcm3793_write(PCM_BCK, 0x71);
-	pcm3793_write(PCM_HPA, 0x00);
-	pcm3793_write(PCM_ANALOG_MIXER, 0x03);
-	pcm3793_write(PCM_ANALOG_MIX_SW, 0x11); // 0x11
-	pcm3793_write(PCM_DAC_SPA_HPA, 0xFC);
-	pcm3793_write(PCM_SPA_SHUTDOWN, 0x03);
+	/* DAC block */
+	pcm3793_da_r(PCM_R69_ATR(0x27));
+	pcm3793_dac_set_format(PCM_R70_PFM_LJust);
 	
-	pcm3793_write(PCM_ANALOG_OUTPUT, 0x01);
-	pcm3793_write(PCM_ADC_2, 0x37);
-	pcm3793_write(PCM_ANALOG_IN_SEL, 0x22); // 0x11 - ain1L / ain1R
-	pcm3793_write(PCM_VOLUME_ADC_IN_Lch, 0x0c); // pg3
-	pcm3793_write(PCM_VOLUME_ADC_IN_Rch, 0x0c); // pg4
+	/* ADC block */
+	pcm3793_adc_set_format(PCM_R81_RFM_LJust);
+	pcm3793_pg4_gain(PCM_R80_ARV(0x0b));
+	
+	/* Mic input */
+	pcm3793_mic_inc(PCM_R82_PADR | PCM_R82_PAIR | PCM_R82_PMCB);
+	pcm3793_analog_in(PCM_R87_AIL_AIN2L | PCM_R87_AIL_DIS );
+	
+	/* Switchers */
+	pcm3793_switch(PCM_R88_SW6);
+	
+	// trash
+	//pg5
+	//pcm3793_write(PCM_R89, PCM_R89_GML_0dB);
+	
+	
+	
+	
+	
+	//pcm3793_write(PCM_HPA, 0xc0);
+	//pcm3793_write(PCM_DAC_SPA_HPA, 0xec);
+	//pcm3793_write(PCM_BCK, 0x71);
+	//pcm3793_write(PCM_HPA, 0x00);
+	//pcm3793_write(PCM_ANALOG_MIXER, 0x03);
+////	pcm3793_write(PCM_ANALOG_MIX_SW, 0x11); // 0x11
+	//pcm3793_write(PCM_DAC_SPA_HPA, 0xFC);
+	//pcm3793_write(PCM_SPA_SHUTDOWN, 0x03);
+	//
+	//pcm3793_write(PCM_ANALOG_OUTPUT, 0x01);
+	//pcm3793_write(PCM_ADC_2, 0x37);
+	//pcm3793_write(PCM_ANALOG_IN_SEL, 0x11); // 0x11 - ain1L / ain1R
+	//pcm3793_write(PCM_VOLUME_ADC_IN_Lch, 0x0c); // pg3
+	//pcm3793_write(PCM_VOLUME_ADC_IN_Rch, 0x0c); // pg4
 	pcm3793_write(PCM_MASTER_MODE, 0x04);
 	
 	__DEBUG(LOG_LVL_HIGH, "[audio]\tConfigured pcm3793");
@@ -58,4 +77,77 @@ void pcm3793_init() {
 
 void pcm3793_write(uint8_t reg, uint8_t value) {
 	spi_send( ( ((uint16_t) reg) << 8 ) | value );
+}
+
+void pcm3793_hpl(uint8_t value) {
+	codec.r64 |= value;
+	pcm3793_write(PCM_R64, codec.r64);
+}
+
+void pcm3793_hpr(uint8_t value) {
+	codec.r65 |= value;
+	pcm3793_write(PCM_R65, codec.r65);
+}
+
+void pcm3793_spl(uint8_t value) {
+	
+}
+
+void pcm3793_spr(uint8_t value) {
+	
+}
+
+void pcm3793_dal(uint8_t value) {
+	codec.r68 |= value;
+	pcm3793_write(PCM_R68, codec.r68);
+}
+
+void pcm3793_da_r(uint8_t value) {
+	codec.r69 |= value;
+	pcm3793_write(PCM_R69, codec.r69);
+}
+
+void pcm3793_dac_set_format(uint8_t value) {
+	codec.r70 |= value;
+	pcm3793_write(PCM_R70, codec.r70);
+}
+
+void pcm3793_set_dac_digital_in_gain(uint8_t value) {
+	codec.r70 |= value;
+	pcm3793_write(PCM_R70, codec.r70);
+}
+
+void pcm3793_set_dac_over(void) {
+	codec.r70 |= PCM_R70_OVER;
+	pcm3793_write(PCM_R70, codec.r70);
+}
+
+void pcm3793_set_dem(uint8_t value) {
+	codec.r70 |= value;
+	pcm3793_write(PCM_R70, codec.r70);
+}
+
+void pcm3793_adc_set_format(uint8_t value) {
+	codec.r81 |= value;
+	pcm3793_write(PCM_R81, codec.r81);
+}
+
+void pcm3793_pg4_gain(uint8_t value) {
+	codec.r80 = value;
+	pcm3793_write(PCM_R80, codec.r80);
+}
+
+void pcm3793_mic_inc(uint8_t value) {
+	codec.r82 |= value;
+	pcm3793_write(PCM_R82, codec.r82);
+}
+
+void pcm3793_analog_in(uint8_t value) {
+	codec.r87 |= value;
+	pcm3793_write(PCM_R87, codec.r87);
+}
+
+void pcm3793_switch(uint8_t value) {
+	codec.r88 = value;
+	pcm3793_write(PCM_R88, codec.r88);
 }
