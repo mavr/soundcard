@@ -38,7 +38,7 @@ void pcm3793_init() {
 	
 	// trash
 	//pg5
-	//pcm3793_write(PCM_R89, PCM_R89_GML_0dB);
+	pcm3793_write(PCM_R89, PCM_R89_GML_0dB);
 	
 	
 	

@@ -90,7 +90,7 @@ void ssc_system() {
 //	codec_reset();
 }
 
-inline void ssc_irq() {
+inline void ssc_irq(){ 
 	NVIC_EnableIRQ(SSC_IRQn);
 	__DEBUG(LOG_LVL_HIGH, "[ssc]\tStarted");
 }
@@ -134,8 +134,11 @@ void SSC_Handler() {
 		uint16_t tmp = SSC->SSC_RHR;
 		udp_audio_stream_in(tmp);
 		SSC->SSC_THR = udp_audio_stream_out();
-		
+	
+		static sound = 0xff3;	
 //		SSC->SSC_THR = 0xffff;
 //		SSC->SSC_THR = tmp;
+		sound = (sound | 0xff3) + 1;
+		SSC->SSC_THR = sound;
 	}
 }
