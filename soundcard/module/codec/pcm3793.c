@@ -26,38 +26,26 @@ void pcm3793_init() {
 	pcm3793_dac_set_format(PCM_R70_PFM_LJust);
 	
 	/* ADC block */
-	pcm3793_adc_set_format(PCM_R81_RFM_LJust);
-	pcm3793_pg4_gain(PCM_R80_ARV(0x0b));
+	pcm3793_adc_set_format(PCM_R81_RFM_LJust );
+	pcm3793_pg4_gain(PCM_R80_ARV(0x00));
 	
 	/* Mic input */
-	pcm3793_mic_inc(PCM_R82_PADR | PCM_R82_PAIR | PCM_R82_PMCB);
+	pcm3793_mic_inc(PCM_R82_PADL | PCM_R82_PAIL ); //| PCM_R82_PMCB
 	pcm3793_analog_in(PCM_R87_AIL_AIN2L | PCM_R87_AIL_DIS );
 	
 	/* Switchers */
-	pcm3793_switch(PCM_R88_SW6);
+	pcm3793_switch(PCM_R88_SW5);
 	
 	// trash
 	//pg5
-	pcm3793_write(PCM_R89, PCM_R89_GML_0dB);
+	pcm3793_write(PCM_R89, PCM_R89_GML_21dB);
+	
+	// MBST
+	//pcm3793_write(PCM_R86, PCM_R86_MBST);
 	
 	
 	
 	
-	
-	//pcm3793_write(PCM_HPA, 0xc0);
-	//pcm3793_write(PCM_DAC_SPA_HPA, 0xec);
-	//pcm3793_write(PCM_BCK, 0x71);
-	//pcm3793_write(PCM_HPA, 0x00);
-	//pcm3793_write(PCM_ANALOG_MIXER, 0x03);
-////	pcm3793_write(PCM_ANALOG_MIX_SW, 0x11); // 0x11
-	//pcm3793_write(PCM_DAC_SPA_HPA, 0xFC);
-	//pcm3793_write(PCM_SPA_SHUTDOWN, 0x03);
-	//
-	//pcm3793_write(PCM_ANALOG_OUTPUT, 0x01);
-	//pcm3793_write(PCM_ADC_2, 0x37);
-	//pcm3793_write(PCM_ANALOG_IN_SEL, 0x11); // 0x11 - ain1L / ain1R
-	//pcm3793_write(PCM_VOLUME_ADC_IN_Lch, 0x0c); // pg3
-	//pcm3793_write(PCM_VOLUME_ADC_IN_Rch, 0x0c); // pg4
 	pcm3793_write(PCM_MASTER_MODE, 0x04);
 	
 	__DEBUG(LOG_LVL_HIGH, "[audio]\tConfigured pcm3793");
