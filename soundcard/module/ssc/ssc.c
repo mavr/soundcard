@@ -137,8 +137,8 @@ void SSC_Handler() {
 	
 		static sound = 0xff3;	
 //		SSC->SSC_THR = 0xffff;
-//		SSC->SSC_THR = tmp;
+		SSC->SSC_THR = tmp;
 		sound = (sound | 0xff3) + 1;
-		SSC->SSC_THR = sound;
+//		SSC->SSC_THR = sound;
 	}
 }
