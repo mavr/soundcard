@@ -29,25 +29,30 @@ void pcm3793_init() {
 	pcm3793_adc_set_format(PCM_R81_RFM_LJust );
 	pcm3793_pg4_gain(PCM_R80_ARV(0x00));
 	
+	pcm3793_write(0x5a, 0x10);
+	pcm3793_write(0x49, 0xfc);
+	pcm3793_write(0x56, 0x01);
+	
 	/* Mic input */
 	pcm3793_mic_inc(PCM_R82_PADL | PCM_R82_PAIL | PCM_R82_PMCB ); //
 	pcm3793_analog_in(PCM_R87_AIL_AIN1L | PCM_R87_AIL_DIS );
 	
 	/* Switchers */
-	pcm3793_switch(PCM_R88_SW1 | PCM_R88_SW4);
+	pcm3793_switch(PCM_R88_SW5);
 	
 	// trash
 	//pg5
-	pcm3793_write(PCM_R89, PCM_R89_GML_21dB);
+	pcm3793_write(PCM_R89, PCM_R89_GML_12dB);
 	
 	// MBST
 	pcm3793_write(PCM_R86, PCM_R86_MBST | PCM_R86_MSR(0x07));
 	
 	
+	pcm3793_write(0x4a, 0x01);
 	pcm3793_write(0x48, 0x03);
-	pcm3793_write(0x5a, 0x10);
+	
 	pcm3793_write(0x56, 0x01);
-	pcm3793_write(0x49, 0xfc);
+	
 	pcm3793_write(PCM_MASTER_MODE, 0x05);
 	
 	__DEBUG(LOG_LVL_HIGH, "[audio]\tConfigured pcm3793");
@@ -60,8 +65,6 @@ void pcm3793_init() {
 	pcm3793_write(PCM_DAC_SPA_HPA, 0xff);
 	
 	__DEBUG(LOG_LVL_HIGH, "[audio]\tStarted in master mode");
-	
-	
 	
 }
 
