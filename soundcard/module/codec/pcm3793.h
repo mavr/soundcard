@@ -360,6 +360,7 @@ typedef struct {
 	uint8_t r87;
 	uint8_t r88;
 	uint8_t r89;
+	uint8_t r90;
 } pcm3793_reg_t;
 
 pcm3793_reg_t codec;
@@ -386,6 +387,8 @@ void pcm3793_set_dem(uint8_t value);
 
 void pcm3793_adc_set_format(uint8_t value);
 
+void pcm3793_pg1_m20dB(void);
+void pcm3793_pg3_gain(uint8_t value);
 void pcm3793_pg4_gain(uint8_t value);
 
 void pcm3793_mic_inc(uint8_t value);

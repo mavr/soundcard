@@ -17,12 +17,10 @@ void udp_audio_stream_in(uint16_t value) {
 }
 
 uint16_t udp_audio_stream_out() {
-	static uint16_t noise = 0x00;
+//	static uint16_t noise = 0x00;
 //	noise = (noise + 1) | 0x03ff;
-	noise++;
-	return noise;
-	//return noise;
-	//return stream_get(&ep_out.stream);
+//	return noise;
+	return stream_get(&ep_out.stream);
 }
 
 void stream_init(_codec_stream_t *stream, uint16_t *stream_buffer, uint32_t size_buffer) {

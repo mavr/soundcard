@@ -69,16 +69,12 @@ void ssc_system() {
 	SSC_RCMR_CKG_EN_RF_LOW - change channel
 	SSC_RCMR_CKI  - ?
 */
-	SSC->SSC_RCMR = SSC_RCMR_CKS_TK | SSC_RCMR_CKO_NONE | SSC_RCMR_CKG_EN_RF_HIGH | SSC_RCMR_START_CONTINUOUS ;
+	SSC->SSC_RCMR = SSC_RCMR_CKS_TK | SSC_RCMR_CKO_NONE | SSC_RCMR_CKG_EN_RF_HIGH | SSC_RCMR_START_RF_RISING ;
 	SSC->SSC_RFMR = SSC_RFMR_DATLEN(15) | SSC_RFMR_MSBF ;
 	
-	SSC->SSC_TCMR = SSC_TCMR_CKS_TK | SSC_TCMR_CKO_NONE | SSC_TCMR_START_TF_FALLING ;
+	SSC->SSC_TCMR = SSC_TCMR_CKS_TK | SSC_TCMR_CKO_NONE | SSC_TCMR_CKG_EN_TF_LOW | SSC_TCMR_START_TF_FALLING ;
 	SSC->SSC_TFMR = SSC_TFMR_DATLEN(15) | SSC_RFMR_MSBF;
 
-//	SSC->SSC_TCMR = SSC_TCMR_CKS_TK | SSC_TCMR_CKO_NONE | SSC_TCMR_CKG_CONTINUOUS | SSC_TCMR_START_TF_FALLING | SSC_TCMR_PERIOD(16) | SSC_TCMR_CKI;
-//	SSC->SSC_TFMR = SSC_TFMR_DATLEN(15) | SSC_TFMR_FSLEN(0) | SSC_TFMR_FSOS_NONE | SSC_TFMR_DATDEF | SSC_TFMR_DATNB(1);
-//	SSC->SSC_TFMR = SSC_RFMR_DATLEN(15) | SSC_TFMR_FSEDGE_POSITIVE | SSC_RFMR_FSLEN(0) | SSC_RFMR_FSOS_NONE | SSC_TFMR_MSBF |  SSC_RFMR_DATNB(0);
-//	SSC->SSC_TFMR = SSC_TFMR_FSDEN;
 
 	PDC_SSC->PERIPH_PTCR |= PERIPH_PTCR_RXTEN | PERIPH_PTCR_TXTEN;
 //	PDC_SSC->PERIPH_PTSR |= PERIPH_PTSR_RXTEN | PERIPH_PTCR_TXTEN;
@@ -120,25 +116,49 @@ void ssc_rx_disable() {
 //}
 
 void ssc_int_enable() {	
-	SSC->SSC_IER = SSC_IER_TXRDY;
+	SSC->SSC_IER = SSC_IER_RXRDY ;
 }
 
 void SSC_Handler() {
+	static volatile uint16_t tmp;
+	static uint16_t sound = 0xff00;
 	//if(SSC->SSC_SR & SSC_SR_TXRDY) {
 		//udp_audio_stream_in(SSC->SSC_RHR);
 	//}
 	
-	static uint16_t sound = 0;
-	if(SSC->SSC_SR & SSC_SR_TXRDY) {
+	_codec_stream_t *stream = &(ep_in.stream);
+	
+
+	if(SSC->SSC_SR & SSC_SR_RXRDY) {
+		
 		/* Here need transmit digital data to headphone */
-		uint16_t tmp = SSC->SSC_RHR;
-		udp_audio_stream_in(tmp);
+//		SSC->SSC_THR = tmp;
+//		tmp = SSC->SSC_RHR;
+		tmp = SSC->SSC_RHR;
+		sound = sound++ | 0xff00;
+		SSC->SSC_THR = sound;
+
+//		if(SSC->SSC_SR & SSC_SR_TXRDY)
+//			SSC->SSC_THR = tmp;
+
+		//stream_put(stream, tmp);
+		
+		//while(!(SSC->SSC_SR & SSC_SR_TXRDY));
+//		SSC->SSC_THR = tmp;
+			
+//		udp_audio_stream_in(tmp);
 //		SSC->SSC_THR = udp_audio_stream_out();
 	
-		static sound = 0xff3;	
+//		static sound = 0xff3;	
 //		SSC->SSC_THR = 0xffff;
-		SSC->SSC_THR = tmp;
-		sound = (sound | 0xff3) + 1;
+//		udp_audio_stream_in(sound);
+		
+//		sound = (sound | 0xff3) + 1;
 //		SSC->SSC_THR = sound;
 	}
+	
+//	if(SSC->SSC_SR & SSC_SR_TXRDY) {
+//		SSC->SSC_THR = stream_get(stream);
+//		SSC->SSC_THR = tmp;	
+//	}
 }
