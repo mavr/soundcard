@@ -17,45 +17,60 @@ void pcm3793_init() {
 	/* Set analog volume for right Tel. channel
 		and disable analog mute. */
 //	pcm3793_hpl(PCM_R64_HLV(0x3f));
-	pcm3793_hpr(PCM_R65_HRV(0x33));
+	pcm3793_hpr(PCM_R65_HRV(0x27));
 	
 	/* SPL/R disable */
 	
 	/* DAC block */
-	pcm3793_da_r(PCM_R69_ATR(0x3f));
+	pcm3793_dar(PCM_R69_ATR(0x27));
+//	pcm3793_dal(PCM_R68_ATL(0x3f));
 	pcm3793_dac_set_format(PCM_R70_PFM_LJust);
 	
 	/* ADC block */
 	pcm3793_adc_set_format(PCM_R81_RFM_LJust );
-	pcm3793_pg3_gain(PCM_R79_ALV(0x0c));
+	pcm3793_pg3_gain(PCM_R79_ALV(0x27)); // 0x0c = 0dB
+	pcm3793_pg1_m20dB(); // reg90
 	
-	//pcm3793_pg1_m20dB();
+	/* Register 73 */
+	pcm3793_pbis_up();
+	pcm3793_pdar_up();
+	
+	/* Register 72 */
+	pcm3793_pmxr_on(); // reg 72
+	
+	/* Switchers */
+	//	pcm3793_switch(PCM_R88_SW1 | PCM_R88_SW6);
+	pcm3793_switch(PCM_R88_SW5 | PCM_R88_SW2);
+	
+	//pcm3793_zero_cross_enable();
 	
 	pcm3793_write(0x49, 0xfc);
-	pcm3793_write(0x56, 0x01);
+	//	pcm3793_phpc_up();
+	//	pcm3793_phpr_up();
 	
+	pcm3793_vcom(); // reg 74
+		
 	/* Mic input */
 	pcm3793_mic_inc(PCM_R82_PADL | PCM_R82_PAIL | PCM_R82_PMCB ); //
 	pcm3793_analog_in(PCM_R87_AIL_AIN2L | PCM_R87_AIL_DIS );
 	
-	/* Switchers */
-//	pcm3793_switch(PCM_R88_SW1 | PCM_R88_SW6);
-	pcm3793_switch(PCM_R88_SW5);
+
+
+
+	
+	
 	
 	// trash
 	//pg5
 	pcm3793_write(PCM_R89, PCM_R89_GML_9dB );
 	
 	// MBST
-	pcm3793_write(PCM_R86, PCM_R86_MBST | PCM_R86_MSR(0x07));
+//	pcm3793_write(PCM_R86, PCM_R86_MBST | PCM_R86_MSR(0x07));
 	
+	pcm3793_write(0x56, PCM_R86_MBST | PCM_R86_MSR(0x07) | 0x01);
+	//pcm3793_zero_cross_enable();
 	
-	pcm3793_write(0x4a, 0x01);
-	pcm3793_write(0x48, 0x02);
-	
-	pcm3793_write(0x56, 0x01);
-	
-	pcm3793_write(PCM_MASTER_MODE, 0x05);
+//	pcm3793_mode_master();
 	
 	__DEBUG(LOG_LVL_HIGH, "[audio]\tConfigured pcm3793");
 	/* wait 450 ms */
@@ -85,20 +100,20 @@ void pcm3793_hpr(uint8_t value) {
 }
 
 void pcm3793_spl(uint8_t value) {
-	
+	//TODO: pcm3793_spl()	
 }
 
 void pcm3793_spr(uint8_t value) {
-	
+	//TODO: pcm3793_spr()
 }
 
 void pcm3793_dal(uint8_t value) {
-	codec.r68 |= value;
+	codec.r68 = value;
 	pcm3793_write(PCM_R68, codec.r68);
 }
 
-void pcm3793_da_r(uint8_t value) {
-	codec.r69 |= value;
+void pcm3793_dar(uint8_t value) {
+	codec.r69 = value;
 	pcm3793_write(PCM_R69, codec.r69);
 }
 
@@ -152,7 +167,72 @@ void pcm3793_analog_in(uint8_t value) {
 	pcm3793_write(PCM_R87, codec.r87);
 }
 
+void pcm3793_pmxr_on() {
+	codec.r72 |= PCM_R72_PMXR;
+	pcm3793_write(PCM_R72, codec.r72);
+}
+
+void pcm3793_pmxl_on() {
+	codec.r72 |= PCM_R72_PMXL;
+	pcm3793_write(PCM_R72, codec.r72);
+}
+
 void pcm3793_switch(uint8_t value) {
 	codec.r88 = value;
 	pcm3793_write(PCM_R88, codec.r88);
+} 
+
+void pcm3793_vcom() {
+	codec.r74 |= PCM_R74_PCOM;
+	pcm3793_write(PCM_R74, codec.r74);
+}
+
+void pcm3793_zero_cross_enable() {
+	codec.r86 |= PCM_R86_ZCRS;
+	pcm3793_write(PCM_R86, codec.r86);
+}
+
+void pcm3793_mode_master() {
+	codec.r84 = PCM_R84_MSTR;
+	pcm3793_write(PCM_R84, codec.r84);
+}
+
+void pcm3793_pbis_up() {
+	codec.r73 |= PCM_R73_PBIS;
+	pcm3793_write(PCM_R73, codec.r73);
+}
+
+void pcm3793_pdar_up() {
+	codec.r73 |= PCM_R73_PDAR;
+	pcm3793_write(PCM_R73, codec.r73);
+}
+
+void pcm3793_pdal_up() {
+	codec.r73 |= PCM_R73_PDAL;
+	pcm3793_write(PCM_R73, codec.r73);
+}
+
+void pcm3793_phpc_up() {
+	codec.r73 |= PCM_R73_PHPC;
+	pcm3793_write(PCM_R73, codec.r73);
+}
+
+void pcm3793_phpr_up() {
+	codec.r73 |= PCM_R73_PHPR;
+	pcm3793_write(PCM_R73, codec.r73);
+}
+
+void pcm3793_phpl_up() {
+	codec.r73 |= PCM_R73_PHPL;
+	pcm3793_write(PCM_R73, codec.r73);
+}
+
+void pcm3793_pspr_up() {
+	codec.r73 |= PCM_R73_PSPR;
+	pcm3793_write(PCM_R73, codec.r73);
+}
+
+void pcm3793_pspl_up() {
+	codec.r73 |= PCM_R73_PSPL;
+	pcm3793_write(PCM_R73, codec.r73);
 }

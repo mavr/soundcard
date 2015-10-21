@@ -30,7 +30,7 @@ void Init() {
 	pio_system();
 	
 	/* Starting syslog system via uart port. And dont't forgive draw logo :) */
-//	syslog_start("\r\nRadioAvionica. Usb soundcard device starting. Syslog system.\r\n");
+	syslog_start("\r\nRadioAvionica. Usb soundcard device starting. Syslog system.\r\n");
 	
 	/* Configure watchdog ( disable ) */
 	wdt_disable();
@@ -46,7 +46,7 @@ void Init() {
 	ssc_irq();
 
 	/* Starting usb system. */	
-//	udp_system();
+	udp_system();
 }
 
 /* power management controller */

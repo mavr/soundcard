@@ -9,7 +9,7 @@
 #ifndef UART_H_
 #define UART_H_
 
-#include "sam4.h"
+#include "sam.h"
 
 #define UART0_TX_SIZE	128
 #define UART0_RX_SIZE	16

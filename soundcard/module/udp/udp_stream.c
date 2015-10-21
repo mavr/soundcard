@@ -49,10 +49,11 @@ inline void stream_put(_codec_stream_t *stream, uint16_t value) {
 }
 
 inline uint16_t stream_get(_codec_stream_t *stream) {
-	uint16_t value = *( stream->__buffer + stream->__out );
+	uint16_t value; 
 	if(stream->__in != stream->__out) {
 		stream->__out = (stream->__out + 1) & stream->__size_msk;
+		return *( stream->__buffer + stream->__out );
 	}
 	
-	return value;
+	return 0x00;
 }

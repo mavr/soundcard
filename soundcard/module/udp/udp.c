@@ -16,6 +16,7 @@ void udp_system() {
 	
 	udp_set_state(UDP_STATE_POWERED);
 	
+	NVIC_SetPriority(UDP_IRQn, 0x10);
 	NVIC_EnableIRQ(UDP_IRQn);
 	__UDP_DEBUG(LOG_LVL_LOW, "Started.");
 	

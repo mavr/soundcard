@@ -9,7 +9,7 @@
 #ifndef FIFO_H_
 #define FIFO_H_
 
-#include "sam4.h"
+#include "sam.h"
 
 /**
 * Warning! In current version of buffer there are only values of T_fifo can be used.

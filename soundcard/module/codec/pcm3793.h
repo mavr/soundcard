@@ -378,7 +378,7 @@ void pcm3793_spl(uint8_t value);
 void pcm3793_spr(uint8_t value);
 
 void pcm3793_dal(uint8_t value);
-void pcm3793_da_r(uint8_t value);
+void pcm3793_dar(uint8_t value);
 
 void pcm3793_dac_set_format(uint8_t value);
 void pcm3793_set_dac_digital_in_gain(uint8_t value);
@@ -397,6 +397,26 @@ void pcm3793_analog_in(uint8_t value);
 void pcm3793_analog_out(uint8_t value);
 
 void pcm3793_switch(uint8_t value);
+
+void pcm3793_pmxr_on(void);
+void pcm3793_pmxl_on(void);
+
+void pcm3793_vcom(void);
+
+void pcm3793_zero_cross_enable(void);
+
+void pcm3793_mode_master(void);
+
+/* Register 73 */
+void pcm3793_pbis_up(void);
+void pcm3793_pdar_up(void);
+void pcm3793_pdal_up(void);
+void pcm3793_phpc_up(void);
+void pcm3793_phpr_up(void);
+void pcm3793_phpl_up(void);
+void pcm3793_pspr_up(void);
+void pcm3793_pspl_up(void);
+
 
 
 

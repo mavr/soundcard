@@ -2,7 +2,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectVersion>7.0</ProjectVersion>
+    <ProjectVersion>6.2</ProjectVersion>
     <ToolchainName>com.Atmel.ARMGCC.C</ToolchainName>
     <ProjectGuid>{03756123-b1fd-4cf4-8730-776de8d0e3e5}</ProjectGuid>
     <avrdevice>ATSAM4SD32B</avrdevice>
@@ -26,14 +26,14 @@
     <BootSegment>2</BootSegment>
     <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfFrameworkConfig>
-      <framework-data>
+      <framework-data xmlns="">
         <options />
         <configurations />
         <files />
         <documentation help="" />
         <offline-documentation help="" />
         <dependencies>
-          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.18.1" />
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.18.0" />
         </dependencies>
       </framework-data>
     </AsfFrameworkConfig>
@@ -62,7 +62,6 @@
       <ToolNumber>J41800000650</ToolNumber>
       <ToolName>Atmel-ICE</ToolName>
     </com_atmel_avrdbg_tool_atmelice>
-    <ExternalProgrammingToolCommand />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -79,10 +78,12 @@
   </armgcc.compiler.symbols.DefSymbols>
   <armgcc.compiler.directories.IncludePaths>
     <ListValues>
+      <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel\Device\ATMEL\sam4s\include</Value>
+      <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel</Value>
+      <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel\CMSIS\Include</Value>
+      <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel\Device\ATMEL</Value>
       <Value>../module</Value>
       <Value>..</Value>
-      <Value>%24(PackRepoDir)\atmel\SAM4S_DFP\1.0.35\sam4s\include</Value>
-      <Value>%24(PackRepoDir)\arm\cmsis\4.2.0\CMSIS\Include\</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
@@ -95,7 +96,7 @@
   </armgcc.linker.libraries.Libraries>
   <armgcc.linker.libraries.LibrarySearchPaths>
     <ListValues>
-      <Value>%24(ProjectDir)\Device_Startup</Value>
+      <Value>../cmsis/linkerScripts</Value>
     </ListValues>
   </armgcc.linker.libraries.LibrarySearchPaths>
   <armgcc.linker.optimization.GarbageCollectUnusedSections>True</armgcc.linker.optimization.GarbageCollectUnusedSections>
@@ -104,8 +105,10 @@
   <armgcc.assembler.debugging.DebugLevel>Default (-g)</armgcc.assembler.debugging.DebugLevel>
   <armgcc.preprocessingassembler.general.IncludePaths>
     <ListValues>
-      <Value>%24(PackRepoDir)\atmel\SAM4S_DFP\1.0.35\sam4s\include</Value>
-      <Value>%24(PackRepoDir)\arm\cmsis\4.2.0\CMSIS\Include\</Value>
+      <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel\Device\ATMEL\sam4s\include</Value>
+      <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel</Value>
+      <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel\CMSIS\Include</Value>
+      <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel\Device\ATMEL</Value>
     </ListValues>
   </armgcc.preprocessingassembler.general.IncludePaths>
   <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
@@ -130,10 +133,12 @@
   </armgcc.compiler.symbols.DefSymbols>
   <armgcc.compiler.directories.IncludePaths>
     <ListValues>
+      <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel\Device\ATMEL\sam4s\include</Value>
+      <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel</Value>
+      <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel\CMSIS\Include</Value>
+      <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel\Device\ATMEL</Value>
       <Value>../module</Value>
       <Value>..</Value>
-      <Value>%24(PackRepoDir)\atmel\SAM4S_DFP\1.0.35\sam4s\include</Value>
-      <Value>%24(PackRepoDir)\arm\cmsis\4.2.0\CMSIS\Include\</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
@@ -146,7 +151,7 @@
   </armgcc.linker.libraries.Libraries>
   <armgcc.linker.libraries.LibrarySearchPaths>
     <ListValues>
-      <Value>%24(ProjectDir)\Device_Startup</Value>
+      <Value>../cmsis/linkerScripts</Value>
     </ListValues>
   </armgcc.linker.libraries.LibrarySearchPaths>
   <armgcc.linker.optimization.GarbageCollectUnusedSections>True</armgcc.linker.optimization.GarbageCollectUnusedSections>
@@ -155,8 +160,10 @@
   <armgcc.assembler.debugging.DebugLevel>Default (-g)</armgcc.assembler.debugging.DebugLevel>
   <armgcc.preprocessingassembler.general.IncludePaths>
     <ListValues>
-      <Value>%24(PackRepoDir)\atmel\SAM4S_DFP\1.0.35\sam4s\include</Value>
-      <Value>%24(PackRepoDir)\arm\cmsis\4.2.0\CMSIS\Include\</Value>
+      <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel\Device\ATMEL\sam4s\include</Value>
+      <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel</Value>
+      <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel\CMSIS\Include</Value>
+      <Value>%24(ToolchainDir)\..\..\CMSIS_Atmel\Device\ATMEL</Value>
     </ListValues>
   </armgcc.preprocessingassembler.general.IncludePaths>
   <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
@@ -169,6 +176,12 @@
     </PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="cmsis\src\startup_sam4s.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="cmsis\src\system_sam4s.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="core\fifo.c">
       <SubType>compile</SubType>
     </Compile>
@@ -185,12 +198,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="core\syslog.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Device_Startup\startup_sam4s.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Device_Startup\system_sam4s.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\ascii-logo.h">
@@ -303,7 +310,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Device_Startup\" />
+    <Folder Include="cmsis\" />
+    <Folder Include="cmsis\linkerScripts\" />
+    <Folder Include="cmsis\src\" />
     <Folder Include="module\" />
     <Folder Include="core\" />
     <Folder Include="include" />
@@ -316,16 +325,16 @@
     <Folder Include="module\udp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Device_Startup\sam4sd32b_flash.ld">
+    <None Include="cmsis\linkerScripts\sam4sd32b_flash.ld">
       <SubType>compile</SubType>
     </None>
-    <None Include="Device_Startup\sam4sd32b_sram.ld">
+    <None Include="cmsis\linkerScripts\sam4sd32b_sram.ld">
       <SubType>compile</SubType>
     </None>
-    <None Include="Device_Startup\sam4s_flash.ld">
+    <None Include="cmsis\linkerScripts\sam4s_flash.ld">
       <SubType>compile</SubType>
     </None>
-    <None Include="Device_Startup\sam4s_sram.ld">
+    <None Include="cmsis\linkerScripts\sam4s_sram.ld">
       <SubType>compile</SubType>
     </None>
   </ItemGroup>
