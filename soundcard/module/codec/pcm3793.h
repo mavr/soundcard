@@ -365,61 +365,108 @@ typedef struct {
 
 pcm3793_reg_t codec;
 
-
-
-void pcm3793_init(void);
-
+/* Set value to codec register via spi. */
 void pcm3793_write(uint8_t register, uint8_t value);
 
-void pcm3793_hpl(uint8_t value);
-void pcm3793_hpr(uint8_t value);
+/* Configuring an turn on codec. */
+void pcm3793_init(void);
 
+
+/** Headphone amp **/
+/* Disable analog mute and set volume. */
+void pcm3793_hpl_vol(uint8_t value);
+void pcm3793_hpr_vol(uint8_t value);
+
+
+/** Speaker output **/
 void pcm3793_spl(uint8_t value);
 void pcm3793_spr(uint8_t value);
 
-void pcm3793_dal(uint8_t value);
-void pcm3793_dar(uint8_t value);
 
-void pcm3793_dac_set_format(uint8_t value);
-void pcm3793_set_dac_digital_in_gain(uint8_t value);
-void pcm3793_set_dac_over(void);
+/** DAC block. **/
+/* Disable digital mute and set volume. */
+void pcm3793_dal(uint8_t value);
+void pcm3793_dar(uint8_t value);	// R69
+/* Set DAC format. */
+void pcm3793_dac_set_format(uint8_t value);	//R07
+/* */
+//void pcm3793_set_dac_digital_in_gain(uint8_t value);
+//void pcm3793_set_dac_over(void);
+
+
+/** ADC block. **/
+/* Set ADC format. */
+void pcm3793_adc_set_format(uint8_t value);	// R81
+
+
+/** PG[1..6] block. */
+/* 20dB boost for PG1/PG2. */
+void pcm3793_pg1_m20dB(void);	// R90
+void pcm3793_pg2_m20dB(void);	// R90
+
+
+/** Inside power system. **/
+/** Register 73 **/
+/* Mic Bias */
+void pcm3793_pbis_up(void);
+/* Digital filtres for DAC */
+void pcm3793_pdar_up(void);
+void pcm3793_pdal_up(void);
+/* Control for headphone output */
+void pcm3793_phpc_up(void);
+void pcm3793_phpr_up(void);
+void pcm3793_phpl_up(void);
+/* Control for speaker output */
+void pcm3793_pspr_up(void);
+void pcm3793_pspl_up(void);
+/** Register 82 **/
+void pcm3793_pg2pg6_up(void);
+void pcm3793_pg1pg5_up(void);
+void pcm3793_d2s_up(void);
+void pcm3793_mic_bias_source(void);
+void pcm3793_adl_up(void);
+void pcm3793_adr_up(void);
+
+
+/** Mixers **/
+void pcm3793_pmxr_on(void);
+void pcm3793_pmxl_on(void);
+
+/** Switchers **/
+void pcm3793_switch(uint8_t value);
+
+/** Analog output configuration. **/
+void pcm3793_vcom(void); // R74
+
+/** MUX **/
+void pcm3793_analog_in(uint8_t value);
+
+
+
+
+
 void pcm3793_set_dem(uint8_t value);
 
-void pcm3793_adc_set_format(uint8_t value);
 
-void pcm3793_pg1_m20dB(void);
+
+
 void pcm3793_pg3_gain(uint8_t value);
 void pcm3793_pg4_gain(uint8_t value);
 
-void pcm3793_mic_inc(uint8_t value);
 
-void pcm3793_analog_in(uint8_t value);
+
+
 void pcm3793_analog_out(uint8_t value);
 
 void pcm3793_switch(uint8_t value);
 
-void pcm3793_pmxr_on(void);
-void pcm3793_pmxl_on(void);
 
-void pcm3793_vcom(void);
+
+
 
 void pcm3793_zero_cross_enable(void);
 
 void pcm3793_mode_master(void);
-
-/* Register 73 */
-void pcm3793_pbis_up(void);
-void pcm3793_pdar_up(void);
-void pcm3793_pdal_up(void);
-void pcm3793_phpc_up(void);
-void pcm3793_phpr_up(void);
-void pcm3793_phpl_up(void);
-void pcm3793_pspr_up(void);
-void pcm3793_pspl_up(void);
-
-
-
-
 
 
 #endif /* PCM3793_H_ */
