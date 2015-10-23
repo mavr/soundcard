@@ -45,22 +45,22 @@ void pcm3793_dar(uint8_t value) {
 	pcm3793_write(PCM_R69, codec.r69);
 }
 
-void pcm3793_dac_set_format(uint8_t value) {
+void pcm3793_dac_format(uint8_t value) {
 	codec.r70 |= value;
 	pcm3793_write(PCM_R70, codec.r70);
 }
 
-void pcm3793_set_dac_digital_in_gain(uint8_t value) {
+void pcm3793_dac_gain(uint8_t value) {
 	codec.r70 |= value;
 	pcm3793_write(PCM_R70, codec.r70);
 }
 
-void pcm3793_set_dac_over(void) {
+void pcm3793_dac_over(void) {
 	codec.r70 |= PCM_R70_OVER;
 	pcm3793_write(PCM_R70, codec.r70);
 }
 
-void pcm3793_set_dem(uint8_t value) {
+void pcm3793_dac_filter_dem(uint8_t value) {
 	codec.r70 |= value;
 	pcm3793_write(PCM_R70, codec.r70);
 }
@@ -130,10 +130,17 @@ void pcm3793_pg4_gain(uint8_t value) {
 	pcm3793_write(PCM_R80, codec.r80);
 }
 
-void pcm3793_adc_set_format(uint8_t value) {
+void pcm3793_adc_format(uint8_t value) {
 	codec.r81 |= value;
 	pcm3793_write(PCM_R81, codec.r81);
 }
+
+void pcm3793_adc_filter_hp(uint8_t value) {
+	codec.r81 |= value;
+	pcm3793_write(PCM_R81, codec.r81);
+}
+
+//void pcm3793_adc
 
 void pcm3793_mic_inc(uint8_t value) {
 	codec.r82 |= value;
@@ -179,6 +186,12 @@ void pcm3793_zero_cross_enable() {
 	codec.r86 |= PCM_R86_ZCRS;
 	pcm3793_write(PCM_R86, codec.r86);
 }
+
+void pcm3793_sysclk_div(uint8_t value) {
+	codec.r86 |= PCM_R86_MSR(value);
+	pcm3793_write(PCM_R86, codec.r86);
+}
+
 
 void pcm3793_analog_in(uint8_t value) {
 	codec.r87 |= value;

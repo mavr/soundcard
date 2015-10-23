@@ -9,32 +9,6 @@
 #ifndef PCM3793_H_
 #define PCM3793_H_
 
-/* codec registers */
-
-#define PCM_VOLUME_HPA_Lch		0x40
-#define PCM_VOLUME_HPA_Rch		0x41
-#define PCM_VOLUME_SPA_Lch		0x42
-#define PCM_VOLUME_SPA_Rch		0x43
-#define PCM_DAC_SOFT_MUTE_Lch	0x44
-#define PCM_DAC_SOFT_MUTE_Rch	0x45
-#define PCM_DAC_OVER_SAMPLING	0x46
-#define PCM_SPA					0x47
-#define PCM_ANALOG_MIXER		0x48
-#define PCM_DAC_SPA_HPA			0x49
-#define PCM_ANALOG_OUTPUT		0x4a
-#define PCM_HPA					0x4b
-#define PCM_SPA_SHUTDOWN		0x4c
-#define PCM_VOLUME_ADC_IN_Lch	0x4f
-#define PCM_VOLUME_ADC_IN_Rch	0x50
-#define PCM_ADC_1				0x51
-#define PCM_ADC_2				0x52
-#define PCM_BCK					0x56
-#define PCM_ANALOG_IN_SEL		0x57
-#define PCM_ANALOG_MIX_SW		0x58
-#define PCM_PG56_GAIN			0x59
-#define PCM_MIC_BOOST			0x5a
-#define PCM_MASTER_MODE			0x54
-
 /* Registers */
 #define PCM_R64					0x40
 #define PCM_R65					0x41
@@ -222,7 +196,7 @@
 #define PCM_R81_HPF_4Hz			(PCM_R81_HPF_Msk & ((0x00) << PCM_R81_HPF_Pos))
 #define PCM_R81_HPF_240Hz		(PCM_R81_HPF_Msk & ((0x01) << PCM_R81_HPF_Pos))
 #define PCM_R81_HPF_120Hz		(PCM_R81_HPF_Msk & ((0x02) << PCM_R81_HPF_Pos))
-#define PCM_R81_HPF_HIGH		(PCM_R81_HPF_Msk & ((0x03) << PCM_R81_HPF_Pos))
+#define PCM_R81_HPF_OFF			(PCM_R81_HPF_Msk & ((0x03) << PCM_R81_HPF_Pos))
 
 #define PCM_R81_RMUL			(0x01 << 5)
 #define PCM_R81_RMUR			(0x01 << 4)
@@ -387,16 +361,18 @@ void pcm3793_spr(uint8_t value);
 /* Disable digital mute and set volume. */
 void pcm3793_dal(uint8_t value);
 void pcm3793_dar(uint8_t value);	// R69
-/* Set DAC format. */
-void pcm3793_dac_set_format(uint8_t value);	//R07
-/* */
-//void pcm3793_set_dac_digital_in_gain(uint8_t value);
-//void pcm3793_set_dac_over(void);
+/* Set DAC config. */
+void pcm3793_dac_format(uint8_t value);	//R70
+void pcm3793_dac_gain(uint8_t value);
+void pcm3793_dac_over(void);
+void pcm3793_dac_filter_dem(uint8_t value);
 
 
 /** ADC block. **/
 /* Set ADC format. */
-void pcm3793_adc_set_format(uint8_t value);	// R81
+void pcm3793_adc_format(uint8_t value);	// R81
+/* High-Pass Filter Selection */
+void pcm3793_adc_filter_hp(uint8_t value);
 
 
 /** PG[1..6] block. */
@@ -442,10 +418,14 @@ void pcm3793_vcom(void); // R74
 void pcm3793_analog_in(uint8_t value);
 
 
+/** Codec system **/
+void pcm3793_sysclk_div(uint8_t value);
 
 
 
-void pcm3793_set_dem(uint8_t value);
+
+
+void pcm3793_dac_filter_dem(uint8_t value);
 
 
 

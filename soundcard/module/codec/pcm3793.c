@@ -11,6 +11,9 @@
 #include "pcm3793.h"
 
 void pcm3793_init() {
+	
+	pcm3793_sysclk_div(0x07); // 8kHz
+	
 	/* Set analog volume for right Tel. channel
 		and disable analog mute. */
 	pcm3793_hpr_vol(PCM_R65_HRV(0x27));
@@ -19,10 +22,15 @@ void pcm3793_init() {
 	
 	/* DAC block */
 	pcm3793_dar(PCM_R69_ATR(0x27));
-	pcm3793_dac_set_format(PCM_R70_PFM_LJust);
+	pcm3793_dac_format(PCM_R70_PFM_LJust);
+	pcm3793_dac_over();
+	pcm3793_dac_filter_dem(PCM_R70_DEM_OFF);
+	pcm3793_dac_gain(PCM_R70_SPX_0dB);
 	
 	/* ADC block */
-	pcm3793_adc_set_format(PCM_R81_RFM_LJust );
+	pcm3793_adc_format(PCM_R81_RFM_LJust );
+	pcm3793_adc_filter_hp(PCM_R81_HPF_OFF);
+
 	
 	/* Set boost for PG1. */
 	pcm3793_pg1_m20dB(); 
