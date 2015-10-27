@@ -115,7 +115,7 @@ void SSC_Handler() {
 
 		udp_audio_stream_in(tmp);
 		//udp_audio_stream_in((tmp >> 8) | (tmp << 8));
-		SSC->SSC_THR = tmp; // udp_audio_stream_out();
+		SSC->SSC_THR = tmp; //udp_audio_stream_out();
 	
 	}
 	
