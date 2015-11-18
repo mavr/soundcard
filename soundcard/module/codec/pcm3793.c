@@ -12,7 +12,7 @@
 
 void pcm3793_init() {
 	
-	pcm3793_sysclk_div(0x03); // 8kHz
+	pcm3793_sysclk_div(0x07); // 8kHz
 	
 	/* Set analog volume for right Tel. channel
 		and disable analog mute. */
@@ -61,9 +61,9 @@ void pcm3793_init() {
 	/* Switch codec to master mode. */
 	pcm3793_mode_master();
 	
-	pcm3793_analog_in(PCM_R87_AIL_AIN2L | PCM_R87_AIL_DIS );
+	pcm3793_analog_in(PCM_R87_AIL_AIN1L | PCM_R87_AIL_DIS );
 	
-	pcm3793_pg3_gain(PCM_R79_ALV(0x27));
+	pcm3793_pg3_gain(PCM_R79_ALV(0x0c));
 	
 	
 	//

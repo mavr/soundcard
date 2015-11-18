@@ -101,7 +101,7 @@ void ssc_int_enable() {
 
 void SSC_Handler() {
 	static volatile uint16_t tmp;
-	static uint16_t sound = 0xff00;
+	static uint16_t sound = 0x00;
 	//if(SSC->SSC_SR & SSC_SR_TXRDY) {
 		//udp_audio_stream_in(SSC->SSC_RHR);
 	//}
@@ -116,7 +116,7 @@ void SSC_Handler() {
 		uint16_t tmp_out = udp_audio_stream_out();
 		SSC->SSC_THR = tmp_out;
 		
-		udp_audio_stream_in(tmp_out);
+		udp_audio_stream_in(tmp);
 	
 	}
 	
