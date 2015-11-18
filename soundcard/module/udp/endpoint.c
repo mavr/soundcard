@@ -218,9 +218,10 @@ void ep_callback(udp_ep_audio_t *ep) {
 		uint16_t u16 = 0;
 		uint32_t i;
 		if(ep->ep.number == UDP_EP_OUT) {
-			for(i = 0; i < (*(ep->ep.CSR) & 0x7ff0000) >> 16 ; i++) {
+			for(i = 0; i < (*(ep->ep.CSR) & 0x3ff0000) >> 16 ; i += 2) {
 				u16 = *ep->ep.FDR;
 				u16 |= (*ep->ep.FDR << 8);
+				
 				stream_put(&ep->stream, u16);
 			}
 		}

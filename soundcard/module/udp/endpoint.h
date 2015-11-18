@@ -28,14 +28,14 @@
 
 /* Endpoint size */
 #define UDP_EP0_SIZE			64
-#define UDP_EP4_SIZE			512
-#define UDP_EP5_SIZE			512
+#define UDP_EP4_SIZE			1024
+#define UDP_EP5_SIZE			1024
 
 #define UDP_EP_CTRL0_SIZE		UDP_EP0_SIZE
 
 /* Endpoint buffers */
 #define EP_CTRL_BUFFER_SIZE		4
-#define EP_AUDIO_BUFFER_SIZE	512
+#define EP_AUDIO_BUFFER_SIZE	1024
 
 /* Possible states of endpoint */
 enum ep_state { EP_STATE_NONE, 

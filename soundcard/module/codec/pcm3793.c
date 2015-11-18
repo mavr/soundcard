@@ -12,7 +12,7 @@
 
 void pcm3793_init() {
 	
-	pcm3793_sysclk_div(0x07); // 8kHz
+	pcm3793_sysclk_div(0x03); // 8kHz
 	
 	/* Set analog volume for right Tel. channel
 		and disable analog mute. */
