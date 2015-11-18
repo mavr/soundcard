@@ -212,8 +212,8 @@ static uint8_t udp_conf_descriptor[] = {
 			// The next field should be 10, but 16 works with more standard software
 			0x10, // bBitResolution (16)
 			0x01, // bSamFreqType (1 sampling frequency)
-			0x40, // 8,000 Hz (byte 0) 0x1f40
-			0x1f, // 8,000 Hz (byte 1) 0x841e
+			0x00, // 8,000 Hz (byte 0) 0x1f40
+			0x7d, // 8,000 Hz (byte 1) 0x841e
 			0x00, // 8,000 Hz (byte 2)
 				
 	/* Isochronous Endpoint Descriptor */  
@@ -221,8 +221,8 @@ static uint8_t udp_conf_descriptor[] = {
 			0x05, // bDescriptionType (endpoint)
 			0x84, // bEndpointAddress (EP4 in)
 			0x01, // bmAttributes (asynchronous)
-			0x10, // wMaxPacketSize (16) 
-			0x00,
+			0x00, // wMaxPacketSize (16) 
+			0x02,
 			0x01, // bInterwal (1 ms)
 			0x00, // bRefresh (0)
 			0x00, // bSyncAddress (no synchronization)			
@@ -279,8 +279,8 @@ static uint8_t udp_conf_descriptor[] = {
 			// The next field should be 10, but 16 works with more standard software
 			0x10, // bBitResolution (16)
 			0x01, // bSamFreqType (1 sampling frequency)
-			0x40, // 8,000 Hz (byte 0) 0x1f40
-			0x1f, // 8,000 Hz (byte 1) 0x841e
+			0x00, // 8,000 Hz (byte 0) 0x1f40
+			0x7d, // 8,000 Hz (byte 1) 0x841e
 			0x00, // 8,000 Hz (byte 2)
 	
 			/* Isochronous Endpoint Descriptor */
@@ -288,8 +288,8 @@ static uint8_t udp_conf_descriptor[] = {
 			0x05, // bDescriptionType (endpoint)
 			0x05, // bEndpointAddress (EP5 out)
 			0x01, // bmAttributes (asynchronous)
-			0x10, // wMaxPacketSize (16)
-			0x00,
+			0x00, // wMaxPacketSize (16)
+			0x02,
 			0x01, // bInterwal (1 ms)
 			0x00, // bRefresh (0)
 			0x00, // bSyncAddress (no synchronization)
