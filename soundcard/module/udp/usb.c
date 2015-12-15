@@ -96,7 +96,6 @@ void _udp_set_configuration_callback() {
 }
 
 void udp_enumerate(const udp_setup_data_t *request) {
-	
 	/* bmRequestType: type */
 	switch((request->bmRequestType & 0x60) >> 5) {
 		case UDP_bmRequestType_Type_STANDART :
@@ -137,8 +136,27 @@ void udp_enumerate(const udp_setup_data_t *request) {
 			}
 			break;
 			
+		case UDP_bmRequestType_Type_CLASS :
+			switch(request->bmRequestType & 0x1F) {
+				case UDP_bmRequestType_Recipient_DEV :
+					__UDP_DEBUG(LOG_LVL_HIGH, "Control EP: Class request to device.");
+					break;
+				
+				case UDP_bmRequestType_Recipient_INT :
+					__UDP_DEBUG(LOG_LVL_HIGH, "Control EP: Class request to interface.");
+					break;
+				
+				case UDP_bmRequestType_Recipient_EP :
+					__UDP_DEBUG(LOG_LVL_HIGH, "Control EP: Class request to endpoint.");
+					break;
+				
+				default:
+					__UDP_DEBUG(LOG_LVL_HIGH, "Error! Control EP: Class request to reserved values.");
+			}
+			break;
+						
 		default :
-			__UDP_DEBUG(LOG_LVL_HIGH, "Control EP: Non standart request");
+			__UDP_DEBUG(LOG_LVL_HIGH, "Control EP: Non standart or class request");
 			break;
 			
 	}

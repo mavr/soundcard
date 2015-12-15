@@ -101,27 +101,15 @@ void ssc_int_enable() {
 
 void SSC_Handler() {
 	static volatile uint16_t tmp;
-	static uint16_t sound = 0x00;
-	//if(SSC->SSC_SR & SSC_SR_TXRDY) {
-		//udp_audio_stream_in(SSC->SSC_RHR);
-	//}
-	
+
 	if(SSC->SSC_SR & SSC_SR_RXRDY) {
-		
 		/* Here need transmit digital data to headphone */
 		tmp = SSC->SSC_RHR;
-//		sound = (sound | 0xff3) + 1;
-//		SSC->SSC_THR = 0x5555;
-		//udp_audio_stream_in((tmp >> 8) | (tmp << 8));
+
 		uint16_t tmp_out = udp_audio_stream_out();
 		SSC->SSC_THR = tmp_out;
 		
 		udp_audio_stream_in(tmp);
 	
 	}
-	
-//	if(SSC->SSC_SR & SSC_SR_TXRDY) {
-//		SSC->SSC_THR = stream_get(stream);
-//		SSC->SSC_THR = tmp;	
-//	}
 }

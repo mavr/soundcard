@@ -33,7 +33,7 @@ void pcm3793_init() {
 
 	
 	/* Set boost for PG1. */
-	pcm3793_pg1_m20dB(); 
+	pcm3793_pg1_m20dB();
 	
 	/* Power on Mic Bias. */
 	pcm3793_pbis_up();
@@ -64,52 +64,7 @@ void pcm3793_init() {
 	pcm3793_analog_in(PCM_R87_AIL_AIN1L | PCM_R87_AIL_DIS );
 	
 	pcm3793_pg3_gain(PCM_R79_ALV(0x0c));
-	
-	
-	//
-	//
-	//
-	//
-	//
-	///*  */
-	//pcm3793_pg3_gain(PCM_R79_ALV(0x27)); // 0x0c = 0dB
-	//
-	//
-	///* Register 73 */
-	//pcm3793_pbis_up();
-	//pcm3793_pdar_up();
-	//
-	///* Register 72 */
-	//pcm3793_pmxr_on(); // reg 72
-	//
-	///* Switchers */
-//
-	//
-	////pcm3793_zero_cross_enable();
-	//
-	//pcm3793_write(0x49, 0xfc);
-	////	pcm3793_phpc_up();
-	////	pcm3793_phpr_up();
-	//
-	 //// reg 74
-		//
-	///* Mic input */
-	//pcm3793_mic_inc(PCM_R82_PADL | PCM_R82_PAIL | PCM_R82_PMCB ); //
-	//pcm3793_analog_in(PCM_R87_AIL_AIN2L | PCM_R87_AIL_DIS );
-	//
-	//// trash
-	////pg5
-	//pcm3793_write(PCM_R89, PCM_R89_GML_9dB );
-	//
-	//// MBST
-////	pcm3793_write(PCM_R86, PCM_R86_MBST | PCM_R86_MSR(0x07));
-	//
-	//pcm3793_write(0x56, PCM_R86_MBST | PCM_R86_MSR(0x07) | 0x01);
-	////pcm3793_zero_cross_enable();
-	//
-////	pcm3793_mode_master();
-	//
-	//__DEBUG(LOG_LVL_HIGH, "[audio]\tConfigured pcm3793");
+
 	///* wait 450 ms */
 	////TODO: remade this shit
 	volatile unsigned long long i = 0;

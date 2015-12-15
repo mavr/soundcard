@@ -65,13 +65,13 @@ static uint8_t udp_conf_descriptor[] = {
 	/* Configuration Descriptor */
 	0x09, // bLength
 	0x02, // bDescriptorType
-	0xc0, // wTotalLength (83)
+	0xd9, // wTotalLength (217)
 	0x00,
-	0x03, // bNumInterface
+	0x04, // bNumInterface
 	0x01, // bConfigurationValue
 	0x00, // iConfiguration
 	0x80, // bmAttributes
-	0xFA,  // bMaxPower
+	0xFA, // bMaxPower
 	
 	/* Audio Control Interface Descriptor */
 		0x09, // bLenght
@@ -228,14 +228,13 @@ static uint8_t udp_conf_descriptor[] = {
 			0x00, // bSyncAddress (no synchronization)			
 		
 	/* Isochronous Endpoint Audio Class Descriptor */
-			0x07, // bLength (7)
-			0x25, // bDescriptorType (CS_ENDPOINT)
-			0x01, // bDescriptorSubtype (EP_GENERAL)
-			0x00, // bmAttributes (none)
-			0x00, // bLockDelayUnits (PCM samples)
-			0x00, // wLockDelay (0)	
-			0x00, 
-	
+				0x07, // bLength (7)
+				0x25, // bDescriptorType (CS_ENDPOINT)
+				0x01, // bDescriptorSubtype (EP_GENERAL)
+				0x00, // bmAttributes (none)
+				0x00, // bLockDelayUnits (PCM samples)
+				0x00, // wLockDelay (0)	
+				0x00, 
 	
 	/** Interface number 2 **/			
 	/* Audio Stream interface descriptor */
@@ -295,15 +294,69 @@ static uint8_t udp_conf_descriptor[] = {
 			0x00, // bSyncAddress (no synchronization)
 	
 			/* Isochronous Endpoint Audio Class Descriptor */
-			0x07, // bLength (7)
-			0x25, // bDescriptorType (CS_ENDPOINT)
-			0x01, // bDescriptorSubtype (EP_GENERAL)
-			0x00, // bmAttributes (none)
-			0x00, // bLockDelayUnits (PCM samples)
-			0x00, // wLockDelay (0)
-			0x00,		
+				0x07, // bLength (7)
+				0x25, // bDescriptorType (CS_ENDPOINT)
+				0x01, // bDescriptorSubtype (EP_GENERAL)
+				0x00, // bmAttributes (none)
+				0x00, // bLockDelayUnits (PCM samples)
+				0x00, // wLockDelay (0)
+				0x00,
+		
+		/* Interface descriptor (HID) */
+		0x09, // bLength
+		0x04, // bDescriptorType (interface)
+		0x03, // bInterfaceNumber
+		0x00, // bAlternateSetting
+		0x01, // bNumEndpoints
+		0x03, // bInterfaceClass (HID)
+		0x00, // bInterfaceSubClass
+		0x00, // bInterfaceProtocol (none)
+		0x00, // iInterface (none)
+		
+		/* HID interface descriptor */
+			0x09, // bLength
+			0x21, // bDescriptorType (33)
+			0x01, // bcdHID
+			0x00,
+			0x00, // bCountryCode
+			0x01, // bNumDescriptors
+			0x22, // bDescriptorType
+			0x27, // bDescriptorLength (39)
+			0x00,
+					
+	/* EndPoint Descriptor */
+	0x07, // bLength (7)
+	0x05, // bDescriptorType (CS_ENDPOINT)
+	0x82, // bDescriptorSubtype (EP_GENERAL)
+	0x03, // bmAttributes (none)
+	0x08, // wMaxPacketSize
+	0x00,
+	0x14, // bInterval
+	
 };
-
+static uint8_t udp_kbd_report_descriptor[] = {
+	/* Report descriptor */
+	0x05, 0x01, // Usage Page (Generic Desktop)
+	0x09, 0x06, // Usage (Keyboard)
+	0xa1, 0x01, // Collection (application)
+	0x05, 0x07, // Usage Page (key codes)
+	0x19, 224,	// Usage Minimum (224)
+	0x29, 231,	// Usage Maximum (231)
+	0x15, 0x00,	// Logical Minimum (0)
+	0x25, 0x01,	// Logical Maximum (1)
+	0x75, 0x01,	// Report Size (1)
+	0x95, 0x08,	// Report Count (8)
+	0x81, 0x02,	// Input (Data, Variable, Absolute)
+	0x81, 0x01,	// Input (Constant)
+	0x19, 0x00,	// Usage Minimum (0)
+	0x29, 101,	// Usage Maximum (101)
+	0x15, 0x00,	// Logical Minimum (0)
+	0x25, 101,	// Logical Maximum (101)
+	0x75, 0x08,	// Report Size (8)
+	0x95, 0x06,	// Report Count (6)
+	0x81, 0x00,	// Input (Data, Array)
+	0xc0,     // End collection
+};
 
 
 

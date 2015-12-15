@@ -27,6 +27,13 @@ extern const uint8_t udp_str_serial_descriptor[];
 #include "udp/endpoint.h"
 /* Configuring process of the device. */
 void udp_enumerate(const udp_setup_data_t *request);
+void __udp_request_standart(const udp_setup_data_t *request);
+void __udp_request_class(const udp_setup_data_t *request);
+void __udp_request_vendor(const udp_setup_data_t *request);
+
+void __udp_request_class_hid(const udp_setup_data_t *request);
+void __udp_request_class_report(const udp_setup_data_t *request);
+void __udp_request_class_physical(const udp_setup_data_t *request);
 
 /* Processing requests */
 void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength);
@@ -38,6 +45,4 @@ void udp_set_interface(uint16_t wValue);
 void _udp_set_address_callback(void);
 void _udp_set_configuration_callback(void);
 
-
-
-#endif /* INCFILE1_H_ */
+#endif /* UDP_USB_H_ */

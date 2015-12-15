@@ -22,6 +22,11 @@
 #define UDP_bmRequestType_Recipient_EP		0x02
 #define UDP_bmRequestType_Recipient_OTHER	0x03
 
+/* Descriptor */
+#define UDP_bmRequestType_Descriptor_HID	0x21
+#define UDP_bmRequestType_Descriptor_REPORT	0x22
+#define UDP_bmRequestType_Descriptor_PHY	0x23
+
 
 /** bRequest **/
 #define UDP_bRequest_GET_STATUS				0x00
