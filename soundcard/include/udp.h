@@ -34,6 +34,8 @@ udp_ep_setup_t ep_control;
 /* Isochronous audio data streams */
 udp_ep_audio_t ep_in;
 udp_ep_audio_t ep_out;
+/* Interrupt hid ep */
+udp_ep_hid_report_t ep_int;
 
 /* Init UDP system hardware. And turn on it. */
 void udp_system(void);

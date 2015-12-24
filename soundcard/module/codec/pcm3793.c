@@ -21,7 +21,7 @@ void pcm3793_init() {
 	/* SPL/R disable */
 	
 	/* DAC block */
-	pcm3793_dar(PCM_R69_ATR(0x33));
+	pcm3793_dar(PCM_R69_ATR(0x27));
 	pcm3793_dac_format(PCM_R70_PFM_LJust);
 	pcm3793_dac_over();
 	pcm3793_dac_filter_dem(PCM_R70_DEM_OFF);

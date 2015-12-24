@@ -9,8 +9,19 @@
 #ifndef PIO_H_
 #define PIO_H_
 
+#include "core/syslog.h"
+
+#ifdef UART_DEBUG
+#define __PIO_DEBUG(lvl,msg) {\
+	syslog_prefix("[pio]\t"); \
+__DEBUG(lvl,msg); }
+#else
+#define __PIO_DEBUG(lvl,msg)
+#endif
+
 
 void pio_system();
+void pio_enable_kdb();
 
 
 

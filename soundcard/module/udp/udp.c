@@ -26,7 +26,7 @@ void udp_system() {
 
 void udp_set_interrupt() {
 //	UDP->UDP_IER = UDP_IER_SOFINT | UDP_IER_RXSUSP;
-	UDP->UDP_IER = UDP_IER_RXSUSP | UDP_IER_EP0INT | UDP_IER_EP4INT | UDP_IER_EP5INT;
+	UDP->UDP_IER = UDP_IER_RXSUSP | UDP_IER_EP0INT | UDP_IER_EP2INT | UDP_IER_EP4INT | UDP_IER_EP5INT;
 }
 
 void udp_ddp_pull_up() {
@@ -69,12 +69,12 @@ inline uint8_t udp_ready() {
 }
 
 void UDP_Handler() {
-
 	/* Go go go from powered to default state */
 	if(UDP->UDP_ISR & UDP_ISR_ENDBUSRES) {
 		ep_reset(&ep_control, UDP_EP_CONTROL, UDP_EP_TYPE_CONTROL, UDP_EP0_SIZE);
 		ep_reset(&ep_in, UDP_EP_IN, UDP_EP_TYPE_ISO_IN, UDP_EP4_SIZE);
 		ep_reset(&ep_out, UDP_EP_OUT, UDP_EP_TYPE_ISO_OUT, UDP_EP4_SIZE);
+		ep_reset(&ep_int, UDP_EP_HID, UDP_EP_TYPE_INT, UDP_EP1_SIZE);
 		
 		__UDP_DEBUG(LOG_LVL_LOW, "Get Reset signal");
 		
@@ -87,6 +87,12 @@ void UDP_Handler() {
 	if(UDP->UDP_ISR & UDP_IMR_EP0INT) {
 		ep_callback_setup(&ep_control);
 		UDP->UDP_ICR |= UDP_IMR_EP0INT;
+	}
+	
+	if(UDP->UDP_ISR & UDP_IMR_EP2INT) {
+//		__UDP_DEBUG(LOG_LVL_LOW, "EP2 INTERRUPT");
+		ep_callback_hid(&ep_int);
+		UDP->UDP_ICR |= UDP_IMR_EP2INT;
 	}
 	
 	if(UDP->UDP_ISR & UDP_IMR_EP4INT) {

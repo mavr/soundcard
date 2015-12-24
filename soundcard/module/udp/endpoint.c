@@ -31,7 +31,17 @@ void ep_init(void *ep, uint8_t ep_type, uint16_t ep_size, uint8_t ep_number) {
 			
 //			udp_stream_init(&(__ep_control->stream), __ep_ctrl_buffer, EP_CTRL_BUFFER_SIZE);
 			break;
-			
+		
+		case UDP_EP_TYPE_INT: ;
+			udp_ep_hid_report_t *__ep_hid = (udp_ep_hid_report_t *) ep;
+			memset(ep, 0x00, sizeof(&__ep_hid));
+			__core = &(__ep_hid->ep);
+		
+			__ep_ctrl_set(&(__ep_hid->ep), UDP_CSR_EPTYPE_INT_IN);
+			__UDP_DEBUG(LOG_LVL_HIGH, "Endpoint: init hid interrupt");
+			__ep_ctrl_set(&__ep_hid->ep, UDP_CSR_TXPKTRDY);
+			break;
+					
 		case UDP_EP_TYPE_ISO_IN: 
 		case UDP_EP_TYPE_ISO_OUT: ;
 			udp_ep_audio_t *__ep_audio = (udp_ep_audio_t *) ep;
@@ -177,6 +187,15 @@ void ep_callback_setup(udp_ep_setup_t *ep) {
 	if(*ep->ep.CSR & (UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1)) {
 		*ep->ep.CSR &= ~(UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1);
 	}
+}
+
+void ep_callback_hid(udp_ep_hid_report_t *ep) {
+	if(*ep->ep.CSR & UDP_CSR_TXCOMP) {
+		__UDP_DEBUG(LOG_LVL_HIGH, "EP2: TXCOMP");
+		__ep_ctrl_clr(&(ep->ep), UDP_CSR_TXCOMP);
+		__ep_ctrl_clr(&(ep->ep), UDP_CSR_TXPKTRDY);
+	}
+	
 }
 
 void ep_callback(udp_ep_audio_t *ep) {	

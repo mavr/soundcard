@@ -18,6 +18,11 @@ typedef struct {
 	
 } udp_audio_conf_desc_t;
 
+#define UDP_DESCRIPTOR_DEVICE_SIZE		0x12
+#define UDP_DESCRIPTOR_CONF_SIZE		0xd9
+#define UDP_DESCRIPTOR_HID_REPORT_SIZE	0x27
+//#define UDP_DESCRIPTOR_HID_REPORT_SIZE	52
+
 /**
 	--- Descriptor Hierarchy ---
 	Device Descriptor
@@ -41,7 +46,7 @@ typedef struct {
 
 static uint8_t udp_dev_descriptor[] = {
 	/* Device Descriptor */
-	0x12, // bLength
+	UDP_DESCRIPTOR_DEVICE_SIZE, // bLength
 	0x01, // bDescriptorType
 	0x00, // bcdUSB
 	0x01,
@@ -65,7 +70,7 @@ static uint8_t udp_conf_descriptor[] = {
 	/* Configuration Descriptor */
 	0x09, // bLength
 	0x02, // bDescriptorType
-	0xd9, // wTotalLength (217)
+	UDP_DESCRIPTOR_CONF_SIZE, // wTotalLength (217)
 	0x00,
 	0x04, // bNumInterface
 	0x01, // bConfigurationValue
@@ -309,19 +314,19 @@ static uint8_t udp_conf_descriptor[] = {
 		0x00, // bAlternateSetting
 		0x01, // bNumEndpoints
 		0x03, // bInterfaceClass (HID)
-		0x00, // bInterfaceSubClass
-		0x00, // bInterfaceProtocol (none)
+		0x01, // bInterfaceSubClass
+		0x01, // bInterfaceProtocol (none)
 		0x00, // iInterface (none)
 		
 		/* HID interface descriptor */
 			0x09, // bLength
 			0x21, // bDescriptorType (33)
-			0x01, // bcdHID
-			0x00,
+			0x10, // bcdHID
+			0x01,
 			0x00, // bCountryCode
 			0x01, // bNumDescriptors
 			0x22, // bDescriptorType
-			0x27, // bDescriptorLength (39)
+			UDP_DESCRIPTOR_HID_REPORT_SIZE, // bDescriptorLength (39)
 			0x00,
 					
 	/* EndPoint Descriptor */
@@ -331,7 +336,7 @@ static uint8_t udp_conf_descriptor[] = {
 	0x03, // bmAttributes (none)
 	0x08, // wMaxPacketSize
 	0x00,
-	0x14, // bInterval
+	0x1a, // bInterval
 	
 };
 static uint8_t udp_kbd_report_descriptor[] = {
@@ -352,10 +357,52 @@ static uint8_t udp_kbd_report_descriptor[] = {
 	0x29, 101,	// Usage Maximum (101)
 	0x15, 0x00,	// Logical Minimum (0)
 	0x25, 101,	// Logical Maximum (101)
-	0x75, 0x08,	// Report Size (8)
 	0x95, 0x06,	// Report Count (6)
+	0x75, 0x08,	// Report Size (8)
 	0x81, 0x00,	// Input (Data, Array)
-	0xc0,     // End collection
+	0xc0,     // End collection	
+	
+	//0x05, 0x01, // Usage Page (Generic Desktop)
+	//0x09, 0x02, // Usage (Keyboard)
+	//0xa1, 0x01, // Collection (application)
+	//0x09, 0x01, // uasge pointer
+	//0xa1, 0x00,
+	//0x05, 0x09, // Usage Page (key codes)
+	//0x19, 0x01,	// Usage Minimum (224)
+	//0x29, 0x05,	// Usage Maximum (231)
+	//0x15, 0x00,	// Logical Minimum (0)
+	//0x25, 0x01,	// Logical Maximum (1)
+	//0x95, 0x05,	// Report Size (1)
+	//0x75, 0x01,	// Report Count (8)
+	//0x81, 0x02,	// Input (Data, Variable, Absolute)
+	//0x95, 0x01,
+	//0x75, 0x03,
+	//0x81, 0x01,
+	//0x05, 0x01,
+	//0x09, 0x30,
+	//0x09, 0x31,
+	//0x09, 0x38,
+	//0x15, 0x81,
+	//0x25, 0x7f,
+	//0x75, 0x08,
+	//0x95, 0x03,
+	//0x81, 0x06,
+	//0xc0, 0xc0,
+	
+};
+
+/* This is duplication from device configuration register. */
+static uint8_t udp_hid_interface_descriptor[] = {
+			/* Interface descriptor (HID) */
+			0x09, // bLength
+			0x21, // bDescriptorType (33)
+			0x01, // bcdHID
+			0x00,
+			0x00, // bCountryCode
+			0x01, // bNumDescriptors
+			0x22, // bDescriptorType
+			UDP_DESCRIPTOR_HID_REPORT_SIZE, // bDescriptorLength (39)
+			0x00,
 };
 
 

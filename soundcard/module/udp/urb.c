@@ -38,7 +38,7 @@ int udp_push(udp_ep_setup_t *ep) {
 int udp_send_setup(udp_ep_setup_t *ep, const uint8_t *data, uint32_t size) {
 	if(ep->ep.state != EP_STATE_IDLE) {
 		__UDP_DEBUG(LOG_LVL_MED, "Error! Trying send setup but ep is busy.");
-		// the time of ugly code
+		// Time for ugly code
 		switch(ep->ep.state) {
 			case EP_STATE_NONE	: __UDP_DEBUG(LOG_LVL_MED, "URB(send_setup) : Control EP state = NONE"); break;
 			case EP_STATE_TRANS : __UDP_DEBUG(LOG_LVL_MED, "URB(send_setup) : Control EP state = TRANS"); break;

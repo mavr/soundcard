@@ -47,6 +47,8 @@ void Init() {
 
 	/* Starting usb system. */	
 	udp_system();
+	
+	pio_enable_kdb();
 }
 
 /* power management controller */

@@ -15,6 +15,7 @@
 
 /* Endpoint addresses */
 #define UDP_EP_CONTROL		0
+#define UDP_EP_HID			2
 #define UDP_EP_IN			4
 #define UDP_EP_OUT			5
 
@@ -28,6 +29,7 @@
 
 /* Endpoint size */
 #define UDP_EP0_SIZE			64
+#define UDP_EP1_SIZE			64
 #define UDP_EP4_SIZE			1024
 #define UDP_EP5_SIZE			1024
 
@@ -99,6 +101,13 @@ typedef struct {
 		
 } udp_ep_audio_t;
 
+typedef struct {
+	// endpoint core
+	udp_ep_core_t ep;
+	
+	uint8_t tag;
+} udp_ep_hid_report_t;
+
 /* Buffers for endpoint stream */
 uint16_t __ep_ctrl_buffer[EP_CTRL_BUFFER_SIZE];
 uint16_t __ep_audio_in[EP_AUDIO_BUFFER_SIZE];
@@ -135,6 +144,7 @@ udp_setup_data_t ep_get_setup_pkg(udp_ep_setup_t *ep);
 /* This functions processing interrupt for endpoint.
    Call this after UDP_IMR_EPXINT exist. */
 void ep_callback_setup(udp_ep_setup_t *ep);
+void ep_callback_hid(udp_ep_hid_report_t *ep);
 void ep_callback(udp_ep_audio_t *ep);
 
 

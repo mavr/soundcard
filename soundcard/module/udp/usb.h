@@ -31,6 +31,16 @@ void __udp_request_standart(const udp_setup_data_t *request);
 void __udp_request_class(const udp_setup_data_t *request);
 void __udp_request_vendor(const udp_setup_data_t *request);
 
+void __udp_request_standart_device(const udp_setup_data_t *request);
+void __udp_request_standart_interface(const udp_setup_data_t *request);
+void __udp_request_standart_endpoint(const udp_setup_data_t *request);
+void __udp_request_standart_other(const udp_setup_data_t *request);
+
+void __udp_request_class_device(const udp_setup_data_t *request);
+void __udp_request_class_interface(const udp_setup_data_t *request);
+void __udp_request_class_endpoint(const udp_setup_data_t *request);
+void __udp_request_class_other(const udp_setup_data_t *request);
+
 void __udp_request_class_hid(const udp_setup_data_t *request);
 void __udp_request_class_report(const udp_setup_data_t *request);
 void __udp_request_class_physical(const udp_setup_data_t *request);
