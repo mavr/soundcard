@@ -19,6 +19,8 @@ __DEBUG(lvl,msg); }
 #define __PIO_DEBUG(lvl,msg)
 #endif
 
+#define KBD_BUTTONE_MEDIC
+
 
 void pio_system();
 void pio_enable_kdb();

@@ -63,32 +63,43 @@ void pio_enable_kdb() {
 }
 
 void PIOA_Handler() {
-	__PIO_DEBUG(LOG_LVL_HIGH, "interrupt");
+	static int lock = 0;
 	uint32_t temp = PIOA->PIO_ISR;
-	uint8_t report[7];
-	if(temp & (0x01 << 23)) {
-//		memset(report, 0xaa, 7);
-		__PIO_DEBUG(LOG_LVL_HIGH, "sent report");
-		
-		if((PIOA->PIO_PDSR & (1 << 23)) == 0) {
-			UDP->UDP_FDR[2] = 0x00;
-			UDP->UDP_FDR[2] = 0;
-			UDP->UDP_FDR[2] = 0;
-			UDP->UDP_FDR[2] = 31;
-			UDP->UDP_FDR[2] = 0;
-			UDP->UDP_FDR[2] = 0;
-			UDP->UDP_FDR[2] = 0;
-		} else {
-			UDP->UDP_FDR[2] = 0x00;
-			UDP->UDP_FDR[2] = 0;
-			UDP->UDP_FDR[2] = 0;
-			UDP->UDP_FDR[2] = 0;
-			UDP->UDP_FDR[2] = 0;
-			UDP->UDP_FDR[2] = 0;
-			UDP->UDP_FDR[2] = 0;
-		}
-		
-		
-		__ep_ctrl_set(&ep_int.ep, UDP_CSR_TXPKTRDY);
+	
+	__PIO_DEBUG(LOG_LVL_HIGH, "button interrupt");
+	
+	if(lock == 1) return;
+	lock = 1;
+
+	int count = 2;
+	UDP->UDP_FDR[2] = 0;
+	UDP->UDP_FDR[2] = 0;
+	
+	if((PIOA->PIO_PDSR & (1 << 21)) == 0) {
+		UDP->UDP_FDR[2] = 30;
+		count++;
 	}
+	if((PIOA->PIO_PDSR & (1 << 22)) == 0) {
+		UDP->UDP_FDR[2] = 31;
+		count++;
+	}
+	if((PIOA->PIO_PDSR & (1 << 23)) == 0) {
+		UDP->UDP_FDR[2] = 32;
+		count++;
+	}
+	if((PIOA->PIO_PDSR & (1 << 25)) == 0) {
+		UDP->UDP_FDR[2] = 33;
+		count++;
+	}
+	if((PIOA->PIO_PDSR & (1 << 26)) == 0) {
+		UDP->UDP_FDR[2] = 34;
+		count++;
+	}
+	
+	for(count; count < 7; count++) UDP->UDP_FDR[2] = 0;
+		
+	__ep_ctrl_set(&ep_int.ep, UDP_CSR_TXPKTRDY);
+	
+	lock = 0;
+
 }
