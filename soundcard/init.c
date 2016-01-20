@@ -12,8 +12,8 @@
 #include "ssc/ssc.h"
 #include "codec/pcm3793.h"
 #include "timer/timer.h"
-#include "core/syslog.h"
 #include "pio/pio.h"
+#include "core/syslog.h"
 #include "uart/uart.h"
 #include "spi/spi.h"
 

@@ -20,7 +20,7 @@ typedef struct {
 
 #define UDP_DESCRIPTOR_DEVICE_SIZE		0x12
 #define UDP_DESCRIPTOR_CONF_SIZE		0xd9
-#define UDP_DESCRIPTOR_HID_REPORT_SIZE	0x27
+#define UDP_DESCRIPTOR_HID_REPORT_SIZE	27
 //#define UDP_DESCRIPTOR_HID_REPORT_SIZE	52
 
 /**
@@ -345,19 +345,13 @@ static uint8_t udp_kbd_report_descriptor[] = {
 	0x09, 0x06, // Usage (Keyboard)
 	0xa1, 0x01, // Collection (application)
 	0x05, 0x07, // Usage Page (key codes)
-	0x19, 224,	// Usage Minimum (224)
-	0x29, 231,	// Usage Maximum (231)
-	0x15, 0x00,	// Logical Minimum (0)
-	0x25, 0x01,	// Logical Maximum (1)
-	0x75, 0x01,	// Report Size (1)
-	0x95, 0x08,	// Report Count (8)
 	0x81, 0x02,	// Input (Data, Variable, Absolute)
 	0x81, 0x01,	// Input (Constant)
 	0x19, 0x00,	// Usage Minimum (0)
 	0x29, 101,	// Usage Maximum (101)
 	0x15, 0x00,	// Logical Minimum (0)
 	0x25, 101,	// Logical Maximum (101)
-	0x95, 0x06,	// Report Count (6)
+	0x95, 0x06,	// Report Count (5)
 	0x75, 0x08,	// Report Size (8)
 	0x81, 0x00,	// Input (Data, Array)
 	0xc0,     // End collection	

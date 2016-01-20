@@ -191,7 +191,6 @@ void ep_callback_setup(udp_ep_setup_t *ep) {
 
 void ep_callback_hid(udp_ep_hid_report_t *ep) {
 	if(*ep->ep.CSR & UDP_CSR_TXCOMP) {
-		__UDP_DEBUG(LOG_LVL_HIGH, "EP2: TXCOMP");
 		__ep_ctrl_clr(&(ep->ep), UDP_CSR_TXCOMP);
 		__ep_ctrl_clr(&(ep->ep), UDP_CSR_TXPKTRDY);
 	}

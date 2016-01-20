@@ -9,6 +9,7 @@
 #include "init.h"
 #include "include/udp.h"
 #include "core/syslog.h"
+#include "pio/pio.h"
 #include <stdio.h>
 
 int main(void) {

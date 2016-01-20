@@ -11,6 +11,8 @@
 #include "spi/spi.h"
 #include "include/udp.h"
 
+#include <string.h>
+
 void pio_system() {
 	PMC->PMC_PCER0 |= (1UL << ID_PIOA);
 	/* Configure SSC interface */
@@ -59,45 +61,45 @@ void pio_system() {
 }
 
 void pio_enable_kdb() {
+	NVIC_SetPriority(PIOA_IRQn, 0x01);
 	NVIC_EnableIRQ(PIOA_IRQn);
 }
 
-void PIOA_Handler() {
-	static int lock = 0;
-	uint32_t temp = PIOA->PIO_ISR;
-	
-	__PIO_DEBUG(LOG_LVL_HIGH, "button interrupt");
-	
-	if(lock == 1) return;
-	lock = 1;
+kbd_t kbd = {
+		.key = {
+					{ .pin = KBD_BUTTON_MEDIC,	.code = KBD_BUTTON_MEDIC_CODE, .label = "Medic" },
+					{ .pin = KBD_BUTTON_TRANS,	.code = KBD_BUTTON_TRANS_CODE, .label = "Transmit" },
+					{ .pin = KBD_BUTTON_FUNC,	.code = KBD_BUTTON_FUNC_CODE, .label = "Function" },
+					{ .pin = KBD_BUTTON_PTT,	.code = KBD_BUTTON_PTT_CODE, .label = "PTT" },
+					{ .pin = KBD_BUTTON_ABN,	.code = KBD_BUTTON_ABN_CODE, .label = "Abonent" },
+				}
+};
 
-	int count = 2;
-	UDP->UDP_FDR[2] = 0;
-	UDP->UDP_FDR[2] = 0;
+void PIOA_Handler() {
+	uint8_t report_pkg[5] = { 0x00, 0x00, 0x00, 0x00, 0x00 };
+	uint8_t i, counter = 0;
 	
-	if((PIOA->PIO_PDSR & (1 << 21)) == 0) {
-		UDP->UDP_FDR[2] = 30;
-		count++;
-	}
-	if((PIOA->PIO_PDSR & (1 << 22)) == 0) {
-		UDP->UDP_FDR[2] = 31;
-		count++;
-	}
-	if((PIOA->PIO_PDSR & (1 << 23)) == 0) {
-		UDP->UDP_FDR[2] = 32;
-		count++;
-	}
-	if((PIOA->PIO_PDSR & (1 << 25)) == 0) {
-		UDP->UDP_FDR[2] = 33;
-		count++;
-	}
-	if((PIOA->PIO_PDSR & (1 << 26)) == 0) {
-		UDP->UDP_FDR[2] = 34;
-		count++;
+	static int lock = 0;
+	if(lock++ == 1) return;
+	
+	// need for clear interrupt
+	volatile uint32_t temp = PIOA->PIO_ISR;
+
+	for(i = 0; i < 5; i++) {
+		if((PIOA->PIO_PDSR & (1 << kbd.key[i].pin)) == 0) {
+			report_pkg[counter++] = kbd.key[i].code;
+			__KBD_DEBUG(kbd.key[i].label);
+		}
 	}
 	
-	for(count; count < 7; count++) UDP->UDP_FDR[2] = 0;
+	for(i = counter; i < 5; i++) 
+		report_pkg[i] = 0;
 		
+	for(int i = 0; i < 5; i++) {
+		UDP->UDP_FDR[2] = report_pkg[i];
+	}
+		
+	while((UDP->UDP_CSR[2] & UDP_CSR_TXPKTRDY) != 0);
 	__ep_ctrl_set(&ep_int.ep, UDP_CSR_TXPKTRDY);
 	
 	lock = 0;
