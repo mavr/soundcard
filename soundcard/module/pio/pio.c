@@ -40,6 +40,7 @@ void pio_system() {
 	PIOA->PIO_REHLSR |= 0x6e00000;
 	PIOA->PIO_ODR |= 0x6e00000;
 	PIOA->PIO_PUER |= 0x6e00000;
+	PIOA->PIO_SCDR |= 0x6e00000;
 	//PIOA->PIO_PPDDR |= 0x1f;
 	//PIOA->PIO_PUER |= 0x1f;
 	//PIOA->PIO_REHLSR |= 0x1f;
@@ -76,7 +77,7 @@ kbd_t kbd = {
 };
 
 void PIOA_Handler() {
-	uint8_t report_pkg[5] = { 0x00, 0x00, 0x00, 0x00, 0x00 };
+	uint8_t report_pkg[6] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 	uint8_t i, counter = 0;
 	
 	static int lock = 0;
@@ -92,10 +93,17 @@ void PIOA_Handler() {
 		}
 	}
 	
-	for(i = counter; i < 5; i++) 
-		report_pkg[i] = 0;
+//	for(i = counter; i < 6; i++) 
+//		report_pkg[i] = 0;
 		
+	/* Ctrl, Alt, Shift etc */
+	UDP->UDP_FDR[2] = 0x00;
+	/* Reserved byte */
+	UDP->UDP_FDR[2] = 0x00;
+	
+	/* Buttons */
 	for(int i = 0; i < 5; i++) {
+		//ep_int.ep.FDR = report_pkg[i];
 		UDP->UDP_FDR[2] = report_pkg[i];
 	}
 		

@@ -95,7 +95,6 @@ void ep_set_interrupt(udp_ep_core_t *ep) {
 
 void __ep_ctrl_set(udp_ep_core_t *ep, uint32_t mask) {
 	*ep->CSR |= mask;
-//	UDP->UDP_CSR[ep->number] |= mask;
 	for(int i = 0; i < 20; i++) nop();
 }
 
@@ -122,29 +121,28 @@ udp_setup_data_t ep_get_setup_pkg(udp_ep_setup_t *ep) {
 
 
 void ep_callback_setup(udp_ep_setup_t *ep) {
-	
 	/* Our data delivered */
 	if(*ep->ep.CSR & UDP_CSR_TXCOMP) {
 		switch(ep->ep.state) {
 			case EP_STATE_TRANS :
-			// Send data or complete transaction by calling callback() function.
-			if(udp_push(ep) == EP_STATE_IDLE) {
+				// Send data or complete transaction by calling callback() function.
+				if(udp_push(ep) == EP_STATE_IDLE) {
+					if(ep->callback != NULL) ep->callback();
+					ep->callback = NULL;
+					ep->ep.state = EP_STATE_IDLE;
+				}
+				break;
+			
+			case EP_STATE_ZLP :
 				if(ep->callback != NULL) ep->callback();
 				ep->callback = NULL;
 				ep->ep.state = EP_STATE_IDLE;
-			}
-			break;
-			
-			case EP_STATE_ZLP :
-			if(ep->callback != NULL) ep->callback();
-			ep->callback = NULL;
-			ep->ep.state = EP_STATE_IDLE;
-			break;
+				break;
 			
 			default:
-			__UDP_DEBUG(LOG_LVL_LOW, "Error! EP receive TXCOMP ir but has not trans or zlp state");
-			__UDP_ERROR;
-			break;
+				__UDP_DEBUG(LOG_LVL_LOW, "Error! EP receive TXCOMP ir but has not trans or zlp state");
+				__UDP_ERROR;
+				break;
 		}
 		
 		__ep_ctrl_clr(&ep->ep, UDP_CSR_TXCOMP);

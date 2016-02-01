@@ -62,7 +62,7 @@ void ssc_system() {
 	ssc_int_enable();
 	
 	__DEBUG(LOG_LVL_HIGH, "[ssc]\tConfigured");
-//	codec_reset();
+
 }
 
 inline void ssc_irq() { 

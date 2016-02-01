@@ -9,6 +9,8 @@
 #ifndef PCM3793_H_
 #define PCM3793_H_
 
+#include "audio/audio.h"
+
 /* Registers */
 #define PCM_R64					0x40
 #define PCM_R65					0x41
@@ -337,7 +339,12 @@ typedef struct {
 	uint8_t r90;
 } pcm3793_reg_t;
 
-pcm3793_reg_t codec;
+typedef struct {
+	pcm3793_reg_t reg;
+	audio_mixer_t mixer;
+} pcm3793_codec_t;
+
+pcm3793_codec_t codec;
 
 /* Set value to codec register via spi. */
 void pcm3793_write(uint8_t register, uint8_t value);

@@ -43,8 +43,23 @@
 #define UDP_bRequest_SYNCH_FRAME			0x0c
 
 /* Class */
+/* HID */
 #define UDP_bRequest_GET_REPORT				0x01
 #define UDP_bRequest_SET_REPORT				0x09
+#define UDP_bRequest_SET_IDLE				0x0a
+
+/* Audio */
+#define UDP_bRequest_SET_CUR				0x01
+#define UDP_bRequest_GET_CUR				0x81
+#define UDP_bRequest_SET_MIN				0x02
+#define UDP_bRequest_GET_MIN				0x82
+#define UDP_bRequest_SET_MAX				0x03
+#define UDP_bRequest_GET_MAX				0x83
+#define UDP_bRequest_SET_RES				0x04
+#define UDP_bRequest_GET_RES				0x84
+#define UDP_bRequest_SET_MEM				0x05
+#define UDP_bRequest_GET_MEM				0x85
+#define UDP_bRequest_GET_STAT				0xff
 
 /** wValue **/
 /* Descriptor types */

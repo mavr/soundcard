@@ -9,13 +9,14 @@
 #include "init.h"
 
 // modules
-#include "ssc/ssc.h"
-#include "codec/pcm3793.h"
+//#include "ssc/ssc.h"
+//#include "codec/pcm3793.h"
 #include "timer/timer.h"
 #include "pio/pio.h"
 #include "core/syslog.h"
 #include "uart/uart.h"
 #include "spi/spi.h"
+#include "audio/audio.h"
 
 #include "include/udp.h"
 
@@ -34,16 +35,9 @@ void Init() {
 	
 	/* Configure watchdog ( disable ) */
 	wdt_disable();
-	
-	/* spi */
-	spi_system();
 
-		
-	ssc_system();
-	
-	/* After initializing ssc interface and enable codec's clock turn on codec. */
-	pcm3793_init();
-	ssc_irq();
+	/* Audio system includes a spi and ssc interfaces */	
+	audio_system();
 
 	/* Starting usb system. */	
 	udp_system();

@@ -20,7 +20,13 @@ typedef struct {
 
 #define UDP_DESCRIPTOR_DEVICE_SIZE		0x12
 #define UDP_DESCRIPTOR_CONF_SIZE		0xd9
-#define UDP_DESCRIPTOR_HID_REPORT_SIZE	27
+#define UDP_DESCRIPTOR_HID_REPORT_SIZE	45
+
+#define UDP_AC_INTERFACE				0
+#define UDP_AS_IN_INTERFACE				1
+#define UDP_AS_OUT_INTERFACE			2
+#define UDP_HID_INTERFACE				3
+
 //#define UDP_DESCRIPTOR_HID_REPORT_SIZE	52
 
 /**
@@ -81,7 +87,7 @@ static uint8_t udp_conf_descriptor[] = {
 	/* Audio Control Interface Descriptor */
 		0x09, // bLenght
 		0x04, // bDescriptorType
-		0x00, // bInterfaceNumber
+		UDP_AC_INTERFACE, // bInterfaceNumber
 		0x00, // bAlternateSetting (none)
 		0x00, // bNumEndpoints (0) - describes in standard interface desc for AC dev.
 		0x01, // bInterfaceClass (AUDIO)
@@ -116,23 +122,11 @@ static uint8_t udp_conf_descriptor[] = {
 			0x00, // iChannelNames (none)
 			0x00, // iTerminal (none)
 			
-	/* Output terminal Audio Class Descriptor */
-			0x09, // bLength (9)
-			0x24, // bDescriptorType (CS_INTERFACE)
-			0x03, // bDescriptorSubtype (OUTPUT_TERMINAL)
-			0x02, // bTerminalID (2)
-			0x01, // wTerminalType (usb streaming)
-			0x01,
-			0x00, // bAssocTerminal (none)
-			0x01, // bSourceID (1)
-			0x00, // iTerminal (none)			
-
-	/** Speaker **/
 	/* Input terminal Audio Class Descriptor */
 			0x0C, // bLength (12)
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x02, // bDescriptorSubtype (INPUT_TERMINAL)
-			0x03, // bTerminalID (3)
+			0x02, // bTerminalID (2)
 			0x01, // wTerminalType (usb streaming)
 			0x01,
 			0x00, // bAssocTerminal (none)
@@ -141,7 +135,9 @@ static uint8_t udp_conf_descriptor[] = {
 			0x00,
 			0x00, // iChannelNames (none)
 			0x00, // iTerminal (none)
+		
 
+	/** Speaker **/
 	/* Output terminal Audio Class Descriptor */
 			0x09, // bLength (9)
 			0x24, // bDescriptorType (CS_INTERFACE)
@@ -150,9 +146,22 @@ static uint8_t udp_conf_descriptor[] = {
 			0x01, // wTerminalType (speaker)
 			0x03,
 			0x00, // bAssocTerminal (none)
-			0x03, // bSourceID (3)
+			0x06, // bSourceID (3)
+			//0x03, // bSourceID (3)
 			0x00, // iTerminal (none)
 			
+	/* Output terminal Audio Class Descriptor */
+			0x09, // bLength (9)
+			0x24, // bDescriptorType (CS_INTERFACE)
+			0x03, // bDescriptorSubtype (OUTPUT_TERMINAL)
+			0x03, // bTerminalID (3)
+			0x01, // wTerminalType (usb streaming)
+			0x01,
+			0x00, // bAssocTerminal (none)
+			0x05, // bSourceID (1)
+			//0x01, // bSourceID (1)
+			0x00, // iTerminal (none)
+	
 	/* Feature unit Audio Class Descriptor */
 			0x09, // bLength (9)
 			0x24, // bDescriptorType (CS_INTERFACE)
@@ -160,26 +169,26 @@ static uint8_t udp_conf_descriptor[] = {
 			0x05, // bUnitID (5)
 			0x01, // bSourceID (1)
 			0x01, // bControlSize (1)
-			0x03, // bmaContorls(0) : Mute, Volume
+			0x02, // bmaContorls(0) : Mute, Volume
 			0x00, // bmaContorls(1)
-			0x00, // iTerminal (none)		
+			0x00, // iTerminal (none)
 
 	/* Feature unit Audio Class Descriptor */
 			0x09, // bLength (9)
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x06, // bDescriptorSubtype (FEATURE_UNIT)
 			0x06, // bUnitID (6)
-			0x03, // bSourceID (3)
+			0x02, // bSourceID (2)
 			0x01, // bControlSize (1)
-			0x03, // bmaContorls(0) : Mute, Volume
+			0x02, // bmaContorls(0) : Mute, Volume
 			0x00, // bmaContorls(1)
 			0x00, // iTerminal (none)
-			
+
 	/** Interface number 1 **/
 	/* Audio Stream interface descriptor */
 		0x09, // bLenght
 		0x04, // bDescriptorType (interface)
-		0x01, // bInterfaceNumber
+		UDP_AS_IN_INTERFACE, // bInterfaceNumber
 		0x00, // bAlternateSettings
 		0x00, // bNumEndpoints
 		0x01, // bInterfaceClass (audio)
@@ -245,7 +254,7 @@ static uint8_t udp_conf_descriptor[] = {
 	/* Audio Stream interface descriptor */
 		0x09, // bLenght
 		0x04, // bDescriptorType (interface)
-		0x02, // bInterfaceNumber
+		UDP_AS_OUT_INTERFACE, // bInterfaceNumber
 		0x00, // bAlternateSettings
 		0x00, // bNumEndpoints
 		0x01, // bInterfaceClass (audio)
@@ -310,7 +319,7 @@ static uint8_t udp_conf_descriptor[] = {
 		/* Interface descriptor (HID) */
 		0x09, // bLength
 		0x04, // bDescriptorType (interface)
-		0x03, // bInterfaceNumber
+		UDP_HID_INTERFACE, // bInterfaceNumber
 		0x00, // bAlternateSetting
 		0x01, // bNumEndpoints
 		0x03, // bInterfaceClass (HID)
@@ -344,16 +353,40 @@ static uint8_t udp_kbd_report_descriptor[] = {
 	0x05, 0x01, // Usage Page (Generic Desktop)
 	0x09, 0x06, // Usage (Keyboard)
 	0xa1, 0x01, // Collection (application)
-	0x05, 0x07, // Usage Page (key codes)
-	0x81, 0x02,	// Input (Data, Variable, Absolute)
-	0x81, 0x01,	// Input (Constant)
-	0x19, 0x00,	// Usage Minimum (0)
-	0x29, 101,	// Usage Maximum (101)
-	0x15, 0x00,	// Logical Minimum (0)
-	0x25, 101,	// Logical Maximum (101)
-	0x95, 0x06,	// Report Count (5)
-	0x75, 0x08,	// Report Size (8)
-	0x81, 0x00,	// Input (Data, Array)
+	
+	0x05, 0x07, //     Usage Page (Key Codes)
+	0x19, 0xe0, //     Usage Minimum (224)
+	0x29, 0xe7, //     Usage Maximum (231)
+	0x15, 0x00, //     Logical Minimum (0)
+	0x25, 0x01, //     Logical Maximum (1)
+	0x75, 0x01, //     Report Size (1)
+	0x95, 0x08, //     Report Count (8)
+	0x81, 0x02, //     Input (Data, Variable, Absolute)
+
+	0x95, 0x01, //     Report Count (1)
+	0x75, 0x08, //     Report Size (8)
+	0x81, 0x01, //     Input (Constant) reserved byte(1)
+	
+	0x95, 0x05,                         //     Report Count (6)
+	0x75, 0x08,                         //     Report Size (8)
+	0x15, 0x00,                         //     Logical Minimum (0)
+	0x25, 0x65,                         //     Logical Maximum (101)
+	0x05, 0x07,                         //     Usage Page (Key codes)
+	0x19, 0x00,                         //     Usage Minimum (0)
+	0x29, 0x65,                         //     Usage Maximum (101)
+	0x81, 0x00,                         //     Input (Data, Array) Key array(6 bytes)
+		
+////	0x05, 0x07, //	   Usage Page (key codes)
+	//0x81, 0x02,	//	   Input (Data, Variable, Absolute)
+	//0x81, 0x01,	//	   Input (Constant)
+	//0x19, 0x00,	//     Usage Minimum (0)
+	//0x29, 101,	//     Usage Maximum (101)
+	//0x15, 0x00,	//     Logical Minimum (0)
+	//0x25, 101,	//     Logical Maximum (101)
+	//0x95, 0x05,	//     Report Count (6)
+	//0x75, 0x08,	//     Report Size (8)
+	//0x81, 0x00,	//     Input (Data, Array)
+	
 	0xc0,     // End collection	
 	
 	//0x05, 0x01, // Usage Page (Generic Desktop)

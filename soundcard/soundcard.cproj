@@ -220,6 +220,12 @@
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="module\audio\audio.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\audio\audio.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="module\codec\ad74111.c">
       <SubType>compile</SubType>
     </Compile>
@@ -314,6 +320,7 @@
     <Folder Include="core\" />
     <Folder Include="include" />
     <Folder Include="module\codec" />
+    <Folder Include="module\audio" />
     <Folder Include="module\spi" />
     <Folder Include="module\timer" />
     <Folder Include="module\ssc" />

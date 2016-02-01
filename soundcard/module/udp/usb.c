@@ -12,6 +12,7 @@
 #include "include/error_code.h"
 #include "include/system.h"
 #include "udp/udp-audio.h"
+#include "audio/audio.h"
 #include <string.h>
 /* Descriptor processing */
 
@@ -36,6 +37,7 @@ void udp_enumerate(const udp_setup_data_t *request) {
 				__udp_request_vendor(request);
 				break;	
 		default:
+				udp_send_stall(&ep_control);
 				__UDP_DEBUG(LOG_LVL_HIGH, "Error!! Request's field bmRequestType has uknown value.");
 				break;
 	}
@@ -75,11 +77,14 @@ void __udp_request_class(const udp_setup_data_t *request) {
 	
 		default:
 			__UDP_DEBUG(LOG_LVL_HIGH, "Error! Control EP: Class request to reserved values.");
+			udp_send_stall(&ep_control);
+			break;
 	}	
 }
 
 void __udp_request_vendor(const udp_setup_data_t *request) {
-	
+	__UDP_DEBUG(LOG_LVL_HIGH, "Error!__udp_request_vendor() : uknown request.");
+	udp_send_stall(&ep_control);
 }
 
 void __udp_request_standart_device(const udp_setup_data_t *request) {
@@ -123,6 +128,7 @@ void __udp_request_standart_device(const udp_setup_data_t *request) {
 
 		default :
 			//Error
+			udp_send_stall(&ep_control);
 			__UDP_DEBUG(LOG_LVL_HIGH, "Request standart -> device : uknown.");
 			break;
 	}
@@ -149,7 +155,7 @@ void __udp_request_standart_interface(const udp_setup_data_t *request) {
 				
 		case UDP_bRequest_SET_INTERFACE :
 			//TODO: set_interface
-			udp_set_interface(request->wValue);
+			udp_set_interface(request->wIndex);
 			break;
 			
 		case UDP_bRequest_GET_DESCRIPTOR :
@@ -159,6 +165,7 @@ void __udp_request_standart_interface(const udp_setup_data_t *request) {
 				
 		default:
 			//Error
+			udp_send_stall(&ep_control);
 			__UDP_DEBUG(LOG_LVL_HIGH, "Request standart -> interface : uknown.");
 			break;
 	}
@@ -184,28 +191,118 @@ void __udp_request_standart_endpoint(const udp_setup_data_t *request) {
 			
 		default:
 			//Error
-			__UDP_DEBUG(LOG_LVL_HIGH, "Request standart -> endpoint : uknown.");
+			udp_send_stall(&ep_control);
+			__UDP_DEBUG(LOG_LVL_HIGH, "Error! Request standart -> endpoint : uknown.");
 			break;
 	}
 }
 
 void __udp_request_standart_other(const udp_setup_data_t *request) {
-	
+	udp_send_stall(&ep_control);
+	__UDP_DEBUG(LOG_LVL_HIGH, "Error! __udp_request_standart_other(): uknown request.");
 }
 
 void __udp_request_class_device(const udp_setup_data_t *request) {
-	__UDP_DEBUG(LOG_LVL_HIGH, "Control EP: Class request to device.");
+	udp_send_stall(&ep_control);
+	__UDP_DEBUG(LOG_LVL_HIGH, "Error! __udp_request_class_device(): uknown request.");
 }
 
 void __udp_request_class_interface(const udp_setup_data_t *request) {
-	switch(request->bRequest) {
-		case UDP_bRequest_GET_REPORT :
-			__UDP_DEBUG(LOG_LVL_HIGH, "Request class -> interface : GET_REPORT.");
-			//udp_get_descriptor(request->wValue, request->wIndex, request->wLength);
-			udp_send_setup(&ep_control, udp_hid_interface_descriptor, 0x09);
-			__UDP_DEBUG(LOG_LVL_HIGH, "Reply: HID_INTERFACE_DESCRIPTOR.");
+	uint16_t value;
+	/* What the kind of interface */
+	switch(_udp.udp_interface) {
+		case UDP_AC_INTERFACE : break;
+		
+		case UDP_AS_IN_INTERFACE : 
+		
+		case UDP_AS_OUT_INTERFACE : 
+			switch(request->bRequest) {
+				case UDP_bRequest_SET_CUR :
+					udp_send_zlp(&ep_control);
+					__UDP_DEBUG(LOG_LVL_LOW, "SET_CUR");
+					break;
+
+				case UDP_bRequest_GET_CUR :
+					value = audio_get_current();
+					udp_send_setup(&ep_control, (uint8_t * ) &value, 2);
+					__UDP_DEBUG(LOG_LVL_LOW, "GET_MIN");
+					break;
+					
+				case UDP_bRequest_SET_MIN :
+					__UDP_DEBUG(LOG_LVL_LOW, "SET_MIN");
+					break;
+				
+				case UDP_bRequest_GET_MIN :
+					value = 0;
+					udp_send_setup(&ep_control, (uint8_t * ) &value, 2);
+					__UDP_DEBUG(LOG_LVL_LOW, "GET_MIN");
+					break;
+				
+				case UDP_bRequest_SET_MAX :
+					__UDP_DEBUG(LOG_LVL_LOW, "SET_MAX");
+					break;
+				
+				case UDP_bRequest_GET_MAX :
+					value = 0x0f0;
+					udp_send_setup(&ep_control, (uint8_t * ) &value, 2);
+					__UDP_DEBUG(LOG_LVL_LOW, "GET_MAX");
+					break;
+				
+				case UDP_bRequest_SET_RES :
+					//audio_volume_up();
+					//audio_set_current(value);
+					udp_send_stall(&ep_control);
+					//udp_send_zlp(&ep_control);
+					__UDP_DEBUG(LOG_LVL_LOW, "SET_RES");
+					break;
+				
+				case UDP_bRequest_GET_RES :
+					value = 0x0100;
+					udp_send_setup(&ep_control, (uint8_t * ) &value, 2);
+					__UDP_DEBUG(LOG_LVL_LOW, "GET_RES");
+					break;
+				
+				case UDP_bRequest_SET_MEM :
+					__UDP_DEBUG(LOG_LVL_LOW, "SET_MEM");
+					break;
+				
+				case UDP_bRequest_GET_MEM :
+					__UDP_DEBUG(LOG_LVL_LOW, "GET_MEM");
+					break;
+				
+				case UDP_bRequest_GET_STAT :
+					__UDP_DEBUG(LOG_LVL_LOW, "GET_STAT");
+					break;								
+					
+				default:
+					__UDP_DEBUG(LOG_LVL_LOW, "GET_***");
+					udp_send_zlp(&ep_control);
+					break;
+			}
 			break;
+		
+		case UDP_HID_INTERFACE : 
+			switch(request->bRequest) {
+				case UDP_bRequest_GET_REPORT :
+					__UDP_DEBUG(LOG_LVL_HIGH, "Request class -> interface : GET_REPORT.");
+					//udp_get_descriptor(request->wValue, request->wIndex, request->wLength);
+					udp_send_setup(&ep_control, udp_hid_interface_descriptor, 0x09);
+					__UDP_DEBUG(LOG_LVL_HIGH, "Reply: HID_INTERFACE_DESCRIPTOR.");
+					break;
+					
+				case UDP_bRequest_SET_IDLE :
+					__UDP_DEBUG(LOG_LVL_HIGH, "Request class -> interface : SET_IDLE.");
+					udp_send_zlp(&ep_control);
+					break;
+					
+				default:
+					udp_send_stall(&ep_control);
+					__UDP_DEBUG(LOG_LVL_HIGH, "Error! __udp_request_class_interface(): uknown request.");
+					break;
+			}
+			break;		
 	}
+
 }
 
 void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
@@ -246,6 +343,7 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 		default: 
 			udp_send_stall(&ep_control);
 			__UDP_DEBUG(LOG_LVL_HIGH, "Error! udp_get_descriptor() : uknown descriptor.");
+			return;
 			break;
 	}
 
@@ -267,7 +365,16 @@ void udp_set_configuration(uint16_t wValue) {
 	ep_control.callback = &_udp_set_configuration_callback;
 }
 
-void udp_set_interface(uint16_t wValue) {
+void udp_set_interface(uint16_t wIndex) {
+	_udp.udp_interface = wIndex;
+	switch(wIndex) {
+		case UDP_AC_INTERFACE :		__UDP_DEBUG(LOG_LVL_LOW, "Set interface : Audio Control."); break;
+		case UDP_AS_IN_INTERFACE :	__UDP_DEBUG(LOG_LVL_LOW, "Set interface : Audio Stream IN."); break;
+		case UDP_AS_OUT_INTERFACE : __UDP_DEBUG(LOG_LVL_LOW, "Set interface : Audio Stream OUT."); break;
+		case UDP_HID_INTERFACE :	__UDP_DEBUG(LOG_LVL_LOW, "Set interface : HID."); break;
+		
+		default: __UDP_DEBUG(LOG_LVL_LOW, "Set interface : uknown."); break;
+	}
 	udp_send_zlp(&ep_control);
 }
 

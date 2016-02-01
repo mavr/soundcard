@@ -24,15 +24,15 @@
 #endif
 
 /* Key and pin matching */
-#define KBD_BUTTON_MEDIC		21
-#define KBD_BUTTON_TRANS		22
+#define KBD_BUTTON_MEDIC		(21)
+#define KBD_BUTTON_TRANS		(22)
 #define KBD_BUTTON_FUNC			(26)
 #define KBD_BUTTON_PTT			(25)
 #define KBD_BUTTON_ABN			(23)
 
 /* Key code for report register of hiddev. */
-#define KBD_BUTTON_MEDIC_CODE	30
-#define KBD_BUTTON_TRANS_CODE	31
+#define KBD_BUTTON_MEDIC_CODE	(30)
+#define KBD_BUTTON_TRANS_CODE	(31)
 #define KBD_BUTTON_FUNC_CODE	(32)
 #define KBD_BUTTON_PTT_CODE		(33)
 #define KBD_BUTTON_ABN_CODE		(34)

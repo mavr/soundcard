@@ -23,8 +23,14 @@ typedef uint8_t	udp_state;
 #define	UDP_STATE_SUSPENDED		0x05
 
 
+
 typedef struct {
+	/* udp state */
 	udp_state state;
+	
+	/*  current udp interface */
+	uint16_t udp_interface;
+	
 } udp_t;
 udp_t _udp;
 

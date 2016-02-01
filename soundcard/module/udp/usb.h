@@ -49,7 +49,7 @@ void __udp_request_class_physical(const udp_setup_data_t *request);
 void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength);
 void udp_set_address(uint16_t wValue);
 void udp_set_configuration(uint16_t wValue);
-void udp_set_interface(uint16_t wValue);
+void udp_set_interface(uint16_t wIndex);
 
 /* Callbacks for request */
 void _udp_set_address_callback(void);
