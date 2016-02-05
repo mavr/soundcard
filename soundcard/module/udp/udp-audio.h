@@ -146,7 +146,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x01, // wTerminalType (speaker)
 			0x03,
 			0x00, // bAssocTerminal (none)
-			0x06, // bSourceID (3)
+			0x06, // bSourceID (6)
 			//0x03, // bSourceID (3)
 			0x00, // iTerminal (none)
 			
@@ -158,7 +158,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x01, // wTerminalType (usb streaming)
 			0x01,
 			0x00, // bAssocTerminal (none)
-			0x05, // bSourceID (1)
+			0x05, // bSourceID (5)
 			//0x01, // bSourceID (1)
 			0x00, // iTerminal (none)
 	

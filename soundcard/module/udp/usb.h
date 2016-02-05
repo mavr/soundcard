@@ -26,24 +26,24 @@ extern const uint8_t udp_str_serial_descriptor[];
 
 #include "udp/endpoint.h"
 /* Configuring process of the device. */
-void udp_enumerate(const udp_setup_data_t *request);
-void __udp_request_standart(const udp_setup_data_t *request);
-void __udp_request_class(const udp_setup_data_t *request);
-void __udp_request_vendor(const udp_setup_data_t *request);
+void udp_enumerate(udp_setup_activity_t *udp_setup_pkg);
+void __udp_request_standart(udp_setup_activity_t *udp_setup_pkg);
+void __udp_request_class(udp_setup_activity_t *udp_setup_pkg);
+void __udp_request_vendor(udp_setup_activity_t *udp_setup_pkg);
 
-void __udp_request_standart_device(const udp_setup_data_t *request);
-void __udp_request_standart_interface(const udp_setup_data_t *request);
-void __udp_request_standart_endpoint(const udp_setup_data_t *request);
-void __udp_request_standart_other(const udp_setup_data_t *request);
+void __udp_request_standart_device(udp_setup_activity_t *udp_setup_pkg);
+void __udp_request_standart_interface(udp_setup_activity_t *udp_setup_pkg);
+void __udp_request_standart_endpoint(udp_setup_activity_t *udp_setup_pkg);
+void __udp_request_standart_other(udp_setup_activity_t *udp_setup_pkg);
 
-void __udp_request_class_device(const udp_setup_data_t *request);
-void __udp_request_class_interface(const udp_setup_data_t *request);
-void __udp_request_class_endpoint(const udp_setup_data_t *request);
-void __udp_request_class_other(const udp_setup_data_t *request);
+void __udp_request_class_device(udp_setup_activity_t *udp_setup_pkg);
+void __udp_request_class_interface(udp_setup_activity_t *udp_setup_pkg);
+void __udp_request_class_endpoint(udp_setup_activity_t *udp_setup_pkg);
+void __udp_request_class_other(udp_setup_activity_t *udp_setup_pkg);
 
-void __udp_request_class_hid(const udp_setup_data_t *request);
-void __udp_request_class_report(const udp_setup_data_t *request);
-void __udp_request_class_physical(const udp_setup_data_t *request);
+void __udp_request_class_hid(udp_setup_activity_t *udp_setup_pkg);
+void __udp_request_class_report(udp_setup_activity_t *udp_setup_pkg);
+void __udp_request_class_physical(udp_setup_activity_t *udp_setup_pkg);
 
 /* Processing requests */
 void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength);
@@ -51,8 +51,13 @@ void udp_set_address(uint16_t wValue);
 void udp_set_configuration(uint16_t wValue);
 void udp_set_interface(uint16_t wIndex);
 
-/* Callbacks for request */
+/** Callbacks for request **/
+/* Standart */
 void _udp_set_address_callback(void);
 void _udp_set_configuration_callback(void);
+
+/* Class */
+void _udp_ac_set_res(void);
+void _udp_ac_set_cur(void);
 
 #endif /* UDP_USB_H_ */

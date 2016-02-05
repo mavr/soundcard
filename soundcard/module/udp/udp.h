@@ -44,6 +44,9 @@ udp_t _udp;
 **/
 
 /* Configuration usb device */
+/* Descriptors */
+void udp_set_wTotalLength(void);
+/* Interrupt */
 void udp_set_interrupt(void);
 void udp_set_nointrrupt(void);
 

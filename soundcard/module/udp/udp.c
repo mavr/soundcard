@@ -8,11 +8,14 @@
 #include "include/udp.h"
 #include "udp/udp.h"
 #include "udp/usb.h"
+#include "udp-audio.h"
 
 void udp_system() {
 	// make power for UDP
 	PMC->PMC_PCER1 |= 1 << (ID_UDP - 32); // UDP id = 34
 	PMC->PMC_SCER |= PMC_SCER_UDP;
+	
+	udp_set_wTotalLength();
 	
 	udp_set_state(UDP_STATE_POWERED);
 	
@@ -22,6 +25,11 @@ void udp_system() {
 	
 	udp_set_interrupt();
 	udp_ddp_pull_up();
+}
+
+void udp_set_wTotalLength(void) {
+	uint8_t *desc = udp_conf_descriptor;
+	*(desc + 2) = sizeof(udp_conf_descriptor);
 }
 
 void udp_set_interrupt() {

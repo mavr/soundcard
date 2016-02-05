@@ -36,7 +36,7 @@
 #define UDP_EP_CTRL0_SIZE		UDP_EP0_SIZE
 
 /* Endpoint buffers */
-#define EP_CTRL_BUFFER_SIZE		4
+#define EP_CTRL_BUFFER_SIZE		32
 #define EP_AUDIO_BUFFER_SIZE	1024
 
 /* Possible states of endpoint */
@@ -58,7 +58,7 @@ typedef struct {
 			EP_STATE_TRANS	- ep transmit data to the host
 			EP_STATE_SETUP	- ep receive and processing data from the host
 	*/
-	enum ep_state state;
+//	enum ep_state state;
 	
 	/* type of the endpoint ( CONTROL, ISO_IN, ISO_out ) */
 	uint8_t type;
@@ -76,17 +76,6 @@ typedef struct {
 typedef struct {
 	// endpoint core
 	udp_ep_core_t ep;
-	
-	// wValue =)
-	uint16_t wValue;
-	
-	// Inside variables for transferring setup packages.
-	uint32_t tx_count;
-	uint32_t tx_size;
-	uint8_t *tx_buffer;
-	
-	/* callback for setup pkg processing */
-	void (*callback)(void);
 	
 } udp_ep_setup_t;
 
@@ -139,7 +128,7 @@ void ep_disable(udp_ep_core_t *ep);
 
 #include "udp/urb.h"
 /* Function return received setup package */
-udp_setup_data_t ep_get_setup_pkg(udp_ep_setup_t *ep);
+udp_setup_pkg_t ep_get_setup_pkg(udp_ep_setup_t *ep);
 
 /* This functions processing interrupt for endpoint.
    Call this after UDP_IMR_EPXINT exist. */
