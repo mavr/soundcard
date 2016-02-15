@@ -15,7 +15,7 @@
 /* Possible states of usb device */
 typedef uint8_t	udp_state;
 
-#define UDP_STATE_ATTACHED		0x00
+#define	UDP_STATE_ATTACHED		0x00
 #define	UDP_STATE_POWERED		0x01
 #define	UDP_STATE_DEFAULT		0x02
 #define	UDP_STATE_ADDRESS		0x03
@@ -27,10 +27,9 @@ typedef uint8_t	udp_state;
 typedef struct {
 	/* udp state */
 	udp_state state;
-	
-	/*  current udp interface */
+
+	/* current udp interface */
 	uint16_t udp_interface;
-	
 } udp_t;
 udp_t _udp;
 

@@ -178,6 +178,12 @@
     <Compile Include="core\fifo.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="core\list.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="core\list.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="core\stream.c">
       <SubType>compile</SubType>
     </Compile>
@@ -269,6 +275,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="module\uart\uart.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\udp\audio.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="module\udp\audio.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="module\udp\endpoint.c">

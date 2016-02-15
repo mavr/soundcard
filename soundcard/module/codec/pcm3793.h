@@ -341,7 +341,7 @@ typedef struct {
 
 typedef struct {
 	pcm3793_reg_t reg;
-	audio_mixer_t mixer;
+
 } pcm3793_codec_t;
 
 pcm3793_codec_t codec;

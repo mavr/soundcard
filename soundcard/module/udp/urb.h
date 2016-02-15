@@ -28,6 +28,16 @@ typedef struct { // __attribute__((__packed))
 	uint16_t wLength;
 } udp_setup_pkg_t;
 
+/* Structure of callback. */
+typedef struct {
+	/* Point to incoming parameters. */
+	void *uint8_t;
+	/* Point to object struct. */
+	void *object;
+	/* Point to callback funcion. */
+	void (*callback)(void *);
+} udp_request_callback_t;
+
 typedef struct {
 	enum udp_setup_activity_state state;
 	udp_setup_pkg_t pkg;
@@ -41,7 +51,9 @@ typedef struct {
 	uint16_t tx_count;
 	
 	/* Point to callback function. */
-	void (*callback)(void);
+	void (*callback)(void *);
+	/* Point to callback function argument. */
+	void *__callback_arg;
 	
 } udp_setup_activity_t;
 
@@ -56,6 +68,9 @@ void udp_read(udp_ep_audio_t *ep, uint8_t *data);
 void udp_fifo_push(udp_ep_audio_t *ep, uint8_t value);
 int udp_push(udp_ep_setup_t *ep);
 
+/* Function return received setup package */
+udp_setup_pkg_t urb_get_setup_pkg(udp_ep_setup_t *ep);
+
 /* Using for control endpoint for answer on setup package. */
 int udp_send_setup(const uint8_t *data, uint32_t size);
 
@@ -64,9 +79,11 @@ int udp_send_data(udp_ep_setup_t *ep, uint8_t *data, uint32_t size);
 
 /* Send zero length package. */
 int udp_send_zlp(udp_ep_setup_t *ep);
+int udp_send_setup_zlp(void);
 
 /* Send error. */
 int udp_send_stall(udp_ep_setup_t *ep);
+int udp_send_setup_stall(void);
 
 
 

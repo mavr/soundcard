@@ -42,6 +42,7 @@ void Init() {
 	/* Starting usb system. */	
 	udp_system();
 	
+	/* Turn on keyboard. */
 	pio_enable_kdb();
 }
 
@@ -54,7 +55,7 @@ void pmc_system() {
 	while(!(PMC->PMC_SR & PMC_SR_MOSCXTS));
 //	PMC->CKGR_MOR = CKGR_MOR_MOSCXTBY | CKGR_MOR_MOSCXTEN;
 	PMC->CKGR_MOR |= CKGR_MOR_MOSCSEL | CKGR_MOR_KEY_PASSWD ;
-	while(!(PMC->PMC_SR & PMC_SR_MOSCSELS)); 
+	while(!(PMC->PMC_SR & PMC_SR_MOSCSELS));
 //	PMC->CKGR_MOR = CKGR_MOR_MOSCXTEN | CKGR_MOR_KEY_PASSWD | CKGR_MOR_MOSCSEL;
 //	while(!(PMC->PMC_SR & PMC_SR_MOSCXTS));
 	
@@ -70,8 +71,7 @@ void pmc_system() {
 	PMC->CKGR_PLLAR = CKGR_PLLBR_PLLBCOUNT(10) | CKGR_PLLAR_DIVA(1) | CKGR_PLLAR_MULA(3) | CKGR_PLLAR_ONE; 
 	
 	PMC->PMC_USB = PMC_USB_USBDIV(0); // PLLA and div 1
-	
-	
+
 	//pck - p13
 	PIOA->PIO_IDR |= PIO_IDR_P6;
 	PIOA->PIO_OER |= PIO_OER_P6;

@@ -27,6 +27,9 @@ typedef struct {
 #define UDP_AS_OUT_INTERFACE			2
 #define UDP_HID_INTERFACE				3
 
+#define UDP_AC_PHONE_FU_ID					6
+#define UDP_AC_MIC_FU_ID					5
+
 //#define UDP_DESCRIPTOR_HID_REPORT_SIZE	52
 
 /**
@@ -146,7 +149,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x01, // wTerminalType (speaker)
 			0x03,
 			0x00, // bAssocTerminal (none)
-			0x06, // bSourceID (6)
+			UDP_AC_PHONE_FU_ID, // bSourceID (6)
 			//0x03, // bSourceID (3)
 			0x00, // iTerminal (none)
 			
@@ -166,10 +169,10 @@ static uint8_t udp_conf_descriptor[] = {
 			0x09, // bLength (9)
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x06, // bDescriptorSubtype (FEATURE_UNIT)
-			0x05, // bUnitID (5)
+			UDP_AC_MIC_FU_ID, // bUnitID (5)
 			0x01, // bSourceID (1)
 			0x01, // bControlSize (1)
-			0x02, // bmaContorls(0) : Mute, Volume
+			0x03, // bmaContorls(0) : Mute, Volume
 			0x00, // bmaContorls(1)
 			0x00, // iTerminal (none)
 
@@ -177,10 +180,10 @@ static uint8_t udp_conf_descriptor[] = {
 			0x09, // bLength (9)
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x06, // bDescriptorSubtype (FEATURE_UNIT)
-			0x06, // bUnitID (6)
+			UDP_AC_PHONE_FU_ID, // bUnitID (6)
 			0x02, // bSourceID (2)
 			0x01, // bControlSize (1)
-			0x02, // bmaContorls(0) : Mute, Volume
+			0x03, // bmaContorls(0) : Mute, Volume
 			0x00, // bmaContorls(1)
 			0x00, // iTerminal (none)
 
@@ -229,17 +232,17 @@ static uint8_t udp_conf_descriptor[] = {
 			0x40, // 8,000 Hz (byte 0) 0x1f40
 			0x1f, // 8,000 Hz (byte 1) 0x841e
 			0x00, // 8,000 Hz (byte 2)
-				
+
 	/* Isochronous Endpoint Descriptor */  
 			0x09, // bLenght
 			0x05, // bDescriptionType (endpoint)
 			0x84, // bEndpointAddress (EP4 in)
 			0x01, // bmAttributes (asynchronous)
-			0x00, // wMaxPacketSize (16) 
+			0x00, // wMaxPacketSize (16)
 			0x02,
 			0x01, // bInterwal (1 ms)
 			0x00, // bRefresh (0)
-			0x00, // bSyncAddress (no synchronization)			
+			0x00, // bSyncAddress (no synchronization)
 		
 	/* Isochronous Endpoint Audio Class Descriptor */
 				0x07, // bLength (7)

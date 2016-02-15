@@ -7,6 +7,7 @@
 
 #include <sam.h>
 #include <stddef.h>
+#include "urb.h"
 #include "udp.h"
 #include "include/udp.h"
 //#include "core/syslog.h"
@@ -68,23 +69,28 @@ int udp_send_data(udp_ep_setup_t *ep, uint8_t *data, uint32_t size) {
 	return SUCCESS;
 }
 
+udp_setup_pkg_t urb_get_setup_pkg(udp_ep_setup_t *ep) {
+	udp_setup_pkg_t request;
+	uint8_t pkg_size = (*(ep->ep.CSR) & 0x3ff0000) >> 16 ;
+	for(uint8_t i = 0; i < pkg_size; i++)
+	*((uint8_t *) &request + i) = (uint8_t) *ep->ep.FDR;
+
+	return request;
+}
+
 /**
 * Function send zero length package.
 * Endpoint switch in ZLP state and wait TXCOMP interrupt.
 **/
 int udp_send_zlp(udp_ep_setup_t *ep) {
-	//TODO: u must think about
-	//if(ep->ep.state != EP_STATE_IDLE) {
-		//__UDP_DEBUG(LOG_LVL_LOW, "Error: Cant send zero length pkg. Endpoint busy.");
-		//return ERRBUSY;
-	//}
 	while(*ep->ep.CSR & UDP_CSR_TXPKTRDY);
-	
-	//ep->ep.state = EP_STATE_ZLP;
-	// Nothing to sent. Just mark control register as ready to sent.
 	__ep_ctrl_set(&ep->ep, UDP_CSR_TXPKTRDY);
-	
+
 	return SUCCESS;
+}
+
+int udp_send_setup_zlp() {
+	return udp_send_zlp(&ep_control);
 }
 
 /**
@@ -92,14 +98,10 @@ int udp_send_zlp(udp_ep_setup_t *ep) {
 * On the bus set stall signal. We need wait for STALLSENT interrupt and remove FORCESTALL.
 **/
 int udp_send_stall(udp_ep_setup_t *ep) {
-	//TODO: and about
-	//if(ep->ep.state != EP_STATE_IDLE) {
-		//__UDP_DEBUG(LOG_LVL_LOW, "Error: Cant send stall signal. Endpoint busy.");
-		//return ERRBUSY;
-	//}
-	
-	//ep->ep.state = EP_STATE_STALL;
 	__ep_ctrl_set(&ep->ep, UDP_CSR_FORCESTALL);
-	
 	return SUCCESS;
+}
+
+int udp_send_setup_stall() {
+	return udp_send_stall(&ep_control);
 }

@@ -126,10 +126,6 @@ void __ep_ctrl_clr(udp_ep_core_t *ep, uint32_t mask);
 void ep_enable(udp_ep_core_t *ep);
 void ep_disable(udp_ep_core_t *ep);
 
-#include "udp/urb.h"
-/* Function return received setup package */
-udp_setup_pkg_t ep_get_setup_pkg(udp_ep_setup_t *ep);
-
 /* This functions processing interrupt for endpoint.
    Call this after UDP_IMR_EPXINT exist. */
 void ep_callback_setup(udp_ep_setup_t *ep);

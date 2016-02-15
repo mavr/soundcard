@@ -13,6 +13,7 @@
 #include "udp/udp_request.h"
 #include "udp/usb.h"
 #include "udp/udp.h"
+#include "udp/urb.h"
 #include <string.h>
 
 void ep_init(void *ep, uint8_t ep_type, uint16_t ep_size, uint8_t ep_number) {
@@ -113,61 +114,51 @@ void ep_disable(udp_ep_core_t *ep) {
 	__ep_ctrl_clr(ep, UDP_CSR_EPEDS);
 }
 
-udp_setup_pkg_t ep_get_setup_pkg(udp_ep_setup_t *ep) {
-	udp_setup_pkg_t request;
-	uint8_t pkg_size = (*(ep->ep.CSR) & 0x3ff0000) >> 16 ;
-	for(uint8_t i = 0; i < pkg_size; i++)
-		*((uint8_t *) &request + i) = (uint8_t) *ep->ep.FDR;
-
-	return request;
-}
-
 void ep_callback_setup(udp_ep_setup_t *ep) {
-	
+
 	/* Setup package comes to us. */
 	if(*ep->ep.CSR & UDP_CSR_RXSETUP) {
 		// Get setup package.
-		udp_setup_pkg.pkg = ep_get_setup_pkg(ep);
-				
+		udp_setup_pkg.pkg = urb_get_setup_pkg(ep);
+
 		if(udp_setup_pkg.pkg.bmRequestType & 0x80) *ep->ep.CSR |= UDP_CSR_DIR;
-		
+
 		// Clear interrupt bit.
 		*ep->ep.CSR &= ~UDP_CSR_RXSETUP;
 		udp_setup_pkg.tx = NULL;
 		
 		udp_enumerate(&udp_setup_pkg);
 	}
-	
+
 	/* We get data or just delivery report. */
 	if(*ep->ep.CSR & (UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1)) {
-		udp_setup_pkg_t request;
 		/* Byte count in FIFO */
-		uint8_t pkg_size = (*(ep->ep.CSR) & 0x3ff0000) >> 16 ;
+		uint8_t pkg_size = (*(ep->ep.CSR) & 0x3ff0000) >> 16;
 		
 		for(uint8_t i = 0; i < pkg_size; i++)
 			udp_setup_pkg.data[i] = (uint8_t) *ep->ep.FDR;
 		
+//		__UDP_DEBUG(LOG_LVL_HIGH, "SETUP_RX");
 		*ep->ep.CSR &= ~(UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1);
 
 		if(pkg_size != 0) {
-			if(udp_setup_pkg.callback != NULL) udp_setup_pkg.callback();
-			__UDP_DEBUG(LOG_LVL_HIGH, "EP0 : RX DATA AVAIBLE!!");
+			if(udp_setup_pkg.callback != NULL) udp_setup_pkg.callback(udp_setup_pkg.__callback_arg);
 		}
 
 	}
-	
+
 	/* Our data delivered */
 	if(*ep->ep.CSR & UDP_CSR_TXCOMP) {
 		if(udp_setup_pkg.tx != NULL) {
 			udp_push(ep);
 		} else {
-			if(udp_setup_pkg.callback != NULL) udp_setup_pkg.callback();
+			if(udp_setup_pkg.callback != NULL) udp_setup_pkg.callback(udp_setup_pkg.__callback_arg);
 			udp_setup_pkg.callback = NULL;
 		}
 
 		__ep_ctrl_clr(&ep->ep, UDP_CSR_TXCOMP);
 	}	
-	
+
 	/* Our mistake delivered */
 	if(*ep->ep.CSR & UDP_CSR_STALLSENT) {
 		__ep_ctrl_clr(&ep->ep, UDP_CSR_FORCESTALL);
@@ -179,11 +170,12 @@ void ep_callback_setup(udp_ep_setup_t *ep) {
 }
 
 void ep_callback_hid(udp_ep_hid_report_t *ep) {
+	//TODO: ep_callback_hid
 	if(*ep->ep.CSR & UDP_CSR_TXCOMP) {
 		__ep_ctrl_clr(&(ep->ep), UDP_CSR_TXCOMP);
 		__ep_ctrl_clr(&(ep->ep), UDP_CSR_TXPKTRDY);
 	}
-	
+
 }
 
 void ep_callback(udp_ep_audio_t *ep) {	

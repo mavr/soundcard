@@ -13,6 +13,7 @@
 #include "include/system.h"
 #include "udp/udp-audio.h"
 #include "audio/audio.h"
+#include "udp/audio.h"
 #include "codec/pcm3793.h"
 #include <string.h>
 /* Descriptor processing */
@@ -203,74 +204,15 @@ void __udp_request_class_device(udp_setup_activity_t *udp_setup_pkg) {
 void __udp_request_class_interface(udp_setup_activity_t *udp_setup_pkg) {
 	uint16_t value;
 	/* What the kind of interface */
-	switch(_udp.udp_interface) {
-		case UDP_AC_INTERFACE : break;
-		
+	uint8_t tmp = UDP_REQUEST_INTERFACE(udp_setup_pkg->pkg.wIndex);
+//	switch(_udp.udp_interface) {
+	switch(tmp) {
+		case UDP_AC_INTERFACE : 
 		case UDP_AS_IN_INTERFACE : 
-		
 		case UDP_AS_OUT_INTERFACE : 
-			switch(udp_setup_pkg->pkg.bRequest) {
-				case UDP_bRequest_SET_CUR :
-					udp_setup_pkg->callback = &_udp_ac_set_cur;
-					__UDP_DEBUG(LOG_LVL_LOW, "SET_CUR");
-					break;
-
-				case UDP_bRequest_GET_CUR :
-					value = audio_get_current();
-					udp_send_setup((uint8_t * ) &value, 2);
-					__UDP_DEBUG(LOG_LVL_LOW, "GET_MIN");
-					break;
-					
-				case UDP_bRequest_SET_MIN :
-					__UDP_DEBUG(LOG_LVL_LOW, "SET_MIN");
-					break;
-				
-				case UDP_bRequest_GET_MIN :
-					value = 0xba00;
-					udp_send_setup((uint8_t * ) &value, 2);
-					__UDP_DEBUG(LOG_LVL_LOW, "GET_MIN");
-					break;
-				
-				case UDP_bRequest_SET_MAX :
-					__UDP_DEBUG(LOG_LVL_LOW, "SET_MAX");
-					break;
-				
-				case UDP_bRequest_GET_MAX :
-					value = 0x600;
-					udp_send_setup((uint8_t * ) &value, 2);
-					__UDP_DEBUG(LOG_LVL_LOW, "GET_MAX");
-					break;
-				
-				case UDP_bRequest_SET_RES :
-					udp_setup_pkg->callback = &_udp_ac_set_res;
-					__UDP_DEBUG(LOG_LVL_LOW, "SET_RES");
-					break;
-				
-				case UDP_bRequest_GET_RES :
-					value = 0x0100;
-					udp_send_setup((uint8_t * ) &value, 2);
-					__UDP_DEBUG(LOG_LVL_LOW, "GET_RES");
-					break;
-				
-				case UDP_bRequest_SET_MEM :
-					__UDP_DEBUG(LOG_LVL_LOW, "SET_MEM");
-					break;
-				
-				case UDP_bRequest_GET_MEM :
-					__UDP_DEBUG(LOG_LVL_LOW, "GET_MEM");
-					break;
-				
-				case UDP_bRequest_GET_STAT :
-					__UDP_DEBUG(LOG_LVL_LOW, "GET_STAT");
-					break;								
-					
-				default:
-					__UDP_DEBUG(LOG_LVL_LOW, "GET_***");
-					udp_send_zlp(&ep_control);
-					break;
-			}
+			udp_audio_controllers_proc(udp_setup_pkg);			
 			break;
-		
+
 		case UDP_HID_INTERFACE : 
 			switch(udp_setup_pkg->pkg.bRequest) {
 				case UDP_bRequest_GET_REPORT :
@@ -279,12 +221,12 @@ void __udp_request_class_interface(udp_setup_activity_t *udp_setup_pkg) {
 					udp_send_setup(udp_hid_interface_descriptor, 0x09);
 					__UDP_DEBUG(LOG_LVL_HIGH, "Reply: HID_INTERFACE_DESCRIPTOR.");
 					break;
-					
+
 				case UDP_bRequest_SET_IDLE :
 					__UDP_DEBUG(LOG_LVL_HIGH, "Request class -> interface : SET_IDLE.");
 					udp_send_zlp(&ep_control);
 					break;
-					
+
 				default:
 					udp_send_stall(&ep_control);
 					__UDP_DEBUG(LOG_LVL_HIGH, "Error! __udp_request_class_interface(): uknown request.");
@@ -320,7 +262,7 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 //				default: udp_send_zlp(&ep_control);
 			}
 			break;
-			
+
 		case UDP_wValue_DESCRIPTORT_HID:
 			__UDP_DEBUG(LOG_LVL_HIGH, "Reply: HID_INTERFACE_DESCRIPTOR.");
 			_p_desc = udp_hid_interface_descriptor; _s_desc = 0x09;
@@ -330,7 +272,7 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 			__UDP_DEBUG(LOG_LVL_HIGH, "Reply: HID_REPORT_DESCRIPTOR.");
 			_p_desc = udp_kbd_report_descriptor; _s_desc = UDP_DESCRIPTOR_HID_REPORT_SIZE;
 			break;
-			
+
 		default: 
 			udp_send_stall(&ep_control);
 			__UDP_DEBUG(LOG_LVL_HIGH, "Error! udp_get_descriptor() : uknown descriptor.");
@@ -370,12 +312,12 @@ void udp_set_interface(uint16_t wIndex) {
 
 /* Callbacks */
 
-void _udp_set_address_callback() {
+void _udp_set_address_callback(void *p) {
 	UDP->UDP_FADDR |= (udp_setup_pkg.pkg.wValue & 0x7f) | UDP_FADDR_FEN;
 	udp_set_state(UDP_STATE_ADDRESS);
 }
 
-void _udp_set_configuration_callback() {
+void _udp_set_configuration_callback(void *p) {
 	if(udp_get_state() == UDP_STATE_ADDRESS) udp_set_state(UDP_STATE_CONFIGURED);
 	else if(udp_get_state() == UDP_STATE_CONFIGURED) udp_set_state(UDP_STATE_ADDRESS);
 	
@@ -386,13 +328,3 @@ void _udp_set_configuration_callback() {
 	__ep_ctrl_set(&ep_in.ep, UDP_CSR_TXPKTRDY);
 }
 
-void _udp_ac_set_res(void) {
-	udp_send_zlp(&ep_control);
-}
-
-void _udp_ac_set_cur(void) {
-	int16_t volume = *( (int16_t *) udp_setup_pkg.data);
-//	static uint8_t volume = 0x00;
-	pcm3793_dar(PCM_R65_HRV((int8_t) (volume / 0x100)));
-	udp_send_zlp(&ep_control);
-}
