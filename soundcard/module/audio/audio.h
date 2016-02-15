@@ -10,6 +10,15 @@
 #define _M_AUDIO_H_
 
 #include <sam.h>
+#include "core/syslog.h"
+
+#ifdef UART_DEBUG
+	#define __AUDIO_DEBUG(lvl,msg) {\
+		syslog_prefix("[audio]\t"); \
+	__DEBUG(lvl,msg); }
+#else
+	#define __AUDIO_DEBUG(lvl,msg)
+#endif
 
 /* Phone */
 /* Volume unit parameters. */
@@ -72,7 +81,7 @@ typedef struct {
 	void (*__set_res)(const void *);
 
 	void (*__get_cur)(const void *);
-	void (*__set_cur)(void *);
+	void (*__set_cur)(void *, void *);
 
 	void (*__get_mem)(const void *);
 	void (*__set_mem)(const void *);
@@ -148,19 +157,6 @@ struct audio_unit_elist_t audio_phone_fu;	// FU for mic	(volume, mute)
 	struct audio_unit_ctrl_elist_t audio_unit_mic_fu_ctrl_vol;
 	/* Mute */
 	struct audio_unit_ctrl_elist_t audio_unit_mic_fu_ctrl_mute;
-	
-/* Audio units functions. */
-/* Common. */
-uint16_t __audio_controls_common_get_min(void *unit);
-uint16_t __audio_controls_common_get_max(void *unit);
-uint16_t __audio_controls_common_get_current(void *unit);
-void	 __audio_controls_common_set_current(void *unit, uint16_t value);
-
-/* Mute. */
-uint8_t __audio_controls_mute_get_min(void *unit);
-uint8_t __audio_controls_mute_get_max(void *unit);
-uint8_t __audio_controls_mute_get_current(void *unit);
-void	__audio_controls_mute_set_current(void *unit, uint8_t value);
 
 /* Configuring, starting ssc, spi and pcm systems. */
 int audio_system(void);
@@ -192,31 +188,40 @@ struct audio_unit_ctrl_elist_t * audio_unit_ctrl_elist_get(struct audio_unit_eli
 audio_unit_controller_t * audio_unit_ctrl_get(uint8_t unit_id, uint8_t ctrl_id);
 
 /** Callbacks **/
+/* Audio units functions. */
 /* Common */
-void _audio_unit_common_u16_get_min(const void * unit_conf);
-void _audio_unit_common_u16_set_min(const void * unit_conf);
+void _audio_unit_common_u16_get_min(const void *unit_conf);
+void _audio_unit_common_u16_set_min(const void *unit_conf);
 
-void _audio_unit_common_u16_get_max(const void * unit_conf);
-void _audio_unit_common_u16_set_max(const void * unit_conf);
+void _audio_unit_common_u16_get_max(const void *unit_conf);
+void _audio_unit_common_u16_set_max(const void *unit_conf);
 
-void _audio_unit_common_u16_get_res(const void * unit_conf);
-void _audio_unit_common_u16_set_res(const void * unit_conf);
+void _audio_unit_common_u16_get_res(const void *unit_conf);
+void _audio_unit_common_u16_set_res(const void *unit_conf);
 
-void _audio_unit_common_u16_get_cur(const void * unit_conf);
-void _audio_unit_common_u16_set_cur(void * unit_conf);
+void _audio_unit_common_u16_get_cur(const void *unit_conf);
+void _audio_unit_common_u16_set_cur(void *unit_conf, void *data);
 
-void _audio_unit_common_u8_get_min(const void * unit_conf);
-void _audio_unit_common_u8_set_min(const void * unit_conf);
+void _audio_unit_common_u8_get_min(const void *unit_conf);
+void _audio_unit_common_u8_set_min(const void *unit_conf);
 
-void _audio_unit_common_u8_get_max(const void * unit_conf);
-void _audio_unit_common_u8_set_max(const void * unit_conf);
+void _audio_unit_common_u8_get_max(const void *unit_conf);
+void _audio_unit_common_u8_set_max(const void *unit_conf);
 
-void _audio_unit_common_u8_get_res(const void * unit_conf);
-void _audio_unit_common_u8_set_res(const void * unit_conf);
+void _audio_unit_common_u8_get_res(const void *unit_conf);
+void _audio_unit_common_u8_set_res(const void *unit_conf);
 
-void _audio_unit_common_u8_get_cur(const void * unit_conf);
-void _audio_unit_common_u8_set_cur(void * unit_conf);
+void _audio_unit_common_u8_get_cur(const void *unit_conf);
+void _audio_unit_common_u8_set_cur(void *unit_conf, void *);
 
-void _audio_unit_common_unsupport(const void * unit_conf);
+void _audio_unit_common_unsupport(const void *unit_conf);
+
+/* Speaker feature */
+void _audio_unit_phone_vol_set_cur(void *unit_conf, void *data);
+void _audio_unit_phone_mute_set_cur(void *unit_conf, void *data);
+
+/* Microphone feature */
+void _audio_unit_mic_vol_set_cur(void *unit_conf, void *data);
+void _audio_unit_mic_mic_set_cur(void *unit_conf, void *data);
 
 #endif /* AUDIO_H_ */

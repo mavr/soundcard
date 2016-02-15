@@ -35,7 +35,9 @@ void udp_audio_fu_mute_cs(udp_setup_activity_t *udp_setup_pkg);
 
 /** Callbacks **/
 void _udp_ac_set_res(void);
-void _udp_ac_set_cur(void);
+
+void _udp_ac_set_cur(udp_request_callback_t *);
+
 
 
 

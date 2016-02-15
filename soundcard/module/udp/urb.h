@@ -31,11 +31,9 @@ typedef struct { // __attribute__((__packed))
 /* Structure of callback. */
 typedef struct {
 	/* Point to incoming parameters. */
-	void *uint8_t;
+	uint8_t *data;
 	/* Point to object struct. */
-	void *object;
-	/* Point to callback funcion. */
-	void (*callback)(void *);
+	void *source;
 } udp_request_callback_t;
 
 typedef struct {
@@ -50,11 +48,11 @@ typedef struct {
 	uint16_t tx_size;
 	uint16_t tx_count;
 	
+	/* Callback structure for request. */
+	udp_request_callback_t object;
+
 	/* Point to callback function. */
-	void (*callback)(void *);
-	/* Point to callback function argument. */
-	void *__callback_arg;
-	
+	void (*callback)(udp_request_callback_t *);
 } udp_setup_activity_t;
 
 udp_setup_activity_t udp_setup_pkg;

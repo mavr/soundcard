@@ -57,7 +57,7 @@ void udp_set_interface(uint16_t wIndex);
 
 /** Callbacks for request **/
 /* Standart */
-void _udp_set_address_callback(void *);
-void _udp_set_configuration_callback(void *);
+void _udp_set_address_callback(udp_request_callback_t *);
+void _udp_set_configuration_callback(udp_request_callback_t *);
 
 #endif /* UDP_USB_H_ */

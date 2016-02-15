@@ -20,7 +20,7 @@ void udp_audio_controllers_proc(udp_setup_activity_t *udp_setup_pkg) {
 		__UDP_DEBUG(LOG_LVL_LOW, "Error! Audio Control : wrong control.");
 		udp_send_stall(&ep_control);
 	}
-	udp_setup_pkg->__callback_arg = (void *) audio_ctrl;
+	udp_setup_pkg->object.source = (void *) audio_ctrl;
 	uint16_t value;
 	switch(udp_setup_pkg->pkg.bRequest) {
 
@@ -31,7 +31,7 @@ void udp_audio_controllers_proc(udp_setup_activity_t *udp_setup_pkg) {
 			break;
 		
 		case UDP_bRequest_SET_CUR :
-			udp_setup_pkg->callback = audio_ctrl->__set_cur;
+			udp_setup_pkg->callback = &_udp_ac_set_cur;
 			__UDP_DEBUG(LOG_LVL_LOW, "SET_CUR");
 			break;
 
@@ -46,7 +46,7 @@ void udp_audio_controllers_proc(udp_setup_activity_t *udp_setup_pkg) {
 			audio_ctrl->__get_min(audio_ctrl);
 			__UDP_DEBUG(LOG_LVL_LOW, "GET_MIN");
 			break;
-		
+
 		case UDP_bRequest_GET_MAX :
 			//udp_setup_pkg->callback = audio_ctrl->__get_max;
 			audio_ctrl->__get_max(audio_ctrl);
@@ -58,8 +58,7 @@ void udp_audio_controllers_proc(udp_setup_activity_t *udp_setup_pkg) {
 			audio_ctrl->__get_res(audio_ctrl);
 			__UDP_DEBUG(LOG_LVL_LOW, "GET_RES");
 			break;
-		
-		
+
 		case UDP_bRequest_SET_MIN :
 		case UDP_bRequest_SET_MAX :
 		case UDP_bRequest_SET_MEM :
@@ -68,7 +67,7 @@ void udp_audio_controllers_proc(udp_setup_activity_t *udp_setup_pkg) {
 			__UDP_DEBUG(LOG_LVL_LOW, "Audio Control : request doesn't support.");
 			udp_send_zlp(&ep_control);
 			break;
-		
+
 		default:
 		__UDP_DEBUG(LOG_LVL_LOW, "Error! Audio Control : unknown request.");
 		udp_send_zlp(&ep_control);
@@ -102,9 +101,11 @@ void _udp_ac_set_res(void) {
 	udp_send_zlp(&ep_control);
 }
 
-void _udp_ac_set_cur(void) {
-	int16_t volume = *( (int16_t *) udp_setup_pkg.data);
-	//	static uint8_t volume = 0x00;
-	pcm3793_dar(PCM_R65_HRV((int8_t) (volume / 0x100)));
-	udp_send_zlp(&ep_control);
+void _udp_ac_set_cur(udp_request_callback_t *object) {
+//	int16_t volume = *( (int16_t *) udp_setup_pkg.data);
+//	static uint8_t volume = 0x00;
+//	pcm3793_dar(PCM_R65_HRV((int8_t) (volume / 0x100)));
+//	udp_send_zlp(&ep_control);
+	audio_unit_controller_t *ptr = (audio_unit_controller_t *) object->source;
+	ptr->__set_cur(object->source, object->data);
 }

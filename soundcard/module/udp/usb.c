@@ -312,12 +312,12 @@ void udp_set_interface(uint16_t wIndex) {
 
 /* Callbacks */
 
-void _udp_set_address_callback(void *p) {
+void _udp_set_address_callback(udp_request_callback_t *p) {
 	UDP->UDP_FADDR |= (udp_setup_pkg.pkg.wValue & 0x7f) | UDP_FADDR_FEN;
 	udp_set_state(UDP_STATE_ADDRESS);
 }
 
-void _udp_set_configuration_callback(void *p) {
+void _udp_set_configuration_callback(udp_request_callback_t *p) {
 	if(udp_get_state() == UDP_STATE_ADDRESS) udp_set_state(UDP_STATE_CONFIGURED);
 	else if(udp_get_state() == UDP_STATE_CONFIGURED) udp_set_state(UDP_STATE_ADDRESS);
 	

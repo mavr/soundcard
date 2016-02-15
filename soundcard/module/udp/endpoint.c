@@ -142,9 +142,10 @@ void ep_callback_setup(udp_ep_setup_t *ep) {
 		*ep->ep.CSR &= ~(UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1);
 
 		if(pkg_size != 0) {
-			if(udp_setup_pkg.callback != NULL) udp_setup_pkg.callback(udp_setup_pkg.__callback_arg);
+			udp_setup_pkg.object.data = udp_setup_pkg.data;
+			if(udp_setup_pkg.callback != NULL) udp_setup_pkg.callback(&udp_setup_pkg.object);
+			udp_setup_pkg.callback = NULL;
 		}
-
 	}
 
 	/* Our data delivered */
@@ -152,7 +153,7 @@ void ep_callback_setup(udp_ep_setup_t *ep) {
 		if(udp_setup_pkg.tx != NULL) {
 			udp_push(ep);
 		} else {
-			if(udp_setup_pkg.callback != NULL) udp_setup_pkg.callback(udp_setup_pkg.__callback_arg);
+			if(udp_setup_pkg.callback != NULL) udp_setup_pkg.callback(&udp_setup_pkg.object);
 			udp_setup_pkg.callback = NULL;
 		}
 
@@ -163,7 +164,6 @@ void ep_callback_setup(udp_ep_setup_t *ep) {
 	if(*ep->ep.CSR & UDP_CSR_STALLSENT) {
 		__ep_ctrl_clr(&ep->ep, UDP_CSR_FORCESTALL);
 		__ep_ctrl_clr(&ep->ep, UDP_CSR_STALLSENT);
-
 	}
 	
 	

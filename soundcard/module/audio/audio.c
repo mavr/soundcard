@@ -68,6 +68,7 @@ void audio_controls_set_list(void) {
 		audio_unit_mic_fu_conf_vol.__get_max = &_audio_unit_common_u16_get_max;
 		audio_unit_mic_fu_conf_vol.__get_res = &_audio_unit_common_u16_get_res;
 		audio_unit_mic_fu_conf_vol.__get_cur = &_audio_unit_common_u16_get_cur;
+		audio_unit_mic_fu_conf_vol.__set_cur = &_audio_unit_common_u16_set_cur;
 		audio_unit_ctrl_init(UDP_AC_MIC_FU_ID, UDP_AUDIO_CS_VOLUME_CONTROL, &audio_unit_mic_fu_conf_vol);
 
 	/**
@@ -86,7 +87,7 @@ void audio_controls_set_list(void) {
 		audio_unit_phone_fu_conf_mute.__get_max = &_audio_unit_common_u8_get_max;
 		audio_unit_phone_fu_conf_mute.__get_res = &_audio_unit_common_u8_get_res;
 		audio_unit_phone_fu_conf_mute.__get_cur = &_audio_unit_common_u8_get_cur;
-		audio_unit_phone_fu_conf_mute.__set_cur = &_audio_unit_common_u8_set_cur;
+		audio_unit_phone_fu_conf_mute.__set_cur = &_audio_unit_phone_mute_set_cur;
 		
 		audio_unit_ctrl_init(UDP_AC_PHONE_FU_ID, UDP_AUDIO_CS_MUTE_CONTROL, &audio_unit_phone_fu_conf_mute);
 
@@ -102,21 +103,9 @@ void audio_controls_set_list(void) {
 		audio_unit_phone_fu_conf_vol.__get_max = &_audio_unit_common_u16_get_max;
 		audio_unit_phone_fu_conf_vol.__get_res = &_audio_unit_common_u16_get_res;
 		audio_unit_phone_fu_conf_vol.__get_cur = &_audio_unit_common_u16_get_cur;
-		audio_unit_phone_fu_conf_vol.__set_cur = &_audio_unit_common_u16_set_cur;
+		audio_unit_phone_fu_conf_vol.__set_cur = &_audio_unit_phone_vol_set_cur;
 		audio_unit_phone_fu_conf_vol.__set_res = &_audio_unit_common_u16_set_res;
 		audio_unit_ctrl_init(UDP_AC_PHONE_FU_ID, UDP_AUDIO_CS_VOLUME_CONTROL, &audio_unit_phone_fu_conf_vol);
-}
-
-uint16_t audio_get_current(void) {
-	//switch(udp_setup_pkg->pkg.wIndex >> 8) {
-		//case UDP_AC_PHONE_FU_ID : 
-			//break;
-	//}
-	return 45;// codec.mixer.phone_volume.cur;
-}
-
-void audio_set_current(uint16_t value) {
-//	codec.mixer.phone_volume.cur = value;
 }
 
 inline void _audio_unit_common_u16_get_min(const void * unit_conf) {
@@ -143,10 +132,9 @@ inline void _audio_unit_common_u16_set_res(const void * unit_conf) {
 	udp_send_setup_zlp();
 }
 
-inline void _audio_unit_common_u16_set_cur(void * unit_conf) {
-//	int16_t volume = *( (int16_t *) udp_setup_pkg.data);
-	//	static uint8_t volume = 0x00;
-//	pcm3793_dar(PCM_R65_HRV((int8_t) (volume / 0x100)));
+inline void _audio_unit_common_u16_set_cur(void *unit_conf, void *data) {
+	audio_controller_conf_uint16_t *conf = ((audio_unit_controller_t *) unit_conf)->configuration;
+	conf->cur = (uint16_t) *( (uint16_t *) data);
 	udp_send_setup_zlp();
 }
 
@@ -174,12 +162,25 @@ inline void _audio_unit_common_u8_set_res(const void * unit_conf) {
 	udp_send_setup_zlp();
 }
 
-inline void _audio_unit_common_u8_set_cur(void * unit_conf) {
+inline void _audio_unit_common_u8_set_cur(void *unit_conf, void *data) {
+	audio_controller_conf_uint8_t *conf = ((audio_unit_controller_t *) unit_conf)->configuration;
+	conf->cur = (uint8_t) *( (uint8_t *) data);
 	udp_send_setup_zlp();
 }
 
 inline void _audio_unit_common_unsupport(const void * unit_conf) {
 	udp_send_setup_stall();
+}
+
+inline void _audio_unit_phone_vol_set_cur(void *unit_conf, void *data) {
+	_audio_unit_common_u16_set_cur(unit_conf, data);
+	pcm3793_dar(PCM_R65_HRV((int8_t) (*((uint16_t *) data) / 0x100)));
+}
+
+inline void _audio_unit_phone_mute_set_cur(void *unit_conf, void *data) {
+	_audio_unit_common_u8_set_cur(unit_conf, data);
+	if(*((uint8_t *) data) != 0) pcm3793_dar(PCM_R65_HMUR);
+//	else pcm3793_dar(PCM_R65_HMUR);
 }
 
 void audio_unit_add(uint8_t id, struct audio_unit_elist_t *unit) {
