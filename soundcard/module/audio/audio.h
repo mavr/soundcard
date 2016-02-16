@@ -69,7 +69,7 @@ typedef struct {
 } audio_controller_conf_uint16_t;
 
 typedef struct {
-	void *configuration;
+	void *attribution;
 
 	void (*__get_min)(const void *);
 	void (*__set_min)(const void *);
@@ -137,6 +137,10 @@ audio_unit_controller_t audio_unit_phone_fu_conf_mute;
 	void _audio_unit_phone_fu_mute_set_max();
 	void _audio_unit_phone_fu_mute_get_cur();
 	void _audio_unit_phone_fu_mute_set_cur();
+
+/* Mixer unit ID7 */
+audio_unit_controller_t audio_unit_mixer_conf;
+	
 
 /** Elements routing **/
 /* This is head of the elements list. */

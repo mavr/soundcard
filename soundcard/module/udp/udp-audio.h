@@ -19,7 +19,8 @@ typedef struct {
 } udp_audio_conf_desc_t;
 
 #define UDP_DESCRIPTOR_DEVICE_SIZE		0x12
-#define UDP_DESCRIPTOR_CONF_SIZE		0xd9
+//#define UDP_DESCRIPTOR_CONF_SIZE		0xd9
+#define UDP_DESCRIPTOR_CONF_SIZE		0xe6
 #define UDP_DESCRIPTOR_HID_REPORT_SIZE	45
 
 #define UDP_AC_INTERFACE				0
@@ -29,6 +30,7 @@ typedef struct {
 
 #define UDP_AC_PHONE_FU_ID					6
 #define UDP_AC_MIC_FU_ID					5
+#define UDP_AC_MIX_ID						7
 
 //#define UDP_DESCRIPTOR_HID_REPORT_SIZE	52
 
@@ -140,7 +142,6 @@ static uint8_t udp_conf_descriptor[] = {
 			0x00, // iTerminal (none)
 		
 
-	/** Speaker **/
 	/* Output terminal Audio Class Descriptor */
 			0x09, // bLength (9)
 			0x24, // bDescriptorType (CS_INTERFACE)
@@ -152,7 +153,7 @@ static uint8_t udp_conf_descriptor[] = {
 			UDP_AC_PHONE_FU_ID, // bSourceID (6)
 			//0x03, // bSourceID (3)
 			0x00, // iTerminal (none)
-			
+
 	/* Output terminal Audio Class Descriptor */
 			0x09, // bLength (9)
 			0x24, // bDescriptorType (CS_INTERFACE)
@@ -181,11 +182,26 @@ static uint8_t udp_conf_descriptor[] = {
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x06, // bDescriptorSubtype (FEATURE_UNIT)
 			UDP_AC_PHONE_FU_ID, // bUnitID (6)
-			0x02, // bSourceID (2)
+			UDP_AC_MIX_ID, // bSourceID (2)
 			0x01, // bControlSize (1)
 			0x03, // bmaContorls(0) : Mute, Volume
 			0x00, // bmaContorls(1)
 			0x00, // iTerminal (none)
+
+	/* Mixer unit Audio Class Descriptor */
+			0x0d, // bLenght
+			0x24, // bDescriptorType (CS_INTERFACE)
+			0x04, // bDescriptorSubtype (MIXER_UNIT)
+			UDP_AC_MIX_ID, // bUnitID (7)
+			0x02, // bNrInPins (2)
+			0x01, // baSourceID (1)
+			0x02, // baSourceID (2)
+			0x02, // bNrChannels - Number of logical output channels
+			0x03, // wChannelConfig
+			0x00,
+			0x00, // iChannelNames
+			0x00, // bmControls
+			0x00,
 
 	/** Interface number 1 **/
 	/* Audio Stream interface descriptor */

@@ -45,7 +45,8 @@ void pcm3793_init() {
 	
 	/* Choose switchers. */
 //	pcm3793_switch(PCM_R88_SW1 | PCM_R88_SW6);
-	pcm3793_switch(PCM_R88_SW5 | PCM_R88_SW2);
+//	pcm3793_switch(PCM_R88_SW5 | PCM_R88_SW2);
+	pcm3793_switch(PCM_R88_SW5 | PCM_R88_SW2 | PCM_R88_SW1 | PCM_R88_SW6);
 	
 	/* Turn on HPR. */
 	void pcm3793_phpr_up();
@@ -73,6 +74,6 @@ void pcm3793_init() {
 	}
 	pcm3793_write(0x49, 0xff);
 	
-	__DEBUG(LOG_LVL_HIGH, "[audio]\tStarted in master mode");
+	__DEBUG(LOG_LVL_HIGH, "[pcm]\tStarted in master mode");
 	
 }

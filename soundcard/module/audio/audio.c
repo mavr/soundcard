@@ -48,7 +48,7 @@ void audio_controls_set_list(void) {
 		audio_unit_ctrl_mic_fu_conf_mute.min = AUDIO_MIC_MUTE_MIN;
 		audio_unit_ctrl_mic_fu_conf_mute.res = AUDIO_MIC_MUTE_RES;
 
-		audio_unit_mic_fu_conf_mute.configuration = (void *) &audio_unit_ctrl_mic_fu_conf_mute;
+		audio_unit_mic_fu_conf_mute.attribution = (void *) &audio_unit_ctrl_mic_fu_conf_mute;
 		audio_unit_mic_fu_conf_mute.__get_min = &_audio_unit_common_u8_get_min;
 		audio_unit_mic_fu_conf_mute.__get_max = &_audio_unit_common_u8_get_max;
 		audio_unit_mic_fu_conf_mute.__get_res = &_audio_unit_common_u8_get_res;
@@ -63,7 +63,7 @@ void audio_controls_set_list(void) {
 		audio_unit_ctrl_mic_fu_conf_vol.min = AUDIO_MIC_VOL_MIN;
 		audio_unit_ctrl_mic_fu_conf_vol.res = AUDIO_MIC_VOL_RES;
 
-		audio_unit_mic_fu_conf_vol.configuration = (void *) &audio_unit_ctrl_mic_fu_conf_vol;
+		audio_unit_mic_fu_conf_vol.attribution = (void *) &audio_unit_ctrl_mic_fu_conf_vol;
 		audio_unit_mic_fu_conf_vol.__get_min = &_audio_unit_common_u16_get_min;
 		audio_unit_mic_fu_conf_vol.__get_max = &_audio_unit_common_u16_get_max;
 		audio_unit_mic_fu_conf_vol.__get_res = &_audio_unit_common_u16_get_res;
@@ -82,7 +82,7 @@ void audio_controls_set_list(void) {
 		audio_unit_ctrl_phone_fu_conf_mute.min = AUDIO_PHONE_MUTE_MIN;
 		audio_unit_ctrl_phone_fu_conf_mute.res = AUDIO_PHONE_MUTE_RES;
 
-		audio_unit_phone_fu_conf_mute.configuration = (void *) &audio_unit_ctrl_phone_fu_conf_mute;
+		audio_unit_phone_fu_conf_mute.attribution = (void *) &audio_unit_ctrl_phone_fu_conf_mute;
 		audio_unit_phone_fu_conf_mute.__get_min = &_audio_unit_common_u8_get_min;
 		audio_unit_phone_fu_conf_mute.__get_max = &_audio_unit_common_u8_get_max;
 		audio_unit_phone_fu_conf_mute.__get_res = &_audio_unit_common_u8_get_res;
@@ -98,7 +98,7 @@ void audio_controls_set_list(void) {
 		audio_unit_ctrl_phone_fu_conf_vol.min = AUDIO_PHONE_VOL_MIN;
 		audio_unit_ctrl_phone_fu_conf_vol.res = AUDIO_PHONE_VOL_RES;
 
-		audio_unit_phone_fu_conf_vol.configuration = (void *) &audio_unit_ctrl_phone_fu_conf_vol;
+		audio_unit_phone_fu_conf_vol.attribution = (void *) &audio_unit_ctrl_phone_fu_conf_vol;
 		audio_unit_phone_fu_conf_vol.__get_min = &_audio_unit_common_u16_get_min;
 		audio_unit_phone_fu_conf_vol.__get_max = &_audio_unit_common_u16_get_max;
 		audio_unit_phone_fu_conf_vol.__get_res = &_audio_unit_common_u16_get_res;
@@ -109,22 +109,22 @@ void audio_controls_set_list(void) {
 }
 
 inline void _audio_unit_common_u16_get_min(const void * unit_conf) {
-	audio_controller_conf_uint16_t *conf = ((audio_unit_controller_t *) unit_conf)->configuration;
+	audio_controller_conf_uint16_t *conf = ((audio_unit_controller_t *) unit_conf)->attribution;
 	udp_send_setup((const uint8_t*) &conf->min, 2);
 }
 
 inline void _audio_unit_common_u16_get_max(const void * unit_conf) {
-	audio_controller_conf_uint16_t *conf = ((audio_unit_controller_t *) unit_conf)->configuration;
+	audio_controller_conf_uint16_t *conf = ((audio_unit_controller_t *) unit_conf)->attribution;
 	udp_send_setup((const uint8_t*) &conf->max, 2);
 }
 
 inline void _audio_unit_common_u16_get_cur(const void * unit_conf) {
-	audio_controller_conf_uint16_t *conf = ((audio_unit_controller_t *) unit_conf)->configuration;
+	audio_controller_conf_uint16_t *conf = ((audio_unit_controller_t *) unit_conf)->attribution;
 	udp_send_setup((const uint8_t*) &conf->cur, 2);
 }
 
 inline void _audio_unit_common_u16_get_res(const void * unit_conf) {
-	audio_controller_conf_uint16_t *conf = ((audio_unit_controller_t *) unit_conf)->configuration;
+	audio_controller_conf_uint16_t *conf = ((audio_unit_controller_t *) unit_conf)->attribution;
 	udp_send_setup((const uint8_t*) &conf->res, 2);
 }
 
@@ -133,28 +133,28 @@ inline void _audio_unit_common_u16_set_res(const void * unit_conf) {
 }
 
 inline void _audio_unit_common_u16_set_cur(void *unit_conf, void *data) {
-	audio_controller_conf_uint16_t *conf = ((audio_unit_controller_t *) unit_conf)->configuration;
+	audio_controller_conf_uint16_t *conf = ((audio_unit_controller_t *) unit_conf)->attribution;
 	conf->cur = (uint16_t) *( (uint16_t *) data);
 	udp_send_setup_zlp();
 }
 
 inline void _audio_unit_common_u8_get_min(const void * unit_conf) {
-	audio_controller_conf_uint8_t *conf = ((audio_unit_controller_t *) unit_conf)->configuration;
+	audio_controller_conf_uint8_t *conf = ((audio_unit_controller_t *) unit_conf)->attribution;
 	udp_send_setup((const uint8_t*) &conf->min, 1);
 }
 
 inline void _audio_unit_common_u8_get_max(const void * unit_conf) {
-	audio_controller_conf_uint8_t *conf = ((audio_unit_controller_t *) unit_conf)->configuration;
+	audio_controller_conf_uint8_t *conf = ((audio_unit_controller_t *) unit_conf)->attribution;
 	udp_send_setup((const uint8_t*) &conf->max, 1);
 }
 
 inline void _audio_unit_common_u8_get_cur(const void * unit_conf) {
-	audio_controller_conf_uint8_t *conf = ((audio_unit_controller_t *) unit_conf)->configuration;
+	audio_controller_conf_uint8_t *conf = ((audio_unit_controller_t *) unit_conf)->attribution;
 	udp_send_setup((const uint8_t*) &conf->cur, 1);
 }
 
 inline void _audio_unit_common_u8_get_res(const void * unit_conf) {
-	audio_controller_conf_uint8_t *conf = ((audio_unit_controller_t *) unit_conf)->configuration;
+	audio_controller_conf_uint8_t *conf = ((audio_unit_controller_t *) unit_conf)->attribution;
 	udp_send_setup((const uint8_t*) &conf->res, 1);
 }
 
@@ -163,7 +163,7 @@ inline void _audio_unit_common_u8_set_res(const void * unit_conf) {
 }
 
 inline void _audio_unit_common_u8_set_cur(void *unit_conf, void *data) {
-	audio_controller_conf_uint8_t *conf = ((audio_unit_controller_t *) unit_conf)->configuration;
+	audio_controller_conf_uint8_t *conf = ((audio_unit_controller_t *) unit_conf)->attribution;
 	conf->cur = (uint8_t) *( (uint8_t *) data);
 	udp_send_setup_zlp();
 }
