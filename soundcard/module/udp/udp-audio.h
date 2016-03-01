@@ -201,7 +201,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x01, // bNrChannels
 			0x01, // wChanelConfig
 			0x00,
-			0x04, // iChannelNames
+			0x00, // iChannelNames
 			0x60, // bmControls
 			0x04, // iMixer
 

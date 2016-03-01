@@ -22,10 +22,10 @@
 
 /* Phone */
 /* Volume unit parameters. */
-#define AUDIO_PHONE_VOL_MAX			0x600
-#define AUDIO_PHONE_VOL_MIN			0xba00
+#define AUDIO_PHONE_VOL_MAX			0x3f00
+#define AUDIO_PHONE_VOL_MIN			0x0000
 #define AUDIO_PHONE_VOL_RES			0x0100
-#define AUDIO_PHONE_VOL_CUR_DEFAULT	0x00
+#define AUDIO_PHONE_VOL_CUR_DEFAULT	0x1a00
 
 /* Mute volume unit parameters. */
 #define AUDIO_PHONE_MUTE_MAX			0x01
@@ -35,9 +35,9 @@
 
 /* Microphone  */
 /* Volume unit parameters. */
-#define AUDIO_MIC_VOL_MAX			0x0ff0
+#define AUDIO_MIC_VOL_MAX			0x2a00
 #define AUDIO_MIC_VOL_MIN			0x00
-#define AUDIO_MIC_VOL_RES			0x010
+#define AUDIO_MIC_VOL_RES			0x100
 #define AUDIO_MIC_VOL_CUR_DEFAULT	0x40
 
 /* Mute volume unit parameters. */
@@ -283,7 +283,9 @@ void _audio_unit_mic_vol_set_cur(void *unit_conf, void *data);
 void _audio_unit_mic_mic_set_cur(void *unit_conf, void *data);
 
 /* Mixer */
-
 void _audio_unit_mix_set_cur(void *unit_conf, void *data);
+
+/* Converters */
+uint8_t _audio_phone_vol_usb_to_pcm(uint16_t value);
 
 #endif /* AUDIO_H_ */

@@ -227,8 +227,11 @@ inline void _audio_unit_common_unsupport(const void * unit_conf) {
 }
 
 inline void _audio_unit_phone_vol_set_cur(void *unit_conf, void *data) {
+	uint8_t reg = 0x00;
 	_audio_unit_common_u16_set_cur(unit_conf, data);
-	pcm3793_dar(PCM_R65_HRV((int8_t) (*((uint16_t *) data) / 0x100)));
+	if(audio_unit_ctrl_phone_fu_conf_mute.cur == 1) reg |= PCM_R65_HMUR;
+	reg |= PCM_R65_HRV((int8_t) (audio_unit_ctrl_phone_fu_conf_vol.cur / 0x100));
+	pcm3793_dar(reg);
 }
 
 inline void _audio_unit_mix_set_cur(void *unit_conf, void *data) {
@@ -245,9 +248,12 @@ inline void _audio_unit_mix_set_cur(void *unit_conf, void *data) {
 }
 
 inline void _audio_unit_phone_mute_set_cur(void *unit_conf, void *data) {
+	uint8_t reg = 0x00;
 	_audio_unit_common_u8_set_cur(unit_conf, data);
-	if(*((uint8_t *) data) != 0) pcm3793_dar(PCM_R65_HMUR);
-//	else pcm3793_dar(PCM_R65_HMUR);
+	
+	if(audio_unit_ctrl_phone_fu_conf_mute.cur == 1) reg |= PCM_R65_HMUR;
+	reg |= PCM_R65_HRV((int8_t) (audio_unit_ctrl_phone_fu_conf_vol.cur / 0x100));
+	pcm3793_dar(reg);
 }
 
 void audio_unit_add(uint8_t id, struct audio_unit_elist_t *unit) {
@@ -320,4 +326,8 @@ audio_unit_controller_t * audio_unit_ctrl_get(uint8_t unit_id, uint8_t ctrl_id) 
 	if(ctrl != NULL) return ctrl->controller;
 
 	return NULL;
+}
+
+inline uint8_t _audio_phone_vol_usb_to_pcm(uint16_t value) {
+	
 }
