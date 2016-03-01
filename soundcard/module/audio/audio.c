@@ -162,6 +162,82 @@ void audio_controls_set_list(void) {
 
 }
 
+void audio_unit_add(uint8_t id, struct audio_unit_elist_t *unit) {
+	if(audio.unit == NULL) {
+		audio.unit = unit;
+		} else {
+		struct audio_unit_elist_t *ptr = audio.unit;
+		while(ptr->next != NULL) ptr = ptr->next;
+		ptr->next = unit;
+	}
+
+	unit->id = id;
+	unit->next = NULL;
+	unit->__controller = NULL;
+}
+
+void audio_unit_ctrl_add(uint8_t unit_id, uint8_t ctrl_id, struct audio_unit_ctrl_elist_t *controller) {
+	struct audio_unit_elist_t *unit = audio_unit_elist_get(unit_id);
+	if(unit == NULL) return;
+
+	struct audio_unit_ctrl_elist_t *ctrl = unit->__controller;
+	if(ctrl != NULL) {
+		while(ctrl->next != NULL) ctrl = ctrl->next;
+		ctrl->next = controller;
+	} else
+	unit->__controller = controller;
+	controller->type = ctrl_id;
+}
+
+void audio_unit_ctrl_init(uint8_t unit_id, uint8_t ctrl_id, audio_unit_controller_t *conf) {
+	struct audio_unit_elist_t *unit = audio_unit_elist_get(unit_id);
+	if(unit == NULL) return;
+
+	struct audio_unit_ctrl_elist_t *ctrl = audio_unit_ctrl_elist_get(unit, ctrl_id);
+	if(ctrl == NULL) return;
+
+	ctrl->controller = conf;
+}
+
+struct audio_unit_elist_t * audio_unit_elist_get(uint8_t id) {
+	struct audio_unit_elist_t *ptr;
+	if(audio.unit != NULL) ptr = audio.unit;
+	else return NULL;
+	while(ptr->id != id) {
+		if(ptr->next != NULL) ptr = ptr->next;
+		else return NULL;
+	}
+
+	return ptr;
+}
+
+struct audio_unit_ctrl_elist_t * audio_unit_ctrl_elist_get(struct audio_unit_elist_t *unit, uint8_t type) {
+	struct audio_unit_ctrl_elist_t *ptr;
+	if(unit->__controller != NULL) ptr = unit->__controller;
+	else return NULL;
+	while(ptr->type != type) {
+		if(ptr->next != NULL) ptr = ptr->next;
+		else return NULL;
+	}
+
+	return ptr;
+}
+
+audio_unit_controller_t * audio_unit_ctrl_get(uint8_t unit_id, uint8_t ctrl_id) {
+	struct audio_unit_ctrl_elist_t *ctrl;
+	struct audio_unit_elist_t *unit = audio_unit_elist_get(unit_id);
+	if(unit != NULL) ctrl = audio_unit_ctrl_elist_get(unit, ctrl_id);
+	else return NULL;
+
+	if(ctrl != NULL) return ctrl->controller;
+
+	return NULL;
+}
+
+/** 
+*	Simple description of common callback functions.
+**/
+
 inline void _audio_unit_common_u16_get_min(const void * unit_conf) {
 	audio_controller_conf_uint16_t *conf = ((audio_unit_controller_t *) unit_conf)->attribution;
 	udp_send_setup((const uint8_t*) &conf->min, 2);
@@ -226,25 +302,17 @@ inline void _audio_unit_common_unsupport(const void * unit_conf) {
 	udp_send_setup_stall();
 }
 
+/**
+*	Local callback functions.
+**/
+
+/* Feature Unit ID 6. */
 inline void _audio_unit_phone_vol_set_cur(void *unit_conf, void *data) {
 	uint8_t reg = 0x00;
 	_audio_unit_common_u16_set_cur(unit_conf, data);
 	if(audio_unit_ctrl_phone_fu_conf_mute.cur == 1) reg |= PCM_R65_HMUR;
 	reg |= PCM_R65_HRV((int8_t) (audio_unit_ctrl_phone_fu_conf_vol.cur / 0x100));
 	pcm3793_dar(reg);
-}
-
-inline void _audio_unit_mix_set_cur(void *unit_conf, void *data) {
-	_audio_unit_common_u16_set_cur(unit_conf, data);
-	
-	uint8_t reg = 0x00;
-	if(audio_unit_mixer_ctrl_in_mic_conf.cur != AUDIO_MIX_IN_MIC_MIN)
-		reg |= PCM_R88_SW1 | PCM_R88_SW6;
-
-	if(audio_unit_mixer_ctrl_in_phone_conf.cur != AUDIO_MIX_IN_PHONE_MIN)
-		reg |= PCM_R88_SW2 | PCM_R88_SW5;
-	
-	pcm3793_switch(reg);
 }
 
 inline void _audio_unit_phone_mute_set_cur(void *unit_conf, void *data) {
@@ -256,78 +324,17 @@ inline void _audio_unit_phone_mute_set_cur(void *unit_conf, void *data) {
 	pcm3793_dar(reg);
 }
 
-void audio_unit_add(uint8_t id, struct audio_unit_elist_t *unit) {
-	if(audio.unit == NULL) {
-		audio.unit = unit;
-	} else {
-		struct audio_unit_elist_t *ptr = audio.unit;
-		while(ptr->next != NULL) ptr = ptr->next;
-		ptr->next = unit;
-	}
+/* Mixer Unit ID 7. */
+inline void _audio_unit_mix_set_cur(void *unit_conf, void *data) {
+	_audio_unit_common_u16_set_cur(unit_conf, data);
 
-	unit->id = id;
-	unit->next = NULL;
-	unit->__controller = NULL;
+	uint8_t reg = 0x00;
+	if(audio_unit_mixer_ctrl_in_mic_conf.cur != AUDIO_MIX_IN_MIC_MIN)
+		reg |= PCM_R88_SW1 | PCM_R88_SW6;
+
+	if(audio_unit_mixer_ctrl_in_phone_conf.cur != AUDIO_MIX_IN_PHONE_MIN)
+		reg |= PCM_R88_SW2 | PCM_R88_SW5;
+
+	pcm3793_switch(reg);
 }
 
-void audio_unit_ctrl_add(uint8_t unit_id, uint8_t ctrl_id, struct audio_unit_ctrl_elist_t *controller) {
-	struct audio_unit_elist_t *unit = audio_unit_elist_get(unit_id);
-	if(unit == NULL) return;
-
-	struct audio_unit_ctrl_elist_t *ctrl = unit->__controller;
-	if(ctrl != NULL) {
-		while(ctrl->next != NULL) ctrl = ctrl->next;
-		ctrl->next = controller;
-	} else 
-		unit->__controller = controller;
-	controller->type = ctrl_id;
-}
-
-void audio_unit_ctrl_init(uint8_t unit_id, uint8_t ctrl_id, audio_unit_controller_t *conf) {
-	struct audio_unit_elist_t *unit = audio_unit_elist_get(unit_id);
-	if(unit == NULL) return;
-
-	struct audio_unit_ctrl_elist_t *ctrl = audio_unit_ctrl_elist_get(unit, ctrl_id);
-	if(ctrl == NULL) return;
-
-	ctrl->controller = conf;
-}
-
-struct audio_unit_elist_t * audio_unit_elist_get(uint8_t id) {
-	struct audio_unit_elist_t *ptr;
-	if(audio.unit != NULL) ptr = audio.unit;
-	else return NULL;
-	while(ptr->id != id) {
-		if(ptr->next != NULL) ptr = ptr->next;
-		else return NULL;
-	}
-
-	return ptr;
-}
-
-struct audio_unit_ctrl_elist_t * audio_unit_ctrl_elist_get(struct audio_unit_elist_t *unit, uint8_t type) {
-	struct audio_unit_ctrl_elist_t *ptr;
-	if(unit->__controller != NULL) ptr = unit->__controller;
-	else return NULL;
-	while(ptr->type != type) {
-		if(ptr->next != NULL) ptr = ptr->next;
-		else return NULL;
-	}
-
-	return ptr;
-}
-
-audio_unit_controller_t * audio_unit_ctrl_get(uint8_t unit_id, uint8_t ctrl_id) {
-	struct audio_unit_ctrl_elist_t *ctrl;
-	struct audio_unit_elist_t *unit = audio_unit_elist_get(unit_id);
-	if(unit != NULL) ctrl = audio_unit_ctrl_elist_get(unit, ctrl_id);
-	else return NULL;
-
-	if(ctrl != NULL) return ctrl->controller;
-
-	return NULL;
-}
-
-inline uint8_t _audio_phone_vol_usb_to_pcm(uint16_t value) {
-	
-}

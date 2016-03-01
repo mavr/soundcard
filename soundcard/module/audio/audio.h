@@ -122,103 +122,58 @@ struct audio_unit_elist_t {
 	struct audio_unit_ctrl_elist_t *__controller;
 } ;
 
-/** Possible elements **/ 
-/* Feature  unit ID5 */
-audio_unit_controller_t audio_unit_mic_fu_conf_vol;
-	audio_controller_conf_uint16_t audio_unit_ctrl_mic_fu_conf_vol;
-	void _audio_unit_mic_fu_vol_get_min();
-	void _audio_unit_mic_fu_vol_set_min();
-	void _audio_unit_mic_fu_vol_get_max();
-	void _audio_unit_mic_fu_vol_set_max();
-	void _audio_unit_mic_fu_vol_get_cur();
-	void _audio_unit_mic_fu_vol_set_cur();
-audio_unit_controller_t audio_unit_mic_fu_conf_mute;
-	audio_controller_conf_uint8_t audio_unit_ctrl_mic_fu_conf_mute;
-	void _audio_unit_mic_fu_mute_get_min();
-	void _audio_unit_mic_fu_mute_set_min();
-	void _audio_unit_mic_fu_mute_get_max();
-	void _audio_unit_mic_fu_mute_set_max();
-	void _audio_unit_mic_fu_mute_get_cur();
-	void _audio_unit_mic_fu_mute_set_cur();
-
-/* Feature  unit ID6 */
-audio_unit_controller_t audio_unit_phone_fu_conf_vol;
-	audio_controller_conf_uint16_t audio_unit_ctrl_phone_fu_conf_vol;
-	void _audio_unit_phone_fu_vol_get_min();
-	void _audio_unit_phone_fu_vol_set_min();
-	void _audio_unit_phone_fu_vol_get_max();
-	void _audio_unit_phone_fu_vol_set_max();
-	void _audio_unit_phone_fu_vol_get_cur();
-	void _audio_unit_phone_fu_vol_set_cur();
-audio_unit_controller_t audio_unit_phone_fu_conf_mute;
-	audio_controller_conf_uint8_t audio_unit_ctrl_phone_fu_conf_mute;
-	void _audio_unit_phone_fu_mute_get_min();
-	void _audio_unit_phone_fu_mute_set_min();
-	void _audio_unit_phone_fu_mute_get_max();
-	void _audio_unit_phone_fu_mute_set_max();
-	void _audio_unit_phone_fu_mute_get_cur();
-	void _audio_unit_phone_fu_mute_set_cur();
-
-/* Mixer unit ID7 */
-audio_unit_controller_t audio_unit_mixer_in_phone_conf;
-	audio_controller_conf_uint16_t audio_unit_mixer_ctrl_in_phone_conf;
-	void _audio_unit_mixer_in_phone_get_min();
-	void _audio_unit_mixer_in_phone_set_min();
-	void _audio_unit_mixer_in_phone_get_max();
-	void _audio_unit_mixer_in_phone_set_max();
-	void _audio_unit_mixer_in_phone_get_cur();
-	void _audio_unit_mixer_in_phone_set_cur();
-audio_unit_controller_t audio_unit_mixer_in_mic_conf;
-	audio_controller_conf_uint16_t audio_unit_mixer_ctrl_in_mic_conf;
-	void _audio_unit_mixer_in_mic_get_min();
-	void _audio_unit_mixer_in_mic_set_min();
-	void _audio_unit_mixer_in_mic_get_max();
-	void _audio_unit_mixer_in_mic_set_max();
-	void _audio_unit_mixer_in_mic_get_cur();
-	void _audio_unit_mixer_in_mic_set_cur();
-audio_unit_controller_t audio_unit_mixer_out_speak_conf;
-	audio_controller_conf_uint16_t audio_unit_mixer_out_ctrl_speak_conf;
-	void _audio_unit_mixer_out_speak_get_min();
-	void _audio_unit_mixer_out_speak_set_min();
-	void _audio_unit_mixer_out_speak_get_max();
-	void _audio_unit_mixer_out_speak_set_max();
-	void _audio_unit_mixer_out_speak_get_cur();
-	void _audio_unit_mixer_out_speak_set_cur();
-
 /** Elements routing **/
 /* This is head of the elements list. */
 struct audio_unit_elist_t *audio_unit_list;
 
-/* Describing Feature Unit id 5. */
+/* Describing Feature Unit ID 5. */
 struct audio_unit_elist_t audio_mic_fu;  // FU for phone (volume, mute)
-/* Controllers: */
-	/* Volume */
-	struct audio_unit_ctrl_elist_t audio_unit_phone_fu_ctrl_vol;
-	/* Mute */
-	struct audio_unit_ctrl_elist_t audio_unit_phone_fu_ctrl_mute;
-
-/* Describing Feature Unit id 6. */	
-struct audio_unit_elist_t audio_phone_fu;	// FU for mic	(volume, mute)
-/* Controllers and configurations: */
+	/* Controllers: */
 	/* Volume */
 	struct audio_unit_ctrl_elist_t audio_unit_mic_fu_ctrl_vol;
+		audio_unit_controller_t audio_unit_mic_fu_conf_vol;
+		audio_controller_conf_uint16_t audio_unit_ctrl_mic_fu_conf_vol;
+		void _audio_unit_mic_vol_set_cur(void *unit_conf, void *data);
 	/* Mute */
 	struct audio_unit_ctrl_elist_t audio_unit_mic_fu_ctrl_mute;
+		audio_unit_controller_t audio_unit_mic_fu_conf_mute;
+		audio_controller_conf_uint8_t audio_unit_ctrl_mic_fu_conf_mute;
+		void _audio_unit_mic_mute_set_cur(void *unit_conf, void *data);
+
+/* Describing Feature Unit ID 6. */
+struct audio_unit_elist_t audio_phone_fu;	// FU for mic	(volume, mute)
+	/* Controllers and configurations: */
+	/* Volume */
+	struct audio_unit_ctrl_elist_t audio_unit_phone_fu_ctrl_vol;
+		audio_unit_controller_t audio_unit_phone_fu_conf_vol;
+		audio_controller_conf_uint16_t audio_unit_ctrl_phone_fu_conf_vol;
+			void _audio_unit_phone_vol_set_cur(void *unit_conf, void *data);
+	/* Mute */
+	struct audio_unit_ctrl_elist_t audio_unit_phone_fu_ctrl_mute;
+		audio_unit_controller_t audio_unit_phone_fu_conf_mute;
+		audio_controller_conf_uint8_t audio_unit_ctrl_phone_fu_conf_mute;
+			void _audio_unit_phone_mute_set_cur(void *unit_conf, void *data);
 
 /* Describing Feature Unit id 7. */
 struct audio_unit_elist_t audio_mix;
 /* Controllers and configurations: */
-struct audio_unit_ctrl_elist_t audio_mix_in_phone;
-struct audio_unit_ctrl_elist_t audio_mix_in_mic;
-struct audio_unit_ctrl_elist_t audio_mix_out_speaker;
-///* Volume */
-//struct audio_unit_ctrl_elist_t audio_unit_mic_fu_ctrl_vol;
-///* Mute */
-//struct audio_unit_ctrl_elist_t audio_unit_mic_fu_ctrl_mute;
+	/* Incoming line phone from DAC. */
+	struct audio_unit_ctrl_elist_t audio_mix_in_phone;
+		audio_unit_controller_t audio_unit_mixer_in_phone_conf;
+		audio_controller_conf_uint16_t audio_unit_mixer_ctrl_in_phone_conf;
+	struct audio_unit_ctrl_elist_t audio_mix_in_mic;
+	/* Incoming line form analog microphone. */
+		audio_unit_controller_t audio_unit_mixer_in_mic_conf;
+		audio_controller_conf_uint16_t audio_unit_mixer_ctrl_in_mic_conf;
+	/* Outcoming line to speaker. */
+	struct audio_unit_ctrl_elist_t audio_mix_out_speaker;
+		audio_unit_controller_t audio_unit_mixer_out_speak_conf;
+		audio_controller_conf_uint16_t audio_unit_mixer_out_ctrl_speak_conf;
+		/* General _set_current() callback function. */
+		void _audio_unit_mix_set_cur(void *unit_conf, void *data);
 
 /* Configuring, starting ssc, spi and pcm systems. */
 int audio_system(void);
-
 void audio_controls_set_list(void);
 
 void audio_volume_up(void);
@@ -274,16 +229,6 @@ void _audio_unit_common_u8_set_cur(void *unit_conf, void *);
 
 void _audio_unit_common_unsupport(const void *unit_conf);
 
-/* Speaker feature */
-void _audio_unit_phone_vol_set_cur(void *unit_conf, void *data);
-void _audio_unit_phone_mute_set_cur(void *unit_conf, void *data);
-
-/* Microphone feature */
-void _audio_unit_mic_vol_set_cur(void *unit_conf, void *data);
-void _audio_unit_mic_mic_set_cur(void *unit_conf, void *data);
-
-/* Mixer */
-void _audio_unit_mix_set_cur(void *unit_conf, void *data);
 
 /* Converters */
 uint8_t _audio_phone_vol_usb_to_pcm(uint16_t value);
