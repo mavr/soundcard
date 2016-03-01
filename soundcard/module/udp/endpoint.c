@@ -18,43 +18,43 @@
 
 void ep_init(void *ep, uint8_t ep_type, uint16_t ep_size, uint8_t ep_number) {
 	//TODO: don't forgiven about the situation with UDP_CSR_TXPKTRDY flag for bulk ep
-	udp_ep_core_t *__core; 
-	
+	udp_ep_core_t *__core;
+
 	switch(ep_type) {
 		case UDP_EP_TYPE_CONTROL : ;
 			udp_ep_setup_t *__ep_control = (udp_ep_setup_t *) ep;
-			
+
 			memset(ep, 0x00, sizeof(&__ep_control));
 			__core = &(__ep_control->ep);
-			
+
 			memset(ep, 0x00, sizeof(&udp_setup_pkg));
 			udp_setup_pkg.state = UDP_SETUP_ACT_IDLE;
 			udp_setup_pkg.callback = NULL;
-			
+
 			__ep_ctrl_set(&(__ep_control->ep), UDP_CSR_EPTYPE_CTRL);
 //			__UDP_DEBUG(LOG_LVL_HIGH, "Endpoint: init control");
-			
+
 			break;
-		
+
 		case UDP_EP_TYPE_INT: ;
 			udp_ep_hid_report_t *__ep_hid = (udp_ep_hid_report_t *) ep;
 			memset(ep, 0x00, sizeof(&__ep_hid));
 			__core = &(__ep_hid->ep);
-		
+
 			__ep_ctrl_set(&(__ep_hid->ep), UDP_CSR_EPTYPE_INT_IN);
 //			__UDP_DEBUG(LOG_LVL_HIGH, "Endpoint: init hid interrupt");
 			__ep_ctrl_set(&__ep_hid->ep, UDP_CSR_TXPKTRDY);
 			break;
-					
+
 		case UDP_EP_TYPE_ISO_IN: 
 		case UDP_EP_TYPE_ISO_OUT: ;
 			udp_ep_audio_t *__ep_audio = (udp_ep_audio_t *) ep;
 			memset(ep, 0x00, sizeof(&__ep_audio));
 			__core = &(__ep_audio->ep);
-			
+
 			//TODO: initializing stream
 			//__ep->stream
-			
+
 			if(ep_type == UDP_EP_TYPE_ISO_IN) {
 				__ep_ctrl_set(&(__ep_audio->ep), UDP_CSR_EPTYPE_ISO_IN);
 				stream_init(&(__ep_audio->stream), __ep_audio_in, EP_AUDIO_BUFFER_SIZE);
@@ -65,16 +65,16 @@ void ep_init(void *ep, uint8_t ep_type, uint16_t ep_size, uint8_t ep_number) {
 				 stream_init(&(__ep_audio->stream), __ep_audio_out, EP_AUDIO_BUFFER_SIZE);
 //				 __UDP_DEBUG(LOG_LVL_HIGH, "Endpoint: init isochronous out");
 			}
-			
+
 			break;
 			
 		default: return;
 	}
-	
+
 	__core->type = ep_type;
 	__core->number = ep_number;
 	__core->size = ep_size;
-		
+
 	__core->CSR = &(UDP->UDP_CSR[ep_number]);
 	__core->FDR = &(UDP->UDP_FDR[ep_number]);
 	
@@ -82,11 +82,11 @@ void ep_init(void *ep, uint8_t ep_type, uint16_t ep_size, uint8_t ep_number) {
 
 void ep_reset(void *ep, uint8_t ep_number, uint8_t ep_type, uint16_t ep_size) {
 	ep_init(ep, ep_type, ep_size, ep_number);
-	
+
 	// hardware reset 
 	UDP->UDP_RST_EP |= (1 << ep_number);
 	UDP->UDP_RST_EP &= ~(1 << ep_number);
-	
+
 	ep_set_interrupt(ep);
 	ep_enable(ep);
 }
@@ -158,15 +158,13 @@ void ep_callback_setup(udp_ep_setup_t *ep) {
 		}
 
 		__ep_ctrl_clr(&ep->ep, UDP_CSR_TXCOMP);
-	}	
+	}
 
 	/* Our mistake delivered */
 	if(*ep->ep.CSR & UDP_CSR_STALLSENT) {
 		__ep_ctrl_clr(&ep->ep, UDP_CSR_FORCESTALL);
 		__ep_ctrl_clr(&ep->ep, UDP_CSR_STALLSENT);
 	}
-	
-	
 }
 
 void ep_callback_hid(udp_ep_hid_report_t *ep) {
@@ -175,7 +173,6 @@ void ep_callback_hid(udp_ep_hid_report_t *ep) {
 		__ep_ctrl_clr(&(ep->ep), UDP_CSR_TXCOMP);
 		__ep_ctrl_clr(&(ep->ep), UDP_CSR_TXPKTRDY);
 	}
-
 }
 
 void ep_callback(udp_ep_audio_t *ep) {	
@@ -185,7 +182,7 @@ void ep_callback(udp_ep_audio_t *ep) {
 		*ep->ep.CSR &= ~UDP_CSR_RXSETUP;		
 		return;
 	}
-	
+
 	if(*ep->ep.CSR & UDP_CSR_TXCOMP) {		
 		if(ep->ep.number == UDP_EP_IN) {
 			uint32_t i = 0;
@@ -198,29 +195,26 @@ void ep_callback(udp_ep_audio_t *ep) {
 				*ep_in.ep.FDR = value & 0x00ff;
 				*ep_in.ep.FDR = (value & 0xff00) >> 8;
 			}
-			
+
 			__ep_ctrl_set(&(ep->ep), UDP_CSR_TXPKTRDY);
 			__ep_ctrl_clr(&(ep->ep), UDP_CSR_TXCOMP);
 			return;
 		}
 
-//		*ep->CSR &= ~UDP_CSR_TXCOMP;
-		
 	}
-	
+
 	if(*ep->ep.CSR & UDP_CSR_STALLSENT) {
 		*ep->ep.CSR &= ~UDP_CSR_STALLSENT;
 	}
-	
+
 	if(*ep->ep.CSR & (UDP_CSR_RX_DATA_BK0 | UDP_CSR_RX_DATA_BK1)) {
 		// read and clear udp_csr_rx_data_bkx
-		uint16_t u16 = 0;
-		uint32_t i;
 		if(ep->ep.number == UDP_EP_OUT) {
-			for(i = 0; i < (*(ep->ep.CSR) & 0x3ff0000) >> 16 ; i += 2) {
+			uint16_t u16 = 0;
+			for(uint32_t i = 0; i < (*(ep->ep.CSR) & 0x3ff0000) >> 16 ; i += 2) {
 				u16 = *ep->ep.FDR;
 				u16 |= (*ep->ep.FDR << 8);
-				
+
 				stream_put(&ep->stream, u16);
 			}
 		}

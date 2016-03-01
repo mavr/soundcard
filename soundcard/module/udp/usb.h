@@ -18,6 +18,8 @@ extern const uint8_t udp_str_zero_descriptor[];
 extern const uint8_t udp_str_manufactur_descriptor[];
 extern const uint8_t udp_str_product_descriptor[];
 extern const uint8_t udp_str_serial_descriptor[];
+extern const uint8_t udp_str_mixer_name[];
+extern const uint8_t udp_str_phone_FU_name[];
 
 //typedef struct {
 //	enum udp_state state;

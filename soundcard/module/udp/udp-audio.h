@@ -21,6 +21,7 @@ typedef struct {
 #define UDP_DESCRIPTOR_DEVICE_SIZE		0x12
 //#define UDP_DESCRIPTOR_CONF_SIZE		0xd9
 #define UDP_DESCRIPTOR_CONF_SIZE		0xe6
+//#define UDP_DESCRIPTOR_CONF_SIZE		0xdd
 #define UDP_DESCRIPTOR_HID_REPORT_SIZE	45
 
 #define UDP_AC_INTERFACE				0
@@ -88,7 +89,7 @@ static uint8_t udp_conf_descriptor[] = {
 	0x00, // iConfiguration
 	0x80, // bmAttributes
 	0xFA, // bMaxPower
-	
+
 	/* Audio Control Interface Descriptor */
 		0x09, // bLenght
 		0x04, // bDescriptorType
@@ -99,7 +100,7 @@ static uint8_t udp_conf_descriptor[] = {
 		0x01, // bInterfaceSubClass (AUDIO_CONTROL)
 		0x00, // bInterfaceProtocol (none)
 		0x00, // iInterface - address of string descriptor for describe this interface (none)
-		
+
 	/* Interface Header Audio Class Descriptor */		
 			0x0A, // bLength (9)
 			0x24, // bDescriptorType (CS_INTERFACE)
@@ -111,7 +112,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x02, // bInCollection (1 streaming interface)
 			0x01, // baInterfaceNr (interface 1 is stream)
 			0x02, // baInterfaceNr (interface 2 is stream)
-			
+
 	/** Microphone **/
 	/* Input terminal Audio Class Descriptor */
 			0x0C, // bLength (12)
@@ -122,11 +123,11 @@ static uint8_t udp_conf_descriptor[] = {
 			0x02,
 			0x00, // bAssocTerminal (none)
 			0x01, // bNrChannels (1)
-			0x00, // wChannelConfig (mono)
+			0x01, // wChannelConfig (mono)
 			0x00,
 			0x00, // iChannelNames (none)
 			0x00, // iTerminal (none)
-			
+
 	/* Input terminal Audio Class Descriptor */
 			0x0C, // bLength (12)
 			0x24, // bDescriptorType (CS_INTERFACE)
@@ -135,12 +136,11 @@ static uint8_t udp_conf_descriptor[] = {
 			0x01, // wTerminalType (usb streaming)
 			0x01,
 			0x00, // bAssocTerminal (none)
-			0x01, // bNrChannels (1)
-			0x00, // wChannelConfig (mono)
+			0x02, // bNrChannels (1)
+			0x01, // wChannelConfig (mono)
 			0x00,
 			0x00, // iChannelNames (none)
 			0x00, // iTerminal (none)
-		
 
 	/* Output terminal Audio Class Descriptor */
 			0x09, // bLength (9)
@@ -151,6 +151,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x03,
 			0x00, // bAssocTerminal (none)
 			UDP_AC_PHONE_FU_ID, // bSourceID (6)
+//			UDP_AC_MIX_ID,
 			//0x03, // bSourceID (3)
 			0x00, // iTerminal (none)
 
@@ -165,7 +166,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x05, // bSourceID (5)
 			//0x01, // bSourceID (1)
 			0x00, // iTerminal (none)
-	
+
 	/* Feature unit Audio Class Descriptor */
 			0x09, // bLength (9)
 			0x24, // bDescriptorType (CS_INTERFACE)
@@ -173,7 +174,7 @@ static uint8_t udp_conf_descriptor[] = {
 			UDP_AC_MIC_FU_ID, // bUnitID (5)
 			0x01, // bSourceID (1)
 			0x01, // bControlSize (1)
-			0x03, // bmaContorls(0) : Mute, Volume
+			0x02, // bmaContorls(0) : Mute, Volume
 			0x00, // bmaContorls(1)
 			0x00, // iTerminal (none)
 
@@ -183,10 +184,11 @@ static uint8_t udp_conf_descriptor[] = {
 			0x06, // bDescriptorSubtype (FEATURE_UNIT)
 			UDP_AC_PHONE_FU_ID, // bUnitID (6)
 			UDP_AC_MIX_ID, // bSourceID (2)
+			//0x02,
 			0x01, // bControlSize (1)
 			0x03, // bmaContorls(0) : Mute, Volume
 			0x00, // bmaContorls(1)
-			0x00, // iTerminal (none)
+			0x05, // iTerminal (none)
 
 	/* Mixer unit Audio Class Descriptor */
 			0x0d, // bLenght
@@ -194,14 +196,14 @@ static uint8_t udp_conf_descriptor[] = {
 			0x04, // bDescriptorSubtype (MIXER_UNIT)
 			UDP_AC_MIX_ID, // bUnitID (7)
 			0x02, // bNrInPins (2)
-			0x01, // baSourceID (1)
-			0x02, // baSourceID (2)
-			0x02, // bNrChannels - Number of logical output channels
-			0x03, // wChannelConfig
+			0x01, // baSourceID[0] (1)
+			0x02, // baSourceID[1]
+			0x01, // bNrChannels
+			0x01, // wChanelConfig
 			0x00,
-			0x00, // iChannelNames
-			0x00, // bmControls
-			0x00,
+			0x04, // iChannelNames
+			0x60, // bmControls
+			0x04, // iMixer
 
 	/** Interface number 1 **/
 	/* Audio Stream interface descriptor */
@@ -214,7 +216,7 @@ static uint8_t udp_conf_descriptor[] = {
 		0x02, // bInterfaceSubClass (audio_streaming)
 		0x00, // bInterfaceProtocol (none)
 		0x00, // iInterface (none)
-		
+
 	/* Alternate Audio Interface Descriptor */
 		0x09, // bLenght
 		0x04, // bDescriptorType (interface)
@@ -225,7 +227,7 @@ static uint8_t udp_conf_descriptor[] = {
 		0x02, // bInterfaceSubClass
 		0x00, // bInterfaceProtocol (none) 
 		0x00, // iInterface (none)
-	
+
 	/* Audio Stream Audio Class Descriptor */
 			0x07, // bLenght
 			0x24, // bDescriptorType (CS_INTERFACE)
@@ -234,7 +236,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x01, // bDelay (none)
 			0x01, // wFormatTag (PCM format)
 			0x00,
-		
+
 	/* Format Type Audio Descriptor */
 			0x0B, // bLength (11)
 			0x24, // bDescriptorType (CS_INTERFACE)
@@ -259,7 +261,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x01, // bInterwal (1 ms)
 			0x00, // bRefresh (0)
 			0x00, // bSyncAddress (no synchronization)
-		
+
 	/* Isochronous Endpoint Audio Class Descriptor */
 				0x07, // bLength (7)
 				0x25, // bDescriptorType (CS_ENDPOINT)
@@ -268,7 +270,7 @@ static uint8_t udp_conf_descriptor[] = {
 				0x00, // bLockDelayUnits (PCM samples)
 				0x00, // wLockDelay (0)	
 				0x00, 
-	
+
 	/** Interface number 2 **/			
 	/* Audio Stream interface descriptor */
 		0x09, // bLenght
@@ -280,7 +282,7 @@ static uint8_t udp_conf_descriptor[] = {
 		0x02, // bInterfaceSubClass (audio_streaming)
 		0x00, // bInterfaceProtocol (none)
 		0x00, // iInterface (none)
-	
+
 		/* Alternate Audio Interface Descriptor */
 		0x09, // bLenght
 		0x04, // bDescriptorType (interface)
@@ -291,7 +293,7 @@ static uint8_t udp_conf_descriptor[] = {
 		0x02, // bInterfaceSubClass
 		0x00, // bInterfaceProtocol (none)
 		0x00, // iInterface (none)
-	
+
 	/* Audio Stream Audio Class Descriptor */
 			0x07, // bLenght
 			0x24, // bDescriptorType (CS_INTERFACE)
@@ -300,7 +302,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x01, // bDelay (none)
 			0x01, // wFormatTag (PCM format)
 			0x00,
-	
+
 			/* Format Type Audio Descriptor */
 			0x0B, // bLength (11)
 			0x24, // bDescriptorType (CS_INTERFACE)
@@ -314,7 +316,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x40, // 8,000 Hz (byte 0) 0x1f40
 			0x1f, // 8,000 Hz (byte 1) 0x841e
 			0x00, // 8,000 Hz (byte 2)
-	
+
 			/* Isochronous Endpoint Descriptor */
 			0x09, // bLenght
 			0x05, // bDescriptionType (endpoint)
@@ -325,7 +327,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x01, // bInterwal (1 ms)
 			0x00, // bRefresh (0)
 			0x00, // bSyncAddress (no synchronization)
-	
+
 			/* Isochronous Endpoint Audio Class Descriptor */
 				0x07, // bLength (7)
 				0x25, // bDescriptorType (CS_ENDPOINT)
@@ -334,7 +336,7 @@ static uint8_t udp_conf_descriptor[] = {
 				0x00, // bLockDelayUnits (PCM samples)
 				0x00, // wLockDelay (0)
 				0x00,
-		
+
 		/* Interface descriptor (HID) */
 		0x09, // bLength
 		0x04, // bDescriptorType (interface)
@@ -345,7 +347,7 @@ static uint8_t udp_conf_descriptor[] = {
 		0x01, // bInterfaceSubClass
 		0x01, // bInterfaceProtocol (none)
 		0x00, // iInterface (none)
-		
+
 		/* HID interface descriptor */
 			0x09, // bLength
 			0x21, // bDescriptorType (33)
@@ -356,7 +358,7 @@ static uint8_t udp_conf_descriptor[] = {
 			0x22, // bDescriptorType
 			UDP_DESCRIPTOR_HID_REPORT_SIZE, // bDescriptorLength (39)
 			0x00,
-					
+
 	/* EndPoint Descriptor */
 	0x07, // bLength (7)
 	0x05, // bDescriptorType (CS_ENDPOINT)
@@ -365,7 +367,7 @@ static uint8_t udp_conf_descriptor[] = {
 	0x08, // wMaxPacketSize
 	0x00,
 	0x1a, // bInterval
-	
+
 };
 static uint8_t udp_kbd_report_descriptor[] = {
 	/* Report descriptor */

@@ -31,3 +31,17 @@ const uint8_t udp_str_serial_descriptor[] = {
 	0x03, // bDescriptorType
 	'0', 0x00, '.', 0x00, '0', 0x00, '1', 0x00
 };
+
+/* Mixer unit name */
+const uint8_t udp_str_mixer_name[] = {
+	0x0e, // bLenght
+	0x03, // bDescriptorType
+	'S', 0x00, 'M', 0x00, 'i', 0x00, 'x', 0x00, 'e', 0x00, 'r', 0x00
+};
+
+/* Mixer unit name */
+const uint8_t udp_str_phone_FU_name[] = {
+	0x0d, // bLenght
+	0x03, // bDescriptorType
+	'P', 0x00, 'h', 0x00, 'o', 0x00, 'n', 0x00, 'e', 0x00
+};

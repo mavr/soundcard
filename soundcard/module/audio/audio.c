@@ -36,6 +36,7 @@ int audio_system() {
 void audio_controls_set_list(void) {
 	audio_unit_add(UDP_AC_MIC_FU_ID, &audio_mic_fu);
 	audio_unit_add(UDP_AC_PHONE_FU_ID, &audio_phone_fu);
+	audio_unit_add(UDP_AC_MIX_ID, &audio_mix);
 	
 	/**
 	*	Configuration of Feature Unit ID 5. 
@@ -106,6 +107,59 @@ void audio_controls_set_list(void) {
 		audio_unit_phone_fu_conf_vol.__set_cur = &_audio_unit_phone_vol_set_cur;
 		audio_unit_phone_fu_conf_vol.__set_res = &_audio_unit_common_u16_set_res;
 		audio_unit_ctrl_init(UDP_AC_PHONE_FU_ID, UDP_AUDIO_CS_VOLUME_CONTROL, &audio_unit_phone_fu_conf_vol);
+
+	/**
+	*	Configuration of Feature Unit ID 7. 
+	**/
+	/*  */
+	audio_unit_ctrl_add(UDP_AC_MIX_ID, AUDIO_MIX_IN_PHONE, &audio_mix_in_phone);
+		audio_unit_mixer_ctrl_in_phone_conf.max = AUDIO_MIX_OUT_SPEAK_MAX;
+		audio_unit_mixer_ctrl_in_phone_conf.min = AUDIO_MIX_OUT_SPEAK_MIN;
+		audio_unit_mixer_ctrl_in_phone_conf.cur = AUDIO_MIX_OUT_SPEAK_CUR;
+		audio_unit_mixer_ctrl_in_phone_conf.res = AUDIO_MIX_OUT_SPEAK_RES;
+		
+		audio_unit_mixer_in_phone_conf.attribution = (void *) &audio_unit_mixer_ctrl_in_phone_conf;
+		audio_unit_mixer_in_phone_conf.__get_min = &_audio_unit_common_u16_get_min;
+		audio_unit_mixer_in_phone_conf.__get_max = &_audio_unit_common_u16_get_max;
+		audio_unit_mixer_in_phone_conf.__get_res = &_audio_unit_common_u16_get_res;
+		audio_unit_mixer_in_phone_conf.__get_cur = &_audio_unit_common_u16_get_cur;
+//		audio_unit_mixer_in_phone_conf.__set_cur = &_audio_unit_mixer_in_phone_set_cur;
+		audio_unit_mixer_in_phone_conf.__set_cur = &_audio_unit_mix_set_cur;
+		audio_unit_mixer_in_phone_conf.__set_res = &_audio_unit_common_u16_set_res;
+		audio_unit_ctrl_init(UDP_AC_MIX_ID, AUDIO_MIX_IN_PHONE, &audio_unit_mixer_in_phone_conf);
+
+	audio_unit_ctrl_add(UDP_AC_MIX_ID, AUDIO_MIX_IN_MIC, &audio_mix_in_mic);
+		audio_unit_mixer_ctrl_in_mic_conf.max = AUDIO_MIX_IN_PHONE_MAX;
+		audio_unit_mixer_ctrl_in_mic_conf.min = AUDIO_MIX_IN_PHONE_MIN;
+		audio_unit_mixer_ctrl_in_mic_conf.cur = AUDIO_MIX_IN_PHONE_CUR;
+		audio_unit_mixer_ctrl_in_mic_conf.res = AUDIO_MIX_IN_PHONE_RES;
+	
+		audio_unit_mixer_in_mic_conf.attribution = (void *) &audio_unit_mixer_ctrl_in_mic_conf;
+		audio_unit_mixer_in_mic_conf.__get_min = &_audio_unit_common_u16_get_min;
+		audio_unit_mixer_in_mic_conf.__get_max = &_audio_unit_common_u16_get_max;
+		audio_unit_mixer_in_mic_conf.__get_res = &_audio_unit_common_u16_get_res;
+		audio_unit_mixer_in_mic_conf.__get_cur = &_audio_unit_common_u16_get_cur;
+//		audio_unit_mixer_in_mic_conf.__set_cur = &_audio_unit_mixer_in_mic_set_cur;
+		audio_unit_mixer_in_mic_conf.__set_cur = &_audio_unit_mix_set_cur;
+		audio_unit_mixer_in_mic_conf.__set_res = &_audio_unit_common_u16_set_res;
+		audio_unit_ctrl_init(UDP_AC_MIX_ID, AUDIO_MIX_IN_MIC, &audio_unit_mixer_in_mic_conf);
+
+	audio_unit_ctrl_add(UDP_AC_MIX_ID, AUDIO_MIX_OUT_SPEAK, &audio_mix_out_speaker);
+		audio_unit_mixer_out_ctrl_speak_conf.max = AUDIO_MIX_IN_MIC_MAX;
+		audio_unit_mixer_out_ctrl_speak_conf.min = AUDIO_MIX_IN_MIC_MIN;
+		audio_unit_mixer_out_ctrl_speak_conf.cur = AUDIO_MIX_IN_MIC_CUR;
+		audio_unit_mixer_out_ctrl_speak_conf.res = AUDIO_MIX_IN_MIC_RES;
+
+		audio_unit_mixer_out_speak_conf.attribution = (void *) &audio_unit_mixer_out_ctrl_speak_conf;
+		audio_unit_mixer_out_speak_conf.__get_min = &_audio_unit_common_u16_get_min;
+		audio_unit_mixer_out_speak_conf.__get_max = &_audio_unit_common_u16_get_max;
+		audio_unit_mixer_out_speak_conf.__get_res = &_audio_unit_common_u16_get_res;
+		audio_unit_mixer_out_speak_conf.__get_cur = &_audio_unit_common_u16_get_cur;
+//		audio_unit_mixer_out_speak_conf.__set_cur = &_audio_unit_mixer_out_speak_set_cur;
+		audio_unit_mixer_out_speak_conf.__set_cur = &_audio_unit_mix_set_cur;
+		audio_unit_mixer_out_speak_conf.__set_res = &_audio_unit_common_u16_set_res;
+		audio_unit_ctrl_init(UDP_AC_MIX_ID, AUDIO_MIX_OUT_SPEAK, &audio_unit_mixer_out_speak_conf);
+
 }
 
 inline void _audio_unit_common_u16_get_min(const void * unit_conf) {
@@ -175,6 +229,19 @@ inline void _audio_unit_common_unsupport(const void * unit_conf) {
 inline void _audio_unit_phone_vol_set_cur(void *unit_conf, void *data) {
 	_audio_unit_common_u16_set_cur(unit_conf, data);
 	pcm3793_dar(PCM_R65_HRV((int8_t) (*((uint16_t *) data) / 0x100)));
+}
+
+inline void _audio_unit_mix_set_cur(void *unit_conf, void *data) {
+	_audio_unit_common_u16_set_cur(unit_conf, data);
+	
+	uint8_t reg = 0x00;
+	if(audio_unit_mixer_ctrl_in_mic_conf.cur != AUDIO_MIX_IN_MIC_MIN)
+		reg |= PCM_R88_SW1 | PCM_R88_SW6;
+
+	if(audio_unit_mixer_ctrl_in_phone_conf.cur != AUDIO_MIX_IN_PHONE_MIN)
+		reg |= PCM_R88_SW2 | PCM_R88_SW5;
+	
+	pcm3793_switch(reg);
 }
 
 inline void _audio_unit_phone_mute_set_cur(void *unit_conf, void *data) {
