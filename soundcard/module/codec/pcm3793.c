@@ -21,7 +21,7 @@ void pcm3793_init() {
 	/* SPL/R disable */
 	
 	/* DAC block */
-	pcm3793_dar(PCM_R69_ATR(0x27));
+	pcm3793_dar(PCM_R69_ATR(0x35));
 	pcm3793_dac_format(PCM_R70_PFM_LJust);
 	pcm3793_dac_over();
 	pcm3793_dac_filter_dem(PCM_R70_DEM_OFF);
@@ -67,8 +67,8 @@ void pcm3793_init() {
 	
 //	pcm3793_output(PCM_R74_HPS_SINGLE);
 
-//	pcm3793_analog_in(PCM_R87_AIL_AIN1L | PCM_R87_AIR_AIN1R);
-	pcm3793_analog_in(0x00);
+	pcm3793_analog_in(PCM_R87_AIL_AIN1L | PCM_R87_AIR_AIN1R);
+//	pcm3793_analog_in(0x00);
 	
 //	pcm3793_pg4_gain(PCM_R80_ARV(0x0c));
 

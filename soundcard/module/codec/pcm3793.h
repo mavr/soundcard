@@ -288,7 +288,7 @@
 #define PCM_R89_GMR_3dB			(PCM_R89_GMR_Msk & (0x06 << PCM_R89_GMR_Pos))
 #define PCM_R89_GMR_0dB			(PCM_R89_GMR_Msk & (0x07 << PCM_R89_GMR_Pos))
 
-#define PCM_R89_GML_Msk			0x03
+#define PCM_R89_GML_Msk			0x07
 #define PCM_R89_GML_Pos			0x00
 #define PCM_R89_GML(value)		(PCM_R89_GML_Msk & ((value) << PCM_R89_GML_Pos))
 #define PCM_R89_GML_21dB		(PCM_R89_GML_Msk & (0x00 << PCM_R89_GML_Pos))

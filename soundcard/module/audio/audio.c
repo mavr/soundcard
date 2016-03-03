@@ -403,7 +403,8 @@ inline void _audio_unit_mic_preamph_set_cur(void *unit_conf, void *data) {
 inline void _audio_unit_mic_dig_amp_set_cur(void *unit_conf, void *data) {
 	_audio_unit_common_u16_set_cur(unit_conf, data);
 
-	uint8_t value = (uint8_t) (audio_unit_ctrl_mic_fu_dig_amp.cur * (-1) >> 8);
-	pcm3793_pg6_gain(value);
+//	uint8_t value = (uint8_t) (audio_unit_ctrl_mic_fu_dig_amp.cur * (-1) >> 8);
+	uint8_t value = (uint8_t) 0x07 - (audio_unit_ctrl_mic_fu_dig_amp.cur * (-1) >> 8);
+//	pcm3793_pg6_gain(value);
 	pcm3793_pg5_gain(value);
 }

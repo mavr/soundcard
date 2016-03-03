@@ -23,7 +23,7 @@ void pcm3793_hpl_vol(uint8_t value) {
 }
 
 void pcm3793_hpr_vol(uint8_t value) {
-	codec.reg.r65 |= value;
+	codec.reg.r65 = value;
 	pcm3793_write(PCM_R65, codec.reg.r65);
 }
 
@@ -223,6 +223,7 @@ void pcm3793_switch(uint8_t value) {
 }
 
 void pcm3793_pg5_gain(uint8_t value) {
+	codec.reg.r89 &= ~PCM_R89_GML_Msk;
 	codec.reg.r89 |= PCM_R89_GML(value);
 	pcm3793_write(PCM_R89, codec.reg.r89);
 }

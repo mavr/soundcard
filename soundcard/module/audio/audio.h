@@ -55,8 +55,8 @@
 /* Digital amp mic volume unit parameters. */
 #define AUDIO_MIC_AMP_MAX			0x0000
 #define AUDIO_MIC_AMP_MIN			0xf900
-#define AUDIO_MIC_AMP_RES			0x100
-#define AUDIO_MIC_AMP_CUR_DEFAULT	0x0000
+#define AUDIO_MIC_AMP_RES			0x0100
+#define AUDIO_MIC_AMP_CUR_DEFAULT	0xf900
 
 /* Mixer */
 #define AUDIO_MIX_OUT_SPEAK			0x01
