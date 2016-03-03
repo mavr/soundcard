@@ -22,10 +22,10 @@
 
 /* Phone */
 /* Volume unit parameters. */
-#define AUDIO_PHONE_VOL_MAX			0x3f00
-#define AUDIO_PHONE_VOL_MIN			0x0000
-#define AUDIO_PHONE_VOL_RES			0x0100
-#define AUDIO_PHONE_VOL_CUR_DEFAULT	0x1a00
+#define AUDIO_MASTER_VOL_MAX			0x3f00
+#define AUDIO_MASTER_VOL_MIN			0x0000
+#define AUDIO_MASTER_VOL_RES			0x0100
+#define AUDIO_MASTER_VOL_CUR_DEFAULT	0x1a00
 
 /* Mute volume unit parameters. */
 #define AUDIO_PHONE_MUTE_MAX			0x01

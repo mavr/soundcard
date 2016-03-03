@@ -16,7 +16,7 @@ void pcm3793_init() {
 	
 	/* Set analog volume for right Tel. channel
 		and disable analog mute. */
-	pcm3793_hpr_vol(PCM_R65_HRV(0x33));
+	pcm3793_hpr_vol(PCM_R65_HRV(0x00));
 	
 	/* SPL/R disable */
 	

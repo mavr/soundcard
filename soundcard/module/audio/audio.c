@@ -132,10 +132,10 @@ void audio_controls_set_list(void) {
 
 	/* Adding phone volume unit control */
 	audio_unit_ctrl_add(UDP_AC_PHONE_FU_ID, UDP_AUDIO_CS_VOLUME_CONTROL, &audio_unit_phone_fu_ctrl_vol);
-		audio_unit_ctrl_phone_fu_conf_vol.cur = AUDIO_PHONE_VOL_CUR_DEFAULT;
-		audio_unit_ctrl_phone_fu_conf_vol.max = AUDIO_PHONE_VOL_MAX;
-		audio_unit_ctrl_phone_fu_conf_vol.min = AUDIO_PHONE_VOL_MIN;
-		audio_unit_ctrl_phone_fu_conf_vol.res = AUDIO_PHONE_VOL_RES;
+		audio_unit_ctrl_phone_fu_conf_vol.cur = AUDIO_MASTER_VOL_CUR_DEFAULT;
+		audio_unit_ctrl_phone_fu_conf_vol.max = AUDIO_MASTER_VOL_MAX;
+		audio_unit_ctrl_phone_fu_conf_vol.min = AUDIO_MASTER_VOL_MIN;
+		audio_unit_ctrl_phone_fu_conf_vol.res = AUDIO_MASTER_VOL_RES;
 
 		audio_unit_phone_fu_conf_vol.attribution = (void *) &audio_unit_ctrl_phone_fu_conf_vol;
 		audio_unit_phone_fu_conf_vol.__get_min = &_audio_unit_common_u16_get_min;

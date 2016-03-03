@@ -41,9 +41,9 @@ const uint8_t udp_str_mixer_name[] = {
 
 /* Mixer unit name */
 const uint8_t udp_str_phone_FU_name[] = {
-	0x0d, // bLenght
+	0x0f, // bLenght
 	0x03, // bDescriptorType
-	'P', 0x00, 'h', 0x00, 'o', 0x00, 'n', 0x00, 'e', 0x00
+	'M', 0x00, 'a', 0x00, 's', 0x00, 't', 0x00, 'e', 0x00, 'r', 0x00
 };
 
 /* Mic preamp unit name */
