@@ -37,6 +37,8 @@ void audio_controls_set_list(void) {
 	audio_unit_add(UDP_AC_MIC_FU_ID, &audio_mic_fu);
 	audio_unit_add(UDP_AC_PHONE_FU_ID, &audio_phone_fu);
 	audio_unit_add(UDP_AC_MIX_ID, &audio_mix);
+	audio_unit_add(UDP_AC_MIC_PRE_FU_ID, &audio_mic_preamph_fu);
+	audio_unit_add(UDP_AC_MIC_AMP_FU_ID, &audio_mic_dig_amp_fu);
 	
 	/**
 	*	Configuration of Feature Unit ID 5. 
@@ -69,8 +71,44 @@ void audio_controls_set_list(void) {
 		audio_unit_mic_fu_conf_vol.__get_max = &_audio_unit_common_u16_get_max;
 		audio_unit_mic_fu_conf_vol.__get_res = &_audio_unit_common_u16_get_res;
 		audio_unit_mic_fu_conf_vol.__get_cur = &_audio_unit_common_u16_get_cur;
-		audio_unit_mic_fu_conf_vol.__set_cur = &_audio_unit_common_u16_set_cur;
+		audio_unit_mic_fu_conf_vol.__set_cur = &_audio_unit_mic_vol_set_cur;
 		audio_unit_ctrl_init(UDP_AC_MIC_FU_ID, UDP_AUDIO_CS_VOLUME_CONTROL, &audio_unit_mic_fu_conf_vol);
+
+	/**
+	*	Configuration of Feature Unit ID 8. 
+	*	There is pream.
+	**/
+	audio_unit_ctrl_add(UDP_AC_MIC_PRE_FU_ID, UDP_AUDIO_CS_VOLUME_CONTROL, &audio_unit_mic_fu_ctrl_preamph);
+		audio_unit_ctrl_mic_fu_preamph.cur = AUDIO_MIC_PRE_CUR_DEFAULT;
+		audio_unit_ctrl_mic_fu_preamph.max = AUDIO_MIC_PRE_MAX;
+		audio_unit_ctrl_mic_fu_preamph.min = AUDIO_MIC_PRE_MIN;
+		audio_unit_ctrl_mic_fu_preamph.res = AUDIO_MIC_PRE_RES;
+
+		audio_unit_mic_fu_conf_preamph.attribution = (void *) &audio_unit_ctrl_mic_fu_preamph;
+		audio_unit_mic_fu_conf_preamph.__get_min = &_audio_unit_common_u16_get_min;
+		audio_unit_mic_fu_conf_preamph.__get_max = &_audio_unit_common_u16_get_max;
+		audio_unit_mic_fu_conf_preamph.__get_res = &_audio_unit_common_u16_get_res;
+		audio_unit_mic_fu_conf_preamph.__get_cur = &_audio_unit_common_u16_get_cur;
+		audio_unit_mic_fu_conf_preamph.__set_cur = &_audio_unit_mic_preamph_set_cur;
+		audio_unit_ctrl_init(UDP_AC_MIC_PRE_FU_ID, UDP_AUDIO_CS_VOLUME_CONTROL, &audio_unit_mic_fu_conf_preamph);
+
+	/**
+	*	Configuration of Feature Unit ID 8. 
+	*	There is pream.
+	**/
+	audio_unit_ctrl_add(UDP_AC_MIC_AMP_FU_ID, UDP_AUDIO_CS_VOLUME_CONTROL, &audio_unit_mic_fu_ctrl_dig_amp);
+		audio_unit_ctrl_mic_fu_dig_amp.cur = AUDIO_MIC_AMP_CUR_DEFAULT;
+		audio_unit_ctrl_mic_fu_dig_amp.max = AUDIO_MIC_AMP_MAX;
+		audio_unit_ctrl_mic_fu_dig_amp.min = AUDIO_MIC_AMP_MIN;
+		audio_unit_ctrl_mic_fu_dig_amp.res = AUDIO_MIC_AMP_RES;
+
+		audio_unit_mic_fu_conf_dig_amp.attribution = (void *) &audio_unit_ctrl_mic_fu_dig_amp;
+		audio_unit_mic_fu_conf_dig_amp.__get_min = &_audio_unit_common_u16_get_min;
+		audio_unit_mic_fu_conf_dig_amp.__get_max = &_audio_unit_common_u16_get_max;
+		audio_unit_mic_fu_conf_dig_amp.__get_res = &_audio_unit_common_u16_get_res;
+		audio_unit_mic_fu_conf_dig_amp.__get_cur = &_audio_unit_common_u16_get_cur;
+		audio_unit_mic_fu_conf_dig_amp.__set_cur = &_audio_unit_mic_dig_amp_set_cur;
+		audio_unit_ctrl_init(UDP_AC_MIC_AMP_FU_ID, UDP_AUDIO_CS_VOLUME_CONTROL, &audio_unit_mic_fu_conf_dig_amp);
 
 	/**
 	*	Configuration of Feature Unit ID 6. 
@@ -94,7 +132,7 @@ void audio_controls_set_list(void) {
 
 	/* Adding phone volume unit control */
 	audio_unit_ctrl_add(UDP_AC_PHONE_FU_ID, UDP_AUDIO_CS_VOLUME_CONTROL, &audio_unit_phone_fu_ctrl_vol);
-		audio_unit_ctrl_phone_fu_conf_vol.cur = AUDIO_PHONE_MUTE_CUR_DEFAULT;
+		audio_unit_ctrl_phone_fu_conf_vol.cur = AUDIO_PHONE_VOL_CUR_DEFAULT;
 		audio_unit_ctrl_phone_fu_conf_vol.max = AUDIO_PHONE_VOL_MAX;
 		audio_unit_ctrl_phone_fu_conf_vol.min = AUDIO_PHONE_VOL_MIN;
 		audio_unit_ctrl_phone_fu_conf_vol.res = AUDIO_PHONE_VOL_RES;
@@ -306,13 +344,21 @@ inline void _audio_unit_common_unsupport(const void * unit_conf) {
 *	Local callback functions.
 **/
 
+/* Feature Unit ID 5. */
+void _audio_unit_mic_vol_set_cur(void *unit_conf, void *data) {
+//	uint8_t reg = 0x00;
+	_audio_unit_common_u16_set_cur(unit_conf, data);
+	pcm3793_pg3_gain((int8_t) (audio_unit_ctrl_mic_fu_conf_vol.cur / 0x100));
+}
+
 /* Feature Unit ID 6. */
 inline void _audio_unit_phone_vol_set_cur(void *unit_conf, void *data) {
 	uint8_t reg = 0x00;
 	_audio_unit_common_u16_set_cur(unit_conf, data);
+	
 	if(audio_unit_ctrl_phone_fu_conf_mute.cur == 1) reg |= PCM_R65_HMUR;
 	reg |= PCM_R65_HRV((int8_t) (audio_unit_ctrl_phone_fu_conf_vol.cur / 0x100));
-	pcm3793_dar(reg);
+	pcm3793_hpr_vol(reg);
 }
 
 inline void _audio_unit_phone_mute_set_cur(void *unit_conf, void *data) {
@@ -321,7 +367,7 @@ inline void _audio_unit_phone_mute_set_cur(void *unit_conf, void *data) {
 	
 	if(audio_unit_ctrl_phone_fu_conf_mute.cur == 1) reg |= PCM_R65_HMUR;
 	reg |= PCM_R65_HRV((int8_t) (audio_unit_ctrl_phone_fu_conf_vol.cur / 0x100));
-	pcm3793_dar(reg);
+	pcm3793_hpr_vol(reg);
 }
 
 /* Mixer Unit ID 7. */
@@ -330,11 +376,34 @@ inline void _audio_unit_mix_set_cur(void *unit_conf, void *data) {
 
 	uint8_t reg = 0x00;
 	if(audio_unit_mixer_ctrl_in_mic_conf.cur != AUDIO_MIX_IN_MIC_MIN)
-		reg |= PCM_R88_SW1 | PCM_R88_SW6;
+//		reg |= PCM_R88_SW1 | PCM_R88_SW6;
+		reg |= PCM_R88_SW6;
 
 	if(audio_unit_mixer_ctrl_in_phone_conf.cur != AUDIO_MIX_IN_PHONE_MIN)
-		reg |= PCM_R88_SW2 | PCM_R88_SW5;
+//		reg |= PCM_R88_SW2 | PCM_R88_SW5;
+		reg |= PCM_R88_SW5;
 
 	pcm3793_switch(reg);
 }
 
+/* Feature Unit ID 8. */
+inline void _audio_unit_mic_preamph_set_cur(void *unit_conf, void *data) {
+	_audio_unit_common_u16_set_cur(unit_conf, data);
+
+	if(audio_unit_ctrl_mic_fu_preamph.cur == AUDIO_MIC_PRE_MIN) {
+		pcm3793_pg1pg5_down();
+//		pcm3793_pg2pg6_down();
+	} else {
+		pcm3793_pg1pg5_up();
+//		pcm3793_pg2pg6_up();
+	}
+}
+
+/* Feature Unit ID 9. */
+inline void _audio_unit_mic_dig_amp_set_cur(void *unit_conf, void *data) {
+	_audio_unit_common_u16_set_cur(unit_conf, data);
+
+	uint8_t value = (uint8_t) (audio_unit_ctrl_mic_fu_dig_amp.cur * (-1) >> 8);
+	pcm3793_pg6_gain(value);
+	pcm3793_pg5_gain(value);
+}

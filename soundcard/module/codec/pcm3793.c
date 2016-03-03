@@ -32,8 +32,9 @@ void pcm3793_init() {
 	pcm3793_adc_filter_hp(PCM_R81_HPF_OFF);
 
 	
-	/* Set boost for PG1. */
+	/* Set boost for PG1 and PG2. */
 	pcm3793_pg1_m20dB();
+	pcm3793_pg2_m20dB();
 	
 	/* Power on Mic Bias. */
 	pcm3793_pbis_up();
@@ -46,25 +47,30 @@ void pcm3793_init() {
 	/* Choose switchers. */
 //	pcm3793_switch(PCM_R88_SW1 | PCM_R88_SW6);
 //	pcm3793_switch(PCM_R88_SW5 | PCM_R88_SW2);
-	pcm3793_switch(PCM_R88_SW5 | PCM_R88_SW2 | PCM_R88_SW1 | PCM_R88_SW6);
-	
+	pcm3793_switch( PCM_R88_SW6 | PCM_R88_SW5 | PCM_R88_SW1);
+
 	/* Turn on HPR. */
 	void pcm3793_phpr_up();
-	
+
 	/* Power up Vcom. */
 	pcm3793_vcom();
-	
+
 	/* Power on inside source. */
 	pcm3793_mic_bias_source();
 	pcm3793_adl_up();
+
 	pcm3793_pg1pg5_up();
-	
+//	pcm3793_pg2pg6_up();
+
 	/* Switch codec to master mode. */
 	pcm3793_mode_master();
 	
-	pcm3793_analog_in(PCM_R87_AIL_AIN1L | PCM_R87_AIL_DIS );
+//	pcm3793_output(PCM_R74_HPS_SINGLE);
+
+//	pcm3793_analog_in(PCM_R87_AIL_AIN1L | PCM_R87_AIR_AIN1R);
+	pcm3793_analog_in(0x00);
 	
-	pcm3793_pg3_gain(PCM_R79_ALV(0x0c));
+//	pcm3793_pg4_gain(PCM_R80_ARV(0x0c));
 
 	///* wait 450 ms */
 	////TODO: remade this shit

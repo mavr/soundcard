@@ -261,7 +261,9 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 				case 0x03: _p_desc = udp_str_serial_descriptor; _s_desc = *(_p_desc); break;
 				case 0x04: _p_desc = udp_str_mixer_name; _s_desc = *(_p_desc); break;
 				case 0x05: _p_desc = udp_str_phone_FU_name; _s_desc = *(_p_desc); break;
-//				default: udp_send_zlp(&ep_control);
+				case 0x06: _p_desc = udp_str_mic_pre_name; _s_desc = *(_p_desc); break;
+				case 0x07: _p_desc = udp_str_mic_amp_name; _s_desc = *(_p_desc); break;
+				default: udp_send_zlp(&ep_control);
 			}
 			break;
 

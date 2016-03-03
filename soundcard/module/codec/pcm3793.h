@@ -278,6 +278,7 @@
 /* Register 89 */
 #define PCM_R89_GMR_Msk			0x70
 #define PCM_R89_GMR_Pos			0x04
+#define PCM_R89_GMR(value)		(PCM_R89_GMR_Msk & ((value) << PCM_R89_GMR_Pos))
 #define PCM_R89_GMR_21dB		(PCM_R89_GMR_Msk & (0x00 << PCM_R89_GMR_Pos))
 #define PCM_R89_GMR_18dB		(PCM_R89_GMR_Msk & (0x01 << PCM_R89_GMR_Pos))
 #define PCM_R89_GMR_15dB		(PCM_R89_GMR_Msk & (0x02 << PCM_R89_GMR_Pos))
@@ -289,6 +290,7 @@
 
 #define PCM_R89_GML_Msk			0x03
 #define PCM_R89_GML_Pos			0x00
+#define PCM_R89_GML(value)		(PCM_R89_GML_Msk & ((value) << PCM_R89_GML_Pos))
 #define PCM_R89_GML_21dB		(PCM_R89_GML_Msk & (0x00 << PCM_R89_GML_Pos))
 #define PCM_R89_GML_18dB		(PCM_R89_GML_Msk & (0x01 << PCM_R89_GML_Pos))
 #define PCM_R89_GML_15dB		(PCM_R89_GML_Msk & (0x02 << PCM_R89_GML_Pos))
@@ -404,7 +406,9 @@ void pcm3793_pspr_up(void);
 void pcm3793_pspl_up(void);
 /** Register 82 **/
 void pcm3793_pg2pg6_up(void);
+void pcm3793_pg2pg6_down(void);
 void pcm3793_pg1pg5_up(void);
+void pcm3793_pg1pg5_down(void);
 void pcm3793_d2s_up(void);
 void pcm3793_mic_bias_source(void);
 void pcm3793_adl_up(void);
@@ -420,6 +424,7 @@ void pcm3793_switch(uint8_t value);
 
 /** Analog output configuration. **/
 void pcm3793_vcom(void); // R74
+void pcm3793_output(uint8_t value);
 
 /** MUX **/
 void pcm3793_analog_in(uint8_t value);
@@ -428,28 +433,17 @@ void pcm3793_analog_in(uint8_t value);
 /** Codec system **/
 void pcm3793_sysclk_div(uint8_t value);
 
-
-
-
-
 void pcm3793_dac_filter_dem(uint8_t value);
-
-
-
 
 void pcm3793_pg3_gain(uint8_t value);
 void pcm3793_pg4_gain(uint8_t value);
 
-
-
+void pcm3793_pg5_gain(uint8_t value);
+void pcm3793_pg6_gain(uint8_t value);
 
 void pcm3793_analog_out(uint8_t value);
 
 void pcm3793_switch(uint8_t value);
-
-
-
-
 
 void pcm3793_zero_cross_enable(void);
 

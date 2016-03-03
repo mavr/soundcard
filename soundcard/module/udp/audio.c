@@ -79,13 +79,13 @@ void udp_audio_controllers_proc(udp_setup_activity_t *udp_setup_pkg) {
 //TODO: remove this debug info
 	switch((uint8_t) (udp_setup_pkg->pkg.wIndex >> 8)) {
 		case UDP_AC_PHONE_FU_ID :
-			__UDP_DEBUG(LOG_LVL_HIGH, "Request to phone volume.");
+//			__UDP_DEBUG(LOG_LVL_HIGH, "Request to phone volume.");
 			break;
 		case UDP_AC_MIC_FU_ID :
-			__UDP_DEBUG(LOG_LVL_HIGH, "Request to microphone volume.");
+//			__UDP_DEBUG(LOG_LVL_HIGH, "Request to microphone volume.");
 			break;
 		case UDP_AC_MIX_ID:
-			__UDP_DEBUG(LOG_LVL_HIGH, "Request to mixer.");
+//			__UDP_DEBUG(LOG_LVL_HIGH, "Request to mixer.");
 			break;
 		default:
 			__UDP_DEBUG(LOG_LVL_HIGH, "Request to uknown selector.");

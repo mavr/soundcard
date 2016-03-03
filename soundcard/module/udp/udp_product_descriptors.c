@@ -36,7 +36,7 @@ const uint8_t udp_str_serial_descriptor[] = {
 const uint8_t udp_str_mixer_name[] = {
 	0x0e, // bLenght
 	0x03, // bDescriptorType
-	'S', 0x00, 'M', 0x00, 'i', 0x00, 'x', 0x00, 'e', 0x00, 'r', 0x00
+	'i', 0x00, 'M', 0x00, 'i', 0x00, 'x', 0x00, 'e', 0x00, 'r', 0x00
 };
 
 /* Mixer unit name */
@@ -44,4 +44,18 @@ const uint8_t udp_str_phone_FU_name[] = {
 	0x0d, // bLenght
 	0x03, // bDescriptorType
 	'P', 0x00, 'h', 0x00, 'o', 0x00, 'n', 0x00, 'e', 0x00
+};
+
+/* Mic preamp unit name */
+const uint8_t udp_str_mic_pre_name[] = {
+	0x16, // bLenght
+	0x03, // bDescriptorType
+	'P', 0x00, 'r', 0x00, 'e', 0x00, 'a', 0x00, 'm', 0x00, 'p', 0x00, ' ', 0x00, 'm', 0x00, 'i', 0x00, 'c', 0x00
+};
+
+/* Mic amp unit name */
+const uint8_t udp_str_mic_amp_name[] = {
+	0x0a, // bLenght
+	0x03, // bDescriptorType
+	'A', 0x00, 'm', 0x00, 'p', 0x00, ' ', 0x00, 0x00, 'm', 0x00, 'i', 0x00, 'c', 0x00
 };

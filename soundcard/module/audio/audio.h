@@ -46,6 +46,18 @@
 #define AUDIO_MIC_MUTE_RES			0x01
 #define AUDIO_MIC_MUTE_CUR_DEFAULT	0x00
 
+/* Preamp volume unit parameters. */
+#define AUDIO_MIC_PRE_MAX			0x2000
+#define AUDIO_MIC_PRE_MIN			0x00
+#define AUDIO_MIC_PRE_RES			0x2000
+#define AUDIO_MIC_PRE_CUR_DEFAULT	0x2000
+
+/* Digital amp mic volume unit parameters. */
+#define AUDIO_MIC_AMP_MAX			0x0000
+#define AUDIO_MIC_AMP_MIN			0xf900
+#define AUDIO_MIC_AMP_RES			0x100
+#define AUDIO_MIC_AMP_CUR_DEFAULT	0x0000
+
 /* Mixer */
 #define AUDIO_MIX_OUT_SPEAK			0x01
 #define AUDIO_MIX_IN_PHONE			0x02
@@ -171,6 +183,25 @@ struct audio_unit_elist_t audio_mix;
 		audio_controller_conf_uint16_t audio_unit_mixer_out_ctrl_speak_conf;
 		/* General _set_current() callback function. */
 		void _audio_unit_mix_set_cur(void *unit_conf, void *data);
+
+/* Describing Feature Unit ID 8. */
+struct audio_unit_elist_t audio_mic_preamph_fu;  // FU for phone (volume)
+/* Controllers: */
+/* Volume */
+	struct audio_unit_ctrl_elist_t audio_unit_mic_fu_ctrl_preamph;
+		audio_unit_controller_t audio_unit_mic_fu_conf_preamph;
+		audio_controller_conf_uint16_t audio_unit_ctrl_mic_fu_preamph;
+		void _audio_unit_mic_preamph_set_cur(void *unit_conf, void *data);
+
+/* Describing Feature Unit ID 9. */
+struct audio_unit_elist_t audio_mic_dig_amp_fu;  // FU for phone (volume)
+/* Controllers: */
+/* Volume */
+	struct audio_unit_ctrl_elist_t audio_unit_mic_fu_ctrl_dig_amp;
+		audio_unit_controller_t audio_unit_mic_fu_conf_dig_amp;
+		audio_controller_conf_uint16_t audio_unit_ctrl_mic_fu_dig_amp;
+		void _audio_unit_mic_dig_amp_set_cur(void *unit_conf, void *data);
+
 
 /* Configuring, starting ssc, spi and pcm systems. */
 int audio_system(void);

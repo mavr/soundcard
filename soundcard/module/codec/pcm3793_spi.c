@@ -120,6 +120,11 @@ void pcm3793_vcom() {
 	pcm3793_write(PCM_R74, codec.reg.r74);
 }
 
+void pcm3793_output(uint8_t value) {
+	codec.reg.r74 |= value;
+	pcm3793_write(PCM_R74, codec.reg.r74);
+}
+
 void pcm3793_pg3_gain(uint8_t value) {
 	codec.reg.r79 = value;
 	pcm3793_write(PCM_R79, codec.reg.r79);
@@ -152,8 +157,18 @@ void pcm3793_pg2pg6_up() {
 	pcm3793_write(PCM_R82, codec.reg.r82);
 }
 
+void pcm3793_pg2pg6_down() {
+	codec.reg.r82 &= ~PCM_R82_PAIR;
+	pcm3793_write(PCM_R82, codec.reg.r82);
+}
+
 void pcm3793_pg1pg5_up() {
 	codec.reg.r82 |= PCM_R82_PAIL;
+	pcm3793_write(PCM_R82, codec.reg.r82);
+}
+
+void pcm3793_pg1pg5_down() {
+	codec.reg.r82 &= ~PCM_R82_PAIL;
 	pcm3793_write(PCM_R82, codec.reg.r82);
 }
 
@@ -194,6 +209,10 @@ void pcm3793_sysclk_div(uint8_t value) {
 
 
 void pcm3793_analog_in(uint8_t value) {
+	//if(value == (PCM_R87_AIL_AIN1L | PCM_R87_AIR_AIN1R)) {
+		//value |= PCM_R87_AD2S;
+	//}
+
 	codec.reg.r87 |= value;
 	pcm3793_write(PCM_R87, codec.reg.r87);
 }
@@ -201,6 +220,16 @@ void pcm3793_analog_in(uint8_t value) {
 void pcm3793_switch(uint8_t value) {
 	codec.reg.r88 = value;
 	pcm3793_write(PCM_R88, codec.reg.r88);
+}
+
+void pcm3793_pg5_gain(uint8_t value) {
+	codec.reg.r89 |= PCM_R89_GML(value);
+	pcm3793_write(PCM_R89, codec.reg.r89);
+}
+
+void pcm3793_pg6_gain(uint8_t value) {
+	codec.reg.r89 |= PCM_R89_GMR(value);
+	pcm3793_write(PCM_R89, codec.reg.r89);
 }
 
 void pcm3793_pg1_m20dB() {
