@@ -17,7 +17,7 @@
 #include <string.h>
 
 void ep_init(void *ep, uint8_t ep_type, uint16_t ep_size, uint8_t ep_number) {
-	//TODO: don't forgiven about the situation with UDP_CSR_TXPKTRDY flag for bulk ep
+	// Warinig! Don't forgiven about the situation with UDP_CSR_TXPKTRDY flag for bulk ep
 	udp_ep_core_t *__core;
 
 	switch(ep_type) {
@@ -51,9 +51,6 @@ void ep_init(void *ep, uint8_t ep_type, uint16_t ep_size, uint8_t ep_number) {
 			udp_ep_audio_t *__ep_audio = (udp_ep_audio_t *) ep;
 			memset(ep, 0x00, sizeof(&__ep_audio));
 			__core = &(__ep_audio->ep);
-
-			//TODO: initializing stream
-			//__ep->stream
 
 			if(ep_type == UDP_EP_TYPE_ISO_IN) {
 				__ep_ctrl_set(&(__ep_audio->ep), UDP_CSR_EPTYPE_ISO_IN);
@@ -168,14 +165,13 @@ void ep_callback_setup(udp_ep_setup_t *ep) {
 }
 
 void ep_callback_hid(udp_ep_hid_report_t *ep) {
-	//TODO: ep_callback_hid
 	if(*ep->ep.CSR & UDP_CSR_TXCOMP) {
 		__ep_ctrl_clr(&(ep->ep), UDP_CSR_TXCOMP);
 		__ep_ctrl_clr(&(ep->ep), UDP_CSR_TXPKTRDY);
 	}
 }
 
-void ep_callback(udp_ep_audio_t *ep) {	
+void ep_callback(udp_ep_audio_t *ep) {
 	if(*ep->ep.CSR & UDP_CSR_RXSETUP) {
 		__UDP_DEBUG(LOG_LVL_HIGH, "Error! ep_callback() : isr rxsetup. this time which cant happen.");
 		// this case should never happen
@@ -183,7 +179,7 @@ void ep_callback(udp_ep_audio_t *ep) {
 		return;
 	}
 
-	if(*ep->ep.CSR & UDP_CSR_TXCOMP) {		
+	if(*ep->ep.CSR & UDP_CSR_TXCOMP) {
 		if(ep->ep.number == UDP_EP_IN) {
 			uint32_t i = 0;
 			uint16_t value;

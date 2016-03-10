@@ -50,7 +50,6 @@ enum ep_state { EP_STATE_NONE,
 	
 /* core endpoint structure  */
 typedef struct {
-	// TODO: is this param must be remove?
 	/* There is state of endpoint.
 		Possible:
 			EP_STATE_NONE	- ep disable;
@@ -82,12 +81,9 @@ typedef struct {
 typedef struct {
 	// endpoint core
 	udp_ep_core_t ep;
-	
+
 	// microphone / headphone stream 
 	_codec_stream_t stream;
-	
-	//TODO: callback ?
-		
 } udp_ep_audio_t;
 
 typedef struct {

@@ -55,12 +55,7 @@ int udp_send_setup(const uint8_t *data, uint32_t size) {
 * After that portion(if they have) are transmit by udp_push() called by TXCOMP interrupts.
 **/
 int udp_send_data(udp_ep_setup_t *ep, uint8_t *data, uint32_t size) {
-	//TODO : and this state problem
-	//if(ep->ep.state != EP_STATE_IDLE) {
-		//__UDP_DEBUG(LOG_LVL_LOW, "Error: Cant send data. Endpoint busy.");
-		//return ERRBUSY;
-	//}
-	
+
 	udp_setup_pkg.tx = data;
 	udp_setup_pkg.tx_size = size;
 	udp_setup_pkg.tx_count = 0;

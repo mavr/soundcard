@@ -39,13 +39,12 @@ uint32_t fifo_put(fifo_t *fifo, T_fifo *arry, uint32_t size) {
 
 uint32_t fifo_get(fifo_t *fifo, T_fifo *arry, uint32_t size) {
 	if(!__fifo_lock(fifo)) return 0;
-	
-// TODO: function fifo_get()
+
 //	uint32_t s = (size < (fifo->_size - fifo->_in)) ? (size) : (fifo->_size - fifo->_in);
 //	memcpy( arry, fifo->buffer + fifo->_in, s * sizeof(T_fifo));
-	
+
 	__fifo_unlock(fifo);
-	
+
 	return 0;
 }
 

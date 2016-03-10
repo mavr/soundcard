@@ -10,7 +10,13 @@
 #define TIMER_H_
 
 #include "sam.h"
-#include "timer.h"
+
+#define __DEBUG_WATCHDOG_PREFIX	"wdt"
+#define __DEBUG_TIMER_PREFIX	"tc"
+
+#define __TIMER_DEBUG(lvl, msg) {\
+		__DEBUG(lvl, __DEBUG_TIMER_PREFIX, msg);\
+	}
 
 typedef enum { WAVE, COUNTER } timer_mode_t;
 	

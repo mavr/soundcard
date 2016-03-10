@@ -36,6 +36,6 @@ void wdt_disable() {
 	PMC->PMC_PCER0 |= (1UL << ID_WDT);
 	WDT->WDT_MR |= WDT_MR_WDDIS;
 	PMC->PMC_PCDR0 |= (1UL << ID_WDT);
-	
-	syslog_send("[wdt]\tWatchdog disabled");
+
+	__TIMER_DEBUG(LOG_LVL_HIGH, "Watchdog disabled.");
 }

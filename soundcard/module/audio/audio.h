@@ -12,13 +12,11 @@
 #include <sam.h>
 #include "core/syslog.h"
 
-#ifdef UART_DEBUG
-	#define __AUDIO_DEBUG(lvl,msg) {\
-		syslog_prefix("[audio]\t"); \
-	__DEBUG(lvl,msg); }
-#else
-	#define __AUDIO_DEBUG(lvl,msg)
-#endif
+#define __DEBUG_AUDIO_PREFIX	"audio"
+
+#define __AUDIO_DEBUG(lvl,msg) {\
+		__DEBUG(lvl, __DEBUG_AUDIO_PREFIX, msg);\
+	}
 
 /* Phone */
 /* Volume unit parameters. */
@@ -203,8 +201,12 @@ struct audio_unit_elist_t audio_mic_dig_amp_fu;  // FU for phone (volume)
 		void _audio_unit_mic_dig_amp_set_cur(void *unit_conf, void *data);
 
 
-/* Configuring, starting ssc, spi and pcm systems. */
+/* Configuring ssc, spi and pcm systems. */
 int audio_system(void);
+
+/* Starting ssc interface  */
+void audio_start(void);
+
 void audio_controls_set_list(void);
 
 void audio_volume_up(void);

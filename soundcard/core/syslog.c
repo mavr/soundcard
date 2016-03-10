@@ -23,6 +23,12 @@ void syslog_start(char *msg) {
 	syslog_send((char *) ravion_logo_ascii);
 	syslog_send(msg);
 
+	#ifndef UART_DEBUG
+		syslog_send("Syslog system disable.\r\n");
+	#else
+		syslog_send("Syslog system enable.\r\n");
+	#endif
+
 	NVIC_SetPriority(UART0_IRQn, 0x0f);
 	NVIC_EnableIRQ(UART0_IRQn);
 }
@@ -43,9 +49,12 @@ void syslog_prefix(char *msg) {
 	uint32_t i;
 	
 	uart_tx_enable();
+	stream8_put(&syslog.stream, 0x5b); // [
 	for(i = 0; i < strlen(msg); i++) {
 		stream8_put(&syslog.stream, *(msg + i));
 	}
+	stream8_put(&syslog.stream, 0x5d); // ]
+	stream8_put(&syslog.stream, 0x09); // Tab
 }
 
 void UART0_Handler() {

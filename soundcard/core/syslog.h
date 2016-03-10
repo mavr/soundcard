@@ -21,7 +21,7 @@
 #define LOG_LVL_HIGH	0x03
 
 /* Define here one of the log level or comment this. */
-#define UART_DEBUG			LOG_LVL_MED
+#define UART_DEBUG			LOG_LVL_LOW
 
 #ifdef UART_DEBUG
 	#define __DEBUG(lvl, source, msg)	if( lvl >= UART_DEBUG ) {\
@@ -29,7 +29,7 @@
 											syslog_send(msg);\
 										}
 #else
-	#define DEBUG(lvl,msg) 
+	#define __DEBUG(lvl, source, msg) {}
 #endif
 
 /** Just syslog_t **/

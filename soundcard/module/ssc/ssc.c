@@ -60,15 +60,11 @@ void ssc_system() {
 	SSC->SSC_CR |= SSC_CR_RXEN | SSC_CR_TXEN;
 
 	ssc_int_enable();
-	
-	__DEBUG(LOG_LVL_HIGH, "[ssc]\t", "Configured");
-
 }
 
 inline void ssc_irq() { 
 	NVIC_SetPriority(SSC_IRQn, 0x00);
 	NVIC_EnableIRQ(SSC_IRQn);
-	__DEBUG(LOG_LVL_HIGH, "[ssc]\t", "Started");
 }
 
 inline void ssc_noirq() {
@@ -108,8 +104,8 @@ void SSC_Handler() {
 
 		uint16_t tmp_out = udp_audio_stream_out();
 		SSC->SSC_THR = tmp_out;
-		
+
 		udp_audio_stream_in(tmp);
-	
+
 	}
 }

@@ -31,7 +31,7 @@ void Init() {
 	pio_system();
 	
 	/* Starting syslog system via uart port. And dont't forgive draw logo :) */
-	syslog_start("\r\nRadioAvionica. Usb soundcard device starting. Syslog system.\r\n");
+	syslog_start("\r\nRadioAvionica. Usb soundcard device starting.\r\n");
 	
 	/* Configure watchdog ( disable ) */
 	wdt_disable();
@@ -41,7 +41,10 @@ void Init() {
 
 	/* Starting usb system. */	
 	udp_system();
-	
+
+	/* Channel up between cpu and codec. */
+	audio_start();
+
 	/* Turn on keyboard. */
 	pio_enable_kdb();
 }

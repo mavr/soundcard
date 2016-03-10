@@ -11,7 +11,7 @@
 
 #include "audio/audio.h"
 
-#define __DEBUG_PCM_PREFIX	"[pcm]\t"
+#define __DEBUG_PCM_PREFIX	"pcm"
 
 /* Registers */
 #define PCM_R64					0x40

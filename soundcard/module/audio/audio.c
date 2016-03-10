@@ -17,20 +17,30 @@
 int audio_system() {
 	/* Turn on spi for control pcm device. */
 	spi_system();
-	
+	__DEBUG(LOG_LVL_MED, __DEBUG_AUDIO_PREFIX, "SPI interface configured.");
+
 	/* Turn on ssc interface for transmit audio data to and from pcm device. */
 	ssc_system();
-	
+	__DEBUG(LOG_LVL_MED, __DEBUG_AUDIO_PREFIX, "SSC interface configured.");
+
 	/* Configuring default codec state. */
 	audio_controls_set_list();
-	
+
 	/* pcm.. wake up guy. */
 	pcm3793_init();
-	
-	/* Starting ssc line for transmit playback and capture interfaces. */
-	ssc_irq();
-	
+	__DEBUG(LOG_LVL_MED, __DEBUG_AUDIO_PREFIX, "Codec pcm7393 up.");
+
 	return 0;
+}
+
+void audio_start() {
+	/* Starting ssc line for transmit playback and capture interfaces. */
+	while(!udp_ready());
+
+	ssc_irq();
+	__DEBUG(LOG_LVL_HIGH, __DEBUG_AUDIO_PREFIX, "SSC interface started.");
+
+//	__DEBUG(LOG_LVL_HIGH, __DEBUG_AUDIO_PREFIX, "Start failed because udp not ready!");
 }
 
 void audio_controls_set_list(void) {

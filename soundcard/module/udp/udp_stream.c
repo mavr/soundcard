@@ -10,10 +10,11 @@
 
 void udp_audio_stream_in(uint16_t value) {
 	_codec_stream_t *stream = &(ep_in.stream);
-	
+
 	//TODO: think about this
 	// in other way stream buffers may be not init
-	if(udp_ready())	stream_put(stream, value);
+//	if(udp_ready())	
+	stream_put(stream, value);
 }
 
 uint16_t udp_audio_stream_out() {
@@ -27,9 +28,8 @@ void stream_init(_codec_stream_t *stream, uint16_t *stream_buffer, uint32_t size
 	stream->__in = 0;
 	stream->__out = 0;
 	stream->__size_msk = size_buffer - 1;
-	
+
 	stream->__buffer = stream_buffer;
-	
 }
 
 inline uint32_t udp_stream_get_avalable_data_size(_codec_stream_t *stream) {
@@ -53,6 +53,6 @@ inline uint16_t stream_get(_codec_stream_t *stream) {
 		stream->__out = (stream->__out + 1) & stream->__size_msk;
 		return *( stream->__buffer + stream->__out );
 	}
-	
+
 	return 0x00;
 }
