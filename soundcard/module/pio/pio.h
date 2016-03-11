@@ -11,15 +11,11 @@
 
 #include "core/syslog.h"
 
-#define __DEBUG_PIO_PREFIX	"[kbd]\t"
+#define __DEBUG_PIO_PREFIX	"kbd"
 
-#ifdef UART_DEBUG
-	#define __KBD_DEBUG(msg) {\
+#define __KBD_DEBUG(msg) {\
 		__DEBUG(LOG_LVL_HIGH, __DEBUG_PIO_PREFIX, msg);\
 	}
-	#else
-	#define __KBD_DEBUG(msg)
-#endif
 
 /* Key and pin matching */
 #define KBD_BUTTON_MEDIC		(21)

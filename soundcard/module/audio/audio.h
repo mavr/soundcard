@@ -266,4 +266,9 @@ void _audio_unit_common_unsupport(const void *unit_conf);
 /* Converters */
 uint8_t _audio_phone_vol_usb_to_pcm(uint16_t value);
 
+/* Syslog */
+void _audio_unit_phone_log(void);
+void _audio_unit_mic_log(void);
+void _audio_unit_mic_dig_amp_log(void);
+
 #endif /* AUDIO_H_ */

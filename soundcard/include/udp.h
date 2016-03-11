@@ -22,8 +22,6 @@
 		__DEBUG(lvl, __DEBUG_UDP_PREFIX, msg);\
 	}
 
-//#define  __UDP_DEBUG(lvl,msg)
-
 /* For future */
 #define __UDP_ERROR
 

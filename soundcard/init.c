@@ -20,19 +20,22 @@
 
 #include "include/udp.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
 
 void Init() {
 	/* First configuring Flash Mode register.
 		Set number of wait states for read and write operations. (1) */
 	EFC0->EEFC_FMR = EEFC_FMR_FWS(1);
-	
+
 	/*	Configuring clock and ports	*/
 	pmc_system();
 	pio_system();
-	
+
 	/* Starting syslog system via uart port. And dont't forgive draw logo :) */
 	syslog_start("\r\nRadioAvionica. Usb soundcard device starting.\r\n");
-	
+
 	/* Configure watchdog ( disable ) */
 	wdt_disable();
 

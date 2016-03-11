@@ -7,6 +7,7 @@
 
 #include <sam.h>
 #include <stddef.h>
+#include <string.h>
 #include "audio/audio.h"
 #include "udp/udp-audio.h"
 #include "udp/audio.h"
@@ -356,42 +357,60 @@ inline void _audio_unit_common_unsupport(const void * unit_conf) {
 
 /* Feature Unit ID 5. */
 void _audio_unit_mic_vol_set_cur(void *unit_conf, void *data) {
-//	uint8_t reg = 0x00;
 	_audio_unit_common_u16_set_cur(unit_conf, data);
 	pcm3793_pg3_gain((int8_t) (audio_unit_ctrl_mic_fu_conf_vol.cur / 0x100));
+
+	_audio_unit_mic_log();
 }
 
 /* Feature Unit ID 6. */
 inline void _audio_unit_phone_vol_set_cur(void *unit_conf, void *data) {
 	uint8_t reg = 0x00;
 	_audio_unit_common_u16_set_cur(unit_conf, data);
-	
-	if(audio_unit_ctrl_phone_fu_conf_mute.cur == 1) reg |= PCM_R65_HMUR;
+
+	if(audio_unit_ctrl_phone_fu_conf_mute.cur == 1) {
+		reg |= PCM_R65_HMUR;
+	}
 	reg |= PCM_R65_HRV((int8_t) (audio_unit_ctrl_phone_fu_conf_vol.cur / 0x100));
 	pcm3793_hpr_vol(reg);
+
+	_audio_unit_phone_log();
 }
 
 inline void _audio_unit_phone_mute_set_cur(void *unit_conf, void *data) {
 	uint8_t reg = 0x00;
 	_audio_unit_common_u8_set_cur(unit_conf, data);
-	
+
 	if(audio_unit_ctrl_phone_fu_conf_mute.cur == 1) reg |= PCM_R65_HMUR;
 	reg |= PCM_R65_HRV((int8_t) (audio_unit_ctrl_phone_fu_conf_vol.cur / 0x100));
 	pcm3793_hpr_vol(reg);
+
+	_audio_unit_phone_log();
 }
 
 /* Mixer Unit ID 7. */
 inline void _audio_unit_mix_set_cur(void *unit_conf, void *data) {
+	char message[48] = "Output channels: ";
 	_audio_unit_common_u16_set_cur(unit_conf, data);
 
 	uint8_t reg = 0x00;
-	if(audio_unit_mixer_ctrl_in_mic_conf.cur != AUDIO_MIX_IN_MIC_MIN)
+	strcat(message, "mic - ");
+	if(audio_unit_mixer_ctrl_in_mic_conf.cur != AUDIO_MIX_IN_MIC_MIN) {
 //		reg |= PCM_R88_SW1 | PCM_R88_SW6;
 		reg |= PCM_R88_SW6;
+		strcat(message, "on; ");
+	} else 
+		strcat(message, "off; ");
 
-	if(audio_unit_mixer_ctrl_in_phone_conf.cur != AUDIO_MIX_IN_PHONE_MIN)
+	strcat(message, "phone - ");
+	if(audio_unit_mixer_ctrl_in_phone_conf.cur != AUDIO_MIX_IN_PHONE_MIN) {
 //		reg |= PCM_R88_SW2 | PCM_R88_SW5;
 		reg |= PCM_R88_SW5;
+		strcat(message, "on; ");
+	} else 
+		strcat(message, "off;");
+
+	__AUDIO_DEBUG(LOG_LVL_HIGH, message);
 
 	pcm3793_switch(reg);
 }
@@ -401,9 +420,11 @@ inline void _audio_unit_mic_preamph_set_cur(void *unit_conf, void *data) {
 	_audio_unit_common_u16_set_cur(unit_conf, data);
 
 	if(audio_unit_ctrl_mic_fu_preamph.cur == AUDIO_MIC_PRE_MIN) {
+		__AUDIO_DEBUG(LOG_LVL_HIGH, "Volume: mic preamp off.");
 		pcm3793_pg1pg5_down();
 //		pcm3793_pg2pg6_down();
 	} else {
+		__AUDIO_DEBUG(LOG_LVL_HIGH, "Volume: mic preamp on.");
 		pcm3793_pg1pg5_up();
 //		pcm3793_pg2pg6_up();
 	}
@@ -413,8 +434,42 @@ inline void _audio_unit_mic_preamph_set_cur(void *unit_conf, void *data) {
 inline void _audio_unit_mic_dig_amp_set_cur(void *unit_conf, void *data) {
 	_audio_unit_common_u16_set_cur(unit_conf, data);
 
-//	uint8_t value = (uint8_t) (audio_unit_ctrl_mic_fu_dig_amp.cur * (-1) >> 8);
 	uint8_t value = (uint8_t) 0x07 - (audio_unit_ctrl_mic_fu_dig_amp.cur * (-1) >> 8);
-//	pcm3793_pg6_gain(value);
 	pcm3793_pg5_gain(value);
+
+	_audio_unit_mic_dig_amp_log();
+}
+
+inline void _audio_unit_phone_log(void) {
+	char message[28] = "Volume: Output - ";
+	char value[4];
+
+	if(audio_unit_ctrl_phone_fu_conf_mute.cur == 1) {
+		strcat(message, "(mute) ");
+	}
+
+	itoa(audio_unit_ctrl_phone_fu_conf_vol.cur * 100 / AUDIO_MASTER_VOL_MAX, value, 10);
+	strcat(message, value);
+	strcat(message, "%");
+	__AUDIO_DEBUG(LOG_LVL_HIGH, message);
+}
+
+void _audio_unit_mic_log(void) {
+	char message[32] = "Volume: Digital Mic - ";
+	char value[4];
+	itoa(audio_unit_ctrl_mic_fu_conf_vol.cur * 100 / AUDIO_MIC_VOL_MAX, value, 10);
+	strcat(message, value);
+	strcat(message, "%");
+	__AUDIO_DEBUG(LOG_LVL_HIGH, message);
+}
+
+void _audio_unit_mic_dig_amp_log() {
+	char message[28] = "Volume: Analog Mic - ";
+
+	char value[6];
+	// Do not be afraid of the next line. O_O
+	itoa( 100 - ((int8_t) (audio_unit_ctrl_mic_fu_dig_amp.cur  >> 8) * (-1)) * 100 / 7, value, 10);
+	strcat(message, value);
+	strcat(message, "%");
+	__AUDIO_DEBUG(LOG_LVL_HIGH, message);
 }
