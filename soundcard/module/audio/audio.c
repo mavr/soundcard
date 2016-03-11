@@ -8,6 +8,8 @@
 #include <sam.h>
 #include <stddef.h>
 #include <string.h>
+#include <stdlib.h>
+#include "include/udp.h"
 #include "audio/audio.h"
 #include "udp/udp-audio.h"
 #include "udp/audio.h"

@@ -73,11 +73,10 @@ void pcm3793_init() {
 //	pcm3793_pg4_gain(PCM_R80_ARV(0x0c));
 
 	///* wait 450 ms */
-	////TODO: remade this shit
-	volatile unsigned long long i = 0;
-	for(i = 0; i < 100000; i++) {
-		__NOP;
-	}
+	//volatile unsigned long long i = 0;
+	//for(i = 0; i < 100000; i++) {
+		//__NOP;
+	//}
 	pcm3793_write(0x49, 0xff);
 	
 	__DEBUG(LOG_LVL_HIGH, __DEBUG_PCM_PREFIX, "Started in master mode");

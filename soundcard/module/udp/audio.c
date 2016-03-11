@@ -23,7 +23,6 @@ void udp_audio_controllers_proc(udp_setup_activity_t *udp_setup_pkg) {
 		udp_send_stall(&ep_control);
 	}
 	udp_setup_pkg->object.source = (void *) audio_ctrl;
-	uint16_t value;
 	switch(udp_setup_pkg->pkg.bRequest) {
 
 		case UDP_bRequest_SET_RES :

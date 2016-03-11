@@ -203,7 +203,6 @@ void __udp_request_class_device(udp_setup_activity_t *udp_setup_pkg) {
 }
 
 void __udp_request_class_interface(udp_setup_activity_t *udp_setup_pkg) {
-	uint16_t value;
 	/* What the kind of interface */
 	uint8_t tmp = UDP_REQUEST_INTERFACE(udp_setup_pkg->pkg.wIndex);
 //	switch(_udp.udp_interface) {
