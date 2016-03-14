@@ -66,34 +66,35 @@ void __udp_request_class(udp_setup_activity_t *udp_setup_pkg) {
 			break;
 	
 		case UDP_bmRequestType_Recipient_EP :
-			__UDP_DEBUG(LOG_LVL_HIGH, "Control EP: Class request to endpoint.");
+			__UDP_DEBUG(LOG_LVL_HIGH, "Request: (class -> endpoint) : unsupported.\r\n\tAnswer: STALL.");
 			udp_send_stall(&ep_control);
 		break;
 	
 		default:
-			__UDP_DEBUG(LOG_LVL_HIGH, "Error! Control EP: Class request to reserved values.");
+			__UDP_DEBUG(LOG_LVL_HIGH, "Request: (class -> unknown) : unsupported.\r\n\tAnswer: STALL.");
 			udp_send_stall(&ep_control);
 			break;
 	}	
 }
 
 void __udp_request_vendor(udp_setup_activity_t *udp_setup_pkg) {
-	__UDP_DEBUG(LOG_LVL_HIGH, "Error!__udp_request_vendor() : uknown request.");
+	__UDP_DEBUG(LOG_LVL_HIGH, "Request: (vendor -> ...) : unsupported.\r\n\tAnswer: STALL.");
 	udp_send_stall(&ep_control);
 }
 
 void __udp_request_standart_device(udp_setup_activity_t *udp_setup_pkg) {
 	switch(udp_setup_pkg->pkg.bRequest) {
 		case UDP_bRequest_GET_STATUS :
-			//TODO: get_status()
-			break;
 
 		case UDP_bRequest_CLEAR_FEATURE :
-			//TODO: clear_feature()
-			break;
 
 		case UDP_bRequest_SET_FEATURE :
-			//TODO: set_feature()
+
+		case UDP_bRequest_SET_DESCRIPTOR :
+
+		case UDP_bRequest_GET_CONFIGURATION :
+			udp_send_stall(&ep_control);
+			__UDP_DEBUG(LOG_LVL_HIGH, "Request: (standart -> device) : unsupported.\r\n\tAnswer: STALL.");
 			break;
 
 		case UDP_bRequest_SET_ADDRESS :
@@ -103,14 +104,6 @@ void __udp_request_standart_device(udp_setup_activity_t *udp_setup_pkg) {
 		case UDP_bRequest_GET_DESCRIPTOR :
 			//__UDP_DEBUG(LOG_LVL_HIGH, "Request standart -> device : GET_DESCRIPTOR.");
 			udp_get_descriptor(udp_setup_pkg->pkg.wValue, udp_setup_pkg->pkg.wIndex, udp_setup_pkg->pkg.wLength);
-			break;
-
-		case UDP_bRequest_SET_DESCRIPTOR :
-			//TODO: set_descriptor()
-			break;
-
-		case UDP_bRequest_GET_CONFIGURATION :
-			//TODO: get_configuration()
 			break;
 
 		case UDP_bRequest_SET_CONFIGURATION :
@@ -132,36 +125,29 @@ void __udp_request_standart_device(udp_setup_activity_t *udp_setup_pkg) {
 void __udp_request_standart_interface(udp_setup_activity_t *udp_setup_pkg) {
 	switch(udp_setup_pkg->pkg.bRequest) {
 		case UDP_bRequest_GET_STATUS :
-			//TODO: get_status()
-			break;
 
 		case UDP_bRequest_CLEAR_FEATURE :
-			//TODO: clear_feature()
-			break;
 
 		case UDP_bRequest_SET_FEATURE :
-			//TODO: set_feature()
-			break;
-				
+
 		case UDP_bRequest_GET_INTERFACE :
-			//TODO: get_interface()
-			//__UDP_DEBUG(LOG_LVL_HIGH, "Request standart -> interface : GET_INTERFACE.");
+			udp_send_stall(&ep_control);
+			__UDP_DEBUG(LOG_LVL_HIGH, "Request: (standart -> interface) : unsupported.\r\n\tAnswer: STALL.");
 			break;
-				
+
 		case UDP_bRequest_SET_INTERFACE :
-			//TODO: set_interface
 			udp_set_interface(udp_setup_pkg->pkg.wIndex);
 			break;
-			
+
 		case UDP_bRequest_GET_DESCRIPTOR :
 			//__UDP_DEBUG(LOG_LVL_HIGH, "Request standart -> interface : GET_DESCRIPTOR.");
 			udp_get_descriptor(udp_setup_pkg->pkg.wValue, udp_setup_pkg->pkg.wIndex,udp_setup_pkg->pkg.wLength);
 			break;
-				
+
 		default:
 			//Error
 			udp_send_stall(&ep_control);
-			__UDP_DEBUG(LOG_LVL_HIGH, "Request standart -> interface : uknown.");
+			__UDP_DEBUG(LOG_LVL_HIGH, "Request (standart -> interface) : uknown.\r\n\tAnswer: STALL.");
 			break;
 	}
 }
@@ -185,32 +171,31 @@ void __udp_request_standart_endpoint(udp_setup_activity_t *udp_setup_pkg) {
 			//break;
 			
 		default:
-			//Error
 			udp_send_stall(&ep_control);
-			__UDP_DEBUG(LOG_LVL_HIGH, "Error! Request standart -> endpoint : uknown.");
+			__UDP_DEBUG(LOG_LVL_HIGH, "Request: (standart -> endpoint) : unsupported.\r\n\tAnswer: STALL.");
 			break;
 	}
 }
 
 void __udp_request_standart_other(udp_setup_activity_t *udp_setup_pkg) {
 	udp_send_stall(&ep_control);
-	__UDP_DEBUG(LOG_LVL_HIGH, "Error! __udp_request_standart_other(): uknown request.");
+	__UDP_DEBUG(LOG_LVL_HIGH, "Request: (standart -> other) : unsupported.\r\n\tAnswer: STALL.");
 }
 
 void __udp_request_class_device(udp_setup_activity_t *udp_setup_pkg) {
 	udp_send_stall(&ep_control);
-	__UDP_DEBUG(LOG_LVL_HIGH, "Error! __udp_request_class_device(): uknown request.");
+	__UDP_DEBUG(LOG_LVL_HIGH, "Request: (class -> device) : unsupported.\r\n\tAnswer: STALL.");
 }
 
 void __udp_request_class_interface(udp_setup_activity_t *udp_setup_pkg) {
 	/* What the kind of interface */
-	uint8_t tmp = UDP_REQUEST_INTERFACE(udp_setup_pkg->pkg.wIndex);
-//	switch(_udp.udp_interface) {
-	switch(tmp) {
+	extern const uint8_t udp_hid_interface_descriptor[];
+
+	switch(UDP_REQUEST_INTERFACE(udp_setup_pkg->pkg.wIndex)) {
 		case UDP_AC_INTERFACE : 
 		case UDP_AS_IN_INTERFACE : 
 		case UDP_AS_OUT_INTERFACE : 
-			udp_audio_controllers_proc(udp_setup_pkg);			
+			udp_audio_controllers_proc(udp_setup_pkg);
 			break;
 
 		case UDP_HID_INTERFACE : 
@@ -232,7 +217,7 @@ void __udp_request_class_interface(udp_setup_activity_t *udp_setup_pkg) {
 					__UDP_DEBUG(LOG_LVL_HIGH, "Error! __udp_request_class_interface(): uknown request.");
 					break;
 			}
-			break;		
+			break;
 	}
 
 }
@@ -240,7 +225,12 @@ void __udp_request_class_interface(udp_setup_activity_t *udp_setup_pkg) {
 void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 	const uint8_t * _p_desc = 0;
 	uint32_t _s_desc = 0;
-		
+
+	extern const uint8_t udp_dev_descriptor[];
+	extern const uint8_t udp_conf_descriptor[];
+	extern const uint8_t udp_hid_interface_descriptor[];
+	extern const uint8_t udp_kbd_report_descriptor[];
+
 	// Type of descriptor is contains in high byte. Low byte contains index of descriptor.
 	switch(wValue >> 8) {
 		case UDP_wValue_DESCRIPTORT_DEV	:		
@@ -249,7 +239,7 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 				break;
 		case UDP_wValue_DESCRIPTORT_CONF :
 				//udp_set_wTotalLength();
-				_p_desc = udp_conf_descriptor; _s_desc = sizeof(udp_conf_descriptor); 
+				_p_desc = udp_conf_descriptor; _s_desc = UDP_DESCRIPTOR_CONF_SIZE;// sizeof(udp_conf_descriptor); 
 				//__UDP_DEBUG(LOG_LVL_HIGH, "Reply: CONFIGURATION_DESCRIPTOR.");
 				break; 
 		case UDP_wValue_DESCRIPTORT_STR	:		
@@ -279,7 +269,7 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 
 		default: 
 			udp_send_stall(&ep_control);
-			__UDP_DEBUG(LOG_LVL_HIGH, "Error! udp_get_descriptor() : uknown descriptor.");
+			__UDP_DEBUG(LOG_LVL_HIGH, "Request: GET_DESCRIPTOR : uknown descriptor.\r\n\tAnswer: STALL.");
 			return;
 			break;
 	}
@@ -308,7 +298,7 @@ void udp_set_interface(uint16_t wIndex) {
 		case UDP_AS_IN_INTERFACE :	__UDP_DEBUG(LOG_LVL_LOW, "Set interface : Audio Stream IN."); break;
 		case UDP_AS_OUT_INTERFACE : __UDP_DEBUG(LOG_LVL_LOW, "Set interface : Audio Stream OUT."); break;
 		case UDP_HID_INTERFACE :	__UDP_DEBUG(LOG_LVL_LOW, "Set interface : HID."); break;
-		
+
 		default: __UDP_DEBUG(LOG_LVL_LOW, "Set interface : uknown."); break;
 	}
 	udp_send_zlp(&ep_control);
@@ -344,6 +334,6 @@ void udp_request_unsupport(enum udp_error_t error) {
 			// Watchdog, i am here!
 			for(volatile int i;; i++);
 			break;
-	};	
+	};
 	udp_send_stall(&ep_control);
 }

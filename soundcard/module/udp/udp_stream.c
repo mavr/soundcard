@@ -11,9 +11,6 @@
 void udp_audio_stream_in(uint16_t value) {
 	_codec_stream_t *stream = &(ep_in.stream);
 
-	//TODO: think about this
-	// in other way stream buffers may be not init
-//	if(udp_ready())	
 	stream_put(stream, value);
 }
 

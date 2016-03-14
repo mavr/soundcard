@@ -28,8 +28,9 @@ void udp_system() {
 }
 
 void udp_set_wTotalLength(void) {
-	uint8_t *desc = udp_conf_descriptor;
-	*(desc + 2) = sizeof(udp_conf_descriptor);
+	//extern const uint8_t *udp_conf_descriptor;
+	//uint8_t *desc = udp_conf_descriptor;
+	//*(desc + 2) = sizeof(udp_conf_descriptor);
 }
 
 void udp_set_interrupt() {

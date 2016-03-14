@@ -85,7 +85,8 @@ void PIOA_Handler() {
 	if(lock++ == 1) return;
 	
 	// need for clear interrupt
-	volatile uint32_t temp = PIOA->PIO_ISR;
+	//volatile uint32_t temp = PIOA->PIO_ISR;
+	PIOA->PIO_ISR;
 
 	for(i = 0; i < 5; i++) {
 		if((PIOA->PIO_PDSR & (1 << kbd.key[i].pin)) == 0) {
