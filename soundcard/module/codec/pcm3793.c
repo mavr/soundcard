@@ -11,39 +11,38 @@
 #include "pcm3793.h"
 
 void pcm3793_init() {
-	
+
 	pcm3793_sysclk_div(0x07); // 8kHz
-	
+
 	/* Set analog volume for right Tel. channel
 		and disable analog mute. */
-	pcm3793_hpr_vol(PCM_R65_HRV(0x00));
-	
+	pcm3793_hpr_vol(PCM_R65_HRV(0x3a));
+
 	/* SPL/R disable */
-	
+
 	/* DAC block */
 	pcm3793_dar(PCM_R69_ATR(0x35));
 	pcm3793_dac_format(PCM_R70_PFM_LJust);
 	pcm3793_dac_over();
 	pcm3793_dac_filter_dem(PCM_R70_DEM_OFF);
 	pcm3793_dac_gain(PCM_R70_SPX_0dB);
-	
+
 	/* ADC block */
 	pcm3793_adc_format(PCM_R81_RFM_LJust );
 	pcm3793_adc_filter_hp(PCM_R81_HPF_OFF);
 
-	
 	/* Set boost for PG1 and PG2. */
 	pcm3793_pg1_m20dB();
 	pcm3793_pg2_m20dB();
-	
+
 	/* Power on Mic Bias. */
 	pcm3793_pbis_up();
-	
+
 	/* Zero-cross ? */
-	
+
 	/* Turn on mixer. */
 	pcm3793_pmxr_on();
-	
+
 	/* Choose switchers. */
 //	pcm3793_switch(PCM_R88_SW1 | PCM_R88_SW6);
 //	pcm3793_switch(PCM_R88_SW5 | PCM_R88_SW2);
@@ -78,7 +77,6 @@ void pcm3793_init() {
 		//__NOP;
 	//}
 	pcm3793_write(0x49, 0xff);
-	
+
 	__DEBUG(LOG_LVL_HIGH, __DEBUG_PCM_PREFIX, "Started in master mode");
-	
 }

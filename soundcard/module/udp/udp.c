@@ -84,36 +84,36 @@ void UDP_Handler() {
 		ep_reset(&ep_in, UDP_EP_IN, UDP_EP_TYPE_ISO_IN, UDP_EP4_SIZE);
 		ep_reset(&ep_out, UDP_EP_OUT, UDP_EP_TYPE_ISO_OUT, UDP_EP4_SIZE);
 		ep_reset(&ep_int, UDP_EP_HID, UDP_EP_TYPE_INT, UDP_EP1_SIZE);
-		
+
 		__UDP_DEBUG(LOG_LVL_MED, "Get Reset signal");
-		
+
 		UDP->UDP_ICR |= UDP_ICR_ENDBUSRES | UDP_ICR_SOFINT;
 		udp_set_state(UDP_STATE_DEFAULT);
-		
+
 		return;
 	}
-	
+
 	if(UDP->UDP_ISR & UDP_IMR_EP0INT) {
 		ep_callback_setup(&ep_control);
 		UDP->UDP_ICR |= UDP_IMR_EP0INT;
 	}
-	
+
 	if(UDP->UDP_ISR & UDP_IMR_EP2INT) {
 //		__UDP_DEBUG(LOG_LVL_LOW, "EP2 INTERRUPT");
 		ep_callback_hid(&ep_int);
 		UDP->UDP_ICR |= UDP_IMR_EP2INT;
 	}
-	
+
 	if(UDP->UDP_ISR & UDP_IMR_EP4INT) {
 		ep_callback(&ep_in);
 		UDP->UDP_ICR |= UDP_IMR_EP4INT;
 	}
-	
+
 	if(UDP->UDP_ISR & UDP_IMR_EP5INT) {
 		ep_callback(&ep_out);
 		UDP->UDP_ICR |= UDP_IMR_EP5INT;
 	}
-	
+
 	if(UDP->UDP_ISR & (UDP_ISR_EXTRSM | UDP_ISR_RXRSM | UDP_ISR_RXSUSP | UDP_ISR_SOFINT | UDP_ISR_WAKEUP)) {
 		UDP->UDP_ICR |= UDP_ISR_EXTRSM | UDP_ISR_RXRSM | UDP_ISR_RXSUSP | UDP_ISR_SOFINT | UDP_ISR_WAKEUP;
 		UDP->UDP_ICR |= UDP_ICR_SOFINT;

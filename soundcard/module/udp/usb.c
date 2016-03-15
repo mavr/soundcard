@@ -24,12 +24,15 @@ void udp_enumerate(udp_setup_activity_t *udp_setup_pkg) {
 		case UDP_bmRequestType_Type_STANDART :
 				__udp_request_standart(udp_setup_pkg);
 				break;
+
 		case UDP_bmRequestType_Type_CLASS :
 				__udp_request_class(udp_setup_pkg);
 				break;
+
 		case UDP_bmRequestType_Type_VENDOR :
 				__udp_request_vendor(udp_setup_pkg);
-				break;	
+				break;
+
 		default:
 				udp_send_stall(&ep_control);
 				__UDP_DEBUG(LOG_LVL_HIGH, "Error!! Request's field bmRequestType has uknown value.");
@@ -42,12 +45,15 @@ void __udp_request_standart(udp_setup_activity_t *udp_setup_pkg) {
 		case UDP_bmRequestType_Recipient_DEV : 
 			__udp_request_standart_device(udp_setup_pkg);
 			break;
+
 		case UDP_bmRequestType_Recipient_INT :
 			__udp_request_standart_interface(udp_setup_pkg);
 			break;
+
 		case UDP_bmRequestType_Recipient_EP :
 			__udp_request_standart_endpoint(udp_setup_pkg);
 			break;
+
 		default:
 			__udp_request_standart_other(udp_setup_pkg);
 			break;
@@ -60,16 +66,16 @@ void __udp_request_class(udp_setup_activity_t *udp_setup_pkg) {
 		case UDP_bmRequestType_Recipient_DEV :
 			__udp_request_class_device(udp_setup_pkg);
 			break;
-	
+
 		case UDP_bmRequestType_Recipient_INT :
 			__udp_request_class_interface(udp_setup_pkg);
 			break;
-	
+
 		case UDP_bmRequestType_Recipient_EP :
 			__UDP_DEBUG(LOG_LVL_HIGH, "Request: (class -> endpoint) : unsupported.\r\n\tAnswer: STALL.");
 			udp_send_stall(&ep_control);
 		break;
-	
+
 		default:
 			__UDP_DEBUG(LOG_LVL_HIGH, "Request: (class -> unknown) : unsupported.\r\n\tAnswer: STALL.");
 			udp_send_stall(&ep_control);
@@ -169,7 +175,7 @@ void __udp_request_standart_endpoint(udp_setup_activity_t *udp_setup_pkg) {
 		//case UDP_bRequest_SYNCH_FRAME :
 			////TODO: sync_frame()
 			//break;
-			
+
 		default:
 			udp_send_stall(&ep_control);
 			__UDP_DEBUG(LOG_LVL_HIGH, "Request: (standart -> endpoint) : unsupported.\r\n\tAnswer: STALL.");
@@ -237,11 +243,12 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 				_p_desc = udp_dev_descriptor; _s_desc = UDP_DESCRIPTOR_DEVICE_SIZE; 
 				//__UDP_DEBUG(LOG_LVL_HIGH, "Reply: DEVICE_DESCRIPTOR.");
 				break;
+
 		case UDP_wValue_DESCRIPTORT_CONF :
-				//udp_set_wTotalLength();
 				_p_desc = udp_conf_descriptor; _s_desc = UDP_DESCRIPTOR_CONF_SIZE;// sizeof(udp_conf_descriptor); 
 				//__UDP_DEBUG(LOG_LVL_HIGH, "Reply: CONFIGURATION_DESCRIPTOR.");
 				break; 
+
 		case UDP_wValue_DESCRIPTORT_STR	:		
 				//__UDP_DEBUG(LOG_LVL_HIGH, "Reply: STRING_DESCRIPTOR.");
 			switch(wValue & 0x00ff) {
@@ -280,7 +287,7 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 
 void udp_set_address(uint16_t wValue) {
 	udp_send_zlp(&ep_control);
-	
+
 //	__UDP_DEBUG(LOG_LVL_LOW, "Receive: SET address.");
 	udp_setup_pkg.callback = &_udp_set_address_callback;
 }
@@ -314,11 +321,11 @@ void _udp_set_address_callback(udp_request_callback_t *p) {
 void _udp_set_configuration_callback(udp_request_callback_t *p) {
 	if(udp_get_state() == UDP_STATE_ADDRESS) udp_set_state(UDP_STATE_CONFIGURED);
 	else if(udp_get_state() == UDP_STATE_CONFIGURED) udp_set_state(UDP_STATE_ADDRESS);
-	
+
 	// turn on endpoints
 //	__UDP_DEBUG(LOG_LVL_HIGH, "Configuration setted. Enable audio in ep.");
 	ep_enable(&ep_in.ep);
-	
+
 	__ep_ctrl_set(&ep_in.ep, UDP_CSR_TXPKTRDY);
 }
 

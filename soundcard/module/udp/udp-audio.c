@@ -100,12 +100,11 @@ const uint8_t udp_conf_descriptor[] = {
 			0x01, // baInterfaceNr (interface 1 is stream)
 			0x02, // baInterfaceNr (interface 2 is stream)
 
-	/** Microphone **/
 	/* Input terminal Audio Class Descriptor */
 			0x0C, // bLength (12)
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x02, // bDescriptorSubtype (INPUT_TERMINAL)
-			0x01, // bTerminalID (1)
+			UDP_AC_TERM_IN_MIC_ID, // bTerminalID (1)
 			0x01, // wTerminalType (microphone)
 			0x02,
 			0x00, // bAssocTerminal (none)
@@ -119,7 +118,7 @@ const uint8_t udp_conf_descriptor[] = {
 			0x0C, // bLength (12)
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x02, // bDescriptorSubtype (INPUT_TERMINAL)
-			0x02, // bTerminalID (2)
+			UDP_AC_TERM_IN_USB_ID, // bTerminalID (2)
 			0x01, // wTerminalType (usb streaming)
 			0x01,
 			0x00, // bAssocTerminal (none)
@@ -133,25 +132,22 @@ const uint8_t udp_conf_descriptor[] = {
 			0x09, // bLength (9)
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x03, // bDescriptorSubtype (OUTPUT_TERMINAL)
-			0x04, // bTerminalID (4)
-			0x01, // wTerminalType (speaker)
-			0x03,
+			UDP_AC_TERM_OUT_USB_ID, // bTerminalID (3)
+			0x01, // wTerminalType (usb streaming)
+			0x01,
 			0x00, // bAssocTerminal (none)
-			UDP_AC_PHONE_FU_ID, // bSourceID (6)
-//			UDP_AC_MIX_ID,
-			//0x03, // bSourceID (3)
+			UDP_AC_MIC_FU_ID, // bSourceID (5)
 			0x00, // iTerminal (none)
 
 	/* Output terminal Audio Class Descriptor */
 			0x09, // bLength (9)
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x03, // bDescriptorSubtype (OUTPUT_TERMINAL)
-			0x03, // bTerminalID (3)
-			0x01, // wTerminalType (usb streaming)
-			0x01,
+			UDP_AC_TERM_OUT_PHONE_ID, // bTerminalID (4)
+			0x01, // wTerminalType (speaker)
+			0x03,
 			0x00, // bAssocTerminal (none)
-			0x05, // bSourceID (5)
-			//0x01, // bSourceID (1)
+			UDP_AC_PHONE_FU_ID, // bSourceID (6)
 			0x00, // iTerminal (none)
 
 	/* Feature unit Audio Class Descriptor */
@@ -159,60 +155,59 @@ const uint8_t udp_conf_descriptor[] = {
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x06, // bDescriptorSubtype (FEATURE_UNIT)
 			UDP_AC_MIC_FU_ID, // bUnitID (5)
-			0x01, // bSourceID (1)
+			UDP_AC_TERM_IN_MIC_ID, // bSourceID (8)
 			0x01, // bControlSize (1)
 			0x02, // bmaContorls(0) : Mute, Volume
 			0x00, // bmaContorls(1)
 			0x00, // iTerminal (none)
-
+//
 	/* Feature unit Audio Class Descriptor */
 			0x09, // bLength (9)
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x06, // bDescriptorSubtype (FEATURE_UNIT)
 			UDP_AC_PHONE_FU_ID, // bUnitID (6)
-			UDP_AC_MIX_ID, // bSourceID (2)
-			//0x02,
+			UDP_AC_TERM_IN_USB_ID, // bSourceID ()
 			0x01, // bControlSize (1)
 			0x03, // bmaContorls(0) : Mute, Volume
 			0x00, // bmaContorls(1)
 			0x05, // iTerminal (none)
-
-	/* Feature unit Audio Class Descriptor */
-			0x09, // bLength (9)
-			0x24, // bDescriptorType (CS_INTERFACE)
-			0x06, // bDescriptorSubtype (FEATURE_UNIT)
-			UDP_AC_MIC_PRE_FU_ID, // bUnitID (8)
-			0x01, // bSourceID (1)
-			0x01, // bControlSize (1)
-			0x02, // bmaContorls(0) Volume
-			0x00, // bmaContorls(1)
-			0x06, // iTerminal (none)
-
-	/* Feature unit Audio Class Descriptor */
-			0x09, // bLength (9)
-			0x24, // bDescriptorType (CS_INTERFACE)
-			0x06, // bDescriptorSubtype (FEATURE_UNIT)
-			UDP_AC_MIC_AMP_FU_ID, // bUnitID (8)
-			UDP_AC_MIC_PRE_FU_ID, // bSourceID ()
-			0x01, // bControlSize (1)
-			0x02, // bmaContorls(0) Volume
-			0x00, // bmaContorls(1)
-			0x07, // iTerminal (none)
-
-	/* Mixer unit Audio Class Descriptor */
-			0x0d, // bLenght
-			0x24, // bDescriptorType (CS_INTERFACE)
-			0x04, // bDescriptorSubtype (MIXER_UNIT)
-			UDP_AC_MIX_ID, // bUnitID (7)
-			0x02, // bNrInPins (2)
-			UDP_AC_MIC_AMP_FU_ID, // baSourceID[0] (1)
-			0x02, // baSourceID[1]
-			0x01, // bNrChannels
-			0x01, // wChanelConfig
-			0x00,
-			0x00, // iChannelNames
-			0x60, // bmControls
-			0x04, // iMixer
+//
+	///* Feature unit Audio Class Descriptor */
+			//0x09, // bLength (9)
+			//0x24, // bDescriptorType (CS_INTERFACE)
+			//0x06, // bDescriptorSubtype (FEATURE_UNIT)
+			//UDP_AC_MIC_PRE_FU_ID, // bUnitID (8)
+			//0x01, // bSourceID (1)
+			//0x01, // bControlSize (1)
+			//0x02, // bmaContorls(0) Volume
+			//0x00, // bmaContorls(1)
+			//0x06, // iTerminal (none)
+//
+	/////* Feature unit Audio Class Descriptor */
+			////0x09, // bLength (9)
+			////0x24, // bDescriptorType (CS_INTERFACE)
+			////0x06, // bDescriptorSubtype (FEATURE_UNIT)
+			////UDP_AC_MIC_AMP_FU_ID, // bUnitID (9)
+			////UDP_AC_MIC_PRE_FU_ID, // bSourceID ()
+			////0x01, // bControlSize (1)
+			////0x02, // bmaContorls(0) Volume
+			////0x00, // bmaContorls(1)
+			////0x07, // iTerminal (none)
+//
+	/////* Mixer unit Audio Class Descriptor */
+			////0x0d, // bLenght
+			////0x24, // bDescriptorType (CS_INTERFACE)
+			////0x04, // bDescriptorSubtype (MIXER_UNIT)
+			////UDP_AC_MIX_ID, // bUnitID (7)
+			////0x02, // bNrInPins (2)
+			////UDP_AC_MIC_AMP_FU_ID, // baSourceID[0] (1)
+			////0x02, // baSourceID[1]
+			////0x01, // bNrChannels
+			////0x01, // wChanelConfig
+			////0x00,
+			////0x00, // iChannelNames
+			////0x60, // bmControls
+			////0x04, // iMixer
 
 	/** Interface number 1 **/
 	/* Audio Stream interface descriptor */
@@ -229,7 +224,7 @@ const uint8_t udp_conf_descriptor[] = {
 	/* Alternate Audio Interface Descriptor */
 		0x09, // bLenght
 		0x04, // bDescriptorType (interface)
-		0x01, // bInterfaceNumber
+		UDP_AS_IN_INTERFACE, // bInterfaceNumber
 		0x01, // bAlternateSetting
 		0x01, // bNumEndpoints
 		0x01, // bInterfaceClass
@@ -241,7 +236,7 @@ const uint8_t udp_conf_descriptor[] = {
 			0x07, // bLenght
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x01, // bDescriptorSubtype (AS_GENERAL)
-			0x02, // bTerminalLink (terminal 1)
+			UDP_AC_TERM_OUT_USB_ID, // bTerminalLink (terminal 1)
 			0x01, // bDelay (none)
 			0x01, // wFormatTag (PCM format)
 			0x00,
@@ -295,7 +290,7 @@ const uint8_t udp_conf_descriptor[] = {
 		/* Alternate Audio Interface Descriptor */
 		0x09, // bLenght
 		0x04, // bDescriptorType (interface)
-		0x02, // bInterfaceNumber
+		UDP_AS_OUT_INTERFACE, // bInterfaceNumber
 		0x01, // bAlternateSetting
 		0x01, // bNumEndpoints
 		0x01, // bInterfaceClass
@@ -307,7 +302,7 @@ const uint8_t udp_conf_descriptor[] = {
 			0x07, // bLenght
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x01, // bDescriptorSubtype (AS_GENERAL)
-			0x03, // bTerminalLink (terminal 1)
+			UDP_AC_TERM_IN_USB_ID, // bTerminalLink (terminal 2)
 			0x01, // bDelay (none)
 			0x01, // wFormatTag (PCM format)
 			0x00,
