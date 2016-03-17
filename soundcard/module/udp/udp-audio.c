@@ -150,11 +150,8 @@ const uint8_t udp_conf_descriptor[] = {
 			UDP_AC_PHONE_FU_ID, // bSourceID (6)
 			0x00, // iTerminal (none)
 
-<<<<<<< HEAD
 		/* Feature unit Audio Class Descriptor */
-=======
 		///* Feature unit Audio Class Descriptor */
->>>>>>> a29309d786b6172e70a89524b1ce39e8b2df2fa4
 			//0x09, // bLength (9)
 			//0x24, // bDescriptorType (CS_INTERFACE)
 			//0x06, // bDescriptorSubtype (FEATURE_UNIT)
@@ -170,11 +167,7 @@ const uint8_t udp_conf_descriptor[] = {
 			0x24, // bDescriptorType (CS_INTERFACE)
 			0x06, // bDescriptorSubtype (FEATURE_UNIT)
 			UDP_AC_MIC_FU_ID, // bUnitID (5)
-<<<<<<< HEAD
 			UDP_AC_TERM_IN_MIC_ID, // bSourceID ()
-=======
-			UDP_AC_TERM_IN_MIC_ID, // bSourceID (8)
->>>>>>> a29309d786b6172e70a89524b1ce39e8b2df2fa4
 			0x01, // bControlSize (1)
 			0x03, // bmaContorls(0) : Mute, Volume
 			0x00, // bmaContorls(1)
