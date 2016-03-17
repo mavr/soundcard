@@ -384,6 +384,9 @@ void pcm3793_dac_filter_dem(uint8_t value);
 void pcm3793_adc_format(uint8_t value);	// R81
 /* High-Pass Filter Selection */
 void pcm3793_adc_filter_hp(uint8_t value);
+/* Digital Soft Mute */
+void pcm3793_adc_soft_mute_on(void);
+void pcm3793_adc_soft_mute_off(void);
 
 
 /** PG[1..6] block. */
