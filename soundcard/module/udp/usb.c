@@ -67,6 +67,7 @@ void __udp_request_class(udp_setup_activity_t *udp_setup_pkg) {
 	
 		case UDP_bmRequestType_Recipient_EP :
 			__UDP_DEBUG(LOG_LVL_HIGH, "Control EP: Class request to endpoint.");
+			udp_send_stall(&ep_control);
 		break;
 	
 		default:
@@ -100,7 +101,7 @@ void __udp_request_standart_device(udp_setup_activity_t *udp_setup_pkg) {
 			break;
 
 		case UDP_bRequest_GET_DESCRIPTOR :
-			__UDP_DEBUG(LOG_LVL_HIGH, "Request standart -> device : GET_DESCRIPTOR.");
+			//__UDP_DEBUG(LOG_LVL_HIGH, "Request standart -> device : GET_DESCRIPTOR.");
 			udp_get_descriptor(udp_setup_pkg->pkg.wValue, udp_setup_pkg->pkg.wIndex, udp_setup_pkg->pkg.wLength);
 			break;
 
@@ -144,7 +145,7 @@ void __udp_request_standart_interface(udp_setup_activity_t *udp_setup_pkg) {
 				
 		case UDP_bRequest_GET_INTERFACE :
 			//TODO: get_interface()
-			__UDP_DEBUG(LOG_LVL_HIGH, "Request standart -> interface : GET_INTERFACE.");
+			//__UDP_DEBUG(LOG_LVL_HIGH, "Request standart -> interface : GET_INTERFACE.");
 			break;
 				
 		case UDP_bRequest_SET_INTERFACE :
@@ -153,7 +154,7 @@ void __udp_request_standart_interface(udp_setup_activity_t *udp_setup_pkg) {
 			break;
 			
 		case UDP_bRequest_GET_DESCRIPTOR :
-			__UDP_DEBUG(LOG_LVL_HIGH, "Request standart -> interface : GET_DESCRIPTOR.");
+			//__UDP_DEBUG(LOG_LVL_HIGH, "Request standart -> interface : GET_DESCRIPTOR.");
 			udp_get_descriptor(udp_setup_pkg->pkg.wValue, udp_setup_pkg->pkg.wIndex,udp_setup_pkg->pkg.wLength);
 			break;
 				
@@ -219,11 +220,11 @@ void __udp_request_class_interface(udp_setup_activity_t *udp_setup_pkg) {
 					__UDP_DEBUG(LOG_LVL_HIGH, "Request class -> interface : GET_REPORT.");
 					//udp_get_descriptor(request->wValue, request->wIndex, request->wLength);
 					udp_send_setup(udp_hid_interface_descriptor, 0x09);
-					__UDP_DEBUG(LOG_LVL_HIGH, "Reply: HID_INTERFACE_DESCRIPTOR.");
+					//__UDP_DEBUG(LOG_LVL_HIGH, "Reply: HID_INTERFACE_DESCRIPTOR.");
 					break;
 
 				case UDP_bRequest_SET_IDLE :
-					__UDP_DEBUG(LOG_LVL_HIGH, "Request class -> interface : SET_IDLE.");
+					//__UDP_DEBUG(LOG_LVL_HIGH, "Request class -> interface : SET_IDLE.");
 					udp_send_zlp(&ep_control);
 					break;
 
@@ -245,15 +246,15 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 	switch(wValue >> 8) {
 		case UDP_wValue_DESCRIPTORT_DEV	:		
 				_p_desc = udp_dev_descriptor; _s_desc = UDP_DESCRIPTOR_DEVICE_SIZE; 
-				__UDP_DEBUG(LOG_LVL_HIGH, "Reply: DEVICE_DESCRIPTOR.");
+				//__UDP_DEBUG(LOG_LVL_HIGH, "Reply: DEVICE_DESCRIPTOR.");
 				break;
 		case UDP_wValue_DESCRIPTORT_CONF :
 				//udp_set_wTotalLength();
 				_p_desc = udp_conf_descriptor; _s_desc = sizeof(udp_conf_descriptor); 
-				__UDP_DEBUG(LOG_LVL_HIGH, "Reply: CONFIGURATION_DESCRIPTOR.");
+				//__UDP_DEBUG(LOG_LVL_HIGH, "Reply: CONFIGURATION_DESCRIPTOR.");
 				break; 
 		case UDP_wValue_DESCRIPTORT_STR	:		
-				__UDP_DEBUG(LOG_LVL_HIGH, "Reply: STRING_DESCRIPTOR.");
+				//__UDP_DEBUG(LOG_LVL_HIGH, "Reply: STRING_DESCRIPTOR.");
 			switch(wValue & 0x00ff) {
 				case 0x00: _p_desc = udp_str_zero_descriptor; _s_desc = *(_p_desc); break;
 				case 0x01: _p_desc = udp_str_manufactur_descriptor; _s_desc = *(_p_desc); break;
@@ -268,12 +269,12 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 			break;
 
 		case UDP_wValue_DESCRIPTORT_HID:
-			__UDP_DEBUG(LOG_LVL_HIGH, "Reply: HID_INTERFACE_DESCRIPTOR.");
+			//__UDP_DEBUG(LOG_LVL_HIGH, "Reply: HID_INTERFACE_DESCRIPTOR.");
 			_p_desc = udp_hid_interface_descriptor; _s_desc = 0x09;
 			break;
 				
 		case UDP_wValue_DESCRIPTORT_HID_REPORT :
-			__UDP_DEBUG(LOG_LVL_HIGH, "Reply: HID_REPORT_DESCRIPTOR.");
+			//__UDP_DEBUG(LOG_LVL_HIGH, "Reply: HID_REPORT_DESCRIPTOR.");
 			_p_desc = udp_kbd_report_descriptor; _s_desc = UDP_DESCRIPTOR_HID_REPORT_SIZE;
 			break;
 
@@ -291,12 +292,12 @@ void udp_get_descriptor(uint16_t wValue, uint16_t wIndex, uint16_t wLength) {
 void udp_set_address(uint16_t wValue) {
 	udp_send_zlp(&ep_control);
 	
-	__UDP_DEBUG(LOG_LVL_MED, "Receive: SET address.");
+//	__UDP_DEBUG(LOG_LVL_LOW, "Receive: SET address.");
 	udp_setup_pkg.callback = &_udp_set_address_callback;
 }
 
 void udp_set_configuration(uint16_t wValue) {
-	__UDP_DEBUG(LOG_LVL_HIGH, "Receive: SET configuratuion.");
+//	__UDP_DEBUG(LOG_LVL_HIGH, "Receive: SET configuratuion.");
 	udp_send_zlp(&ep_control);
 	udp_setup_pkg.callback = &_udp_set_configuration_callback;
 }
@@ -326,9 +327,24 @@ void _udp_set_configuration_callback(udp_request_callback_t *p) {
 	else if(udp_get_state() == UDP_STATE_CONFIGURED) udp_set_state(UDP_STATE_ADDRESS);
 	
 	// turn on endpoints
-	__UDP_DEBUG(LOG_LVL_HIGH, "Configuration setted. Enable audio in ep.");
+//	__UDP_DEBUG(LOG_LVL_HIGH, "Configuration setted. Enable audio in ep.");
 	ep_enable(&ep_in.ep);
 	
 	__ep_ctrl_set(&ep_in.ep, UDP_CSR_TXPKTRDY);
 }
 
+void udp_request_unsupport(enum udp_error_t error) {
+	switch(error) {
+		case UDP_ERROR_REQUEST_UNSUPPORT :
+			__UDP_DEBUG(LOG_LVL_HIGH, "Error");
+			udp_send_stall(&ep_control);
+			break;
+
+		// This situation id called : what the fuck?!
+		case UDP_ERROR_UKNOWN : 
+			// Watchdog, i am here!
+			for(volatile int i;; i++);
+			break;
+	};	
+	udp_send_stall(&ep_control);
+}

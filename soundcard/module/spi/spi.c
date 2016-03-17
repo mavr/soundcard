@@ -27,7 +27,7 @@ void spi_system() {
     SPI->SPI_CR &= ~SPI_CR_SPIDIS;
 	SPI->SPI_CR |= SPI_CR_SPIEN;
 	
-	__DEBUG(LOG_LVL_HIGH, "[spi]\tStarted");
+	__DEBUG(LOG_LVL_HIGH, "[spi]\t", "Started");
 }
 
 void spi_pio() {

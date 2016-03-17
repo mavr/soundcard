@@ -35,8 +35,12 @@ void uart_interrupt() {
 	UART0->UART_IER = UART_IER_TXRDY;
 }
 
-void uart_tx_enable() {
+inline void uart_tx_enable() {
 	UART0->UART_CR |= UART_CR_TXEN;
+}
+
+inline void uart_tx_disable() {
+	UART0->UART_CR |= UART_CR_TXDIS;
 }
 
 void uart_rx_enable() {
@@ -45,16 +49,10 @@ void uart_rx_enable() {
 
 uint32_t uart_write(char *msg) {
 //	syslog_send(msg);
-		
 	return SUCCESS;
 }
 
 void uart_writeln(char *msg) {
 	uart_write(msg);
-	
-	//while(!(UART0->UART_SR & UART_SR_TXRDY));
-	//UART0->UART_THR = 0x0d;
-	//while(!(UART0->UART_SR & UART_SR_TXRDY));
-	//UART0->UART_THR = 0x0a;
 }
 

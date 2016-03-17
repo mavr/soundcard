@@ -15,16 +15,12 @@
 int main(void) {
 	/* Initialize the SAM system */
 	Init();
-	
+
 	while(!udp_ready());
-	
-	__DEBUG(LOG_LVL_LOW, "System during operation.");
+
+	__DEBUG(LOG_LVL_HIGH, __DEBUG_SYSTEM_PREFIX, "System during operation.");
 
 	while(1) {
-		// Warning! 
-		// Watchdog may not work here. Because syslog.
+		// Watchdog.
 	}
 }
-
-
-

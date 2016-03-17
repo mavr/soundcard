@@ -50,7 +50,7 @@ void udp_set_state(udp_state state) {
 			case UDP_STATE_POWERED :		__UDP_DEBUG(LOG_LVL_LOW, "State -> powered."); break;
 			case UDP_STATE_DEFAULT :		__UDP_DEBUG(LOG_LVL_LOW, "State -> default."); break;
 			case UDP_STATE_ADDRESS :		__UDP_DEBUG(LOG_LVL_LOW, "State -> address."); break;
-			case UDP_STATE_CONFIGURED :		__UDP_DEBUG(LOG_LVL_LOW, "State -> configure."); break;
+			case UDP_STATE_CONFIGURED :		__UDP_DEBUG(LOG_LVL_HIGH, "State -> configure."); break;
 			case UDP_STATE_SUSPENDED :		__UDP_DEBUG(LOG_LVL_LOW, "State -> suspend."); break;
 			default:	__UDP_DEBUG(LOG_LVL_LOW, "Error! State -> uknown."); break;
 		}
@@ -84,7 +84,7 @@ void UDP_Handler() {
 		ep_reset(&ep_out, UDP_EP_OUT, UDP_EP_TYPE_ISO_OUT, UDP_EP4_SIZE);
 		ep_reset(&ep_int, UDP_EP_HID, UDP_EP_TYPE_INT, UDP_EP1_SIZE);
 		
-		__UDP_DEBUG(LOG_LVL_LOW, "Get Reset signal");
+		__UDP_DEBUG(LOG_LVL_MED, "Get Reset signal");
 		
 		UDP->UDP_ICR |= UDP_ICR_ENDBUSRES | UDP_ICR_SOFINT;
 		udp_set_state(UDP_STATE_DEFAULT);

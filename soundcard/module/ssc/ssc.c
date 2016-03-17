@@ -61,14 +61,14 @@ void ssc_system() {
 
 	ssc_int_enable();
 	
-	__DEBUG(LOG_LVL_HIGH, "[ssc]\tConfigured");
+	__DEBUG(LOG_LVL_HIGH, "[ssc]\t", "Configured");
 
 }
 
 inline void ssc_irq() { 
 	NVIC_SetPriority(SSC_IRQn, 0x00);
 	NVIC_EnableIRQ(SSC_IRQn);
-	__DEBUG(LOG_LVL_HIGH, "[ssc]\tStarted");
+	__DEBUG(LOG_LVL_HIGH, "[ssc]\t", "Started");
 }
 
 inline void ssc_noirq() {

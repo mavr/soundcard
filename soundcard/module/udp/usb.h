@@ -32,6 +32,11 @@ extern const uint8_t udp_str_mic_amp_name[];
 
 #define UDP_REQUEST_INTERFACE(value) ( (uint8_t) (value & 0x00ff))
 
+enum udp_error_t {
+	UDP_ERROR_REQUEST_UNSUPPORT,
+	UDP_ERROR_UKNOWN,
+};
+
 /* Configuring process of the device. */
 void udp_enumerate(udp_setup_activity_t *udp_setup_pkg);
 void __udp_request_standart(udp_setup_activity_t *udp_setup_pkg);
@@ -62,5 +67,8 @@ void udp_set_interface(uint16_t wIndex);
 /* Standart */
 void _udp_set_address_callback(udp_request_callback_t *);
 void _udp_set_configuration_callback(udp_request_callback_t *);
+
+/* UDP error callback. */
+void udp_request_unsupport(enum udp_error_t error);
 
 #endif /* UDP_USB_H_ */

@@ -7,6 +7,11 @@
 
 #include "sam.h"
 
+struct udp_string_descriptor_list {
+	struct udp_string_descriptor_list *next;
+	
+};
+
 const uint8_t udp_str_zero_descriptor[] = { 0x04, 0x03,	0x00, 0x01 };
 
 /* Manufacturer : RadioAvionica */

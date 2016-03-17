@@ -9,6 +9,8 @@
 #ifndef INIT_H_
 #define INIT_H_
 
+#define __DEBUG_SYSTEM_PREFIX ""
+
 /* Arise, and go! */
 void Init(void);
 

@@ -80,6 +80,6 @@ void pcm3793_init() {
 	}
 	pcm3793_write(0x49, 0xff);
 	
-	__DEBUG(LOG_LVL_HIGH, "[pcm]\tStarted in master mode");
+	__DEBUG(LOG_LVL_HIGH, __DEBUG_PCM_PREFIX, "Started in master mode");
 	
 }

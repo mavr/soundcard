@@ -76,21 +76,21 @@ void udp_audio_controllers_proc(udp_setup_activity_t *udp_setup_pkg) {
 			break;
 	}
 
-//TODO: remove this debug info
-	switch((uint8_t) (udp_setup_pkg->pkg.wIndex >> 8)) {
-		case UDP_AC_PHONE_FU_ID :
-//			__UDP_DEBUG(LOG_LVL_HIGH, "Request to phone volume.");
-			break;
-		case UDP_AC_MIC_FU_ID :
-//			__UDP_DEBUG(LOG_LVL_HIGH, "Request to microphone volume.");
-			break;
-		case UDP_AC_MIX_ID:
-//			__UDP_DEBUG(LOG_LVL_HIGH, "Request to mixer.");
-			break;
-		default:
-			__UDP_DEBUG(LOG_LVL_HIGH, "Request to uknown selector.");
-			break;
-	}
+////TODO: remove this debug info
+	//switch((uint8_t) (udp_setup_pkg->pkg.wIndex >> 8)) {
+		//case UDP_AC_PHONE_FU_ID :
+////			__UDP_DEBUG(LOG_LVL_HIGH, "Request to phone volume.");
+			//break;
+		//case UDP_AC_MIC_FU_ID :
+////			__UDP_DEBUG(LOG_LVL_HIGH, "Request to microphone volume.");
+			//break;
+		//case UDP_AC_MIX_ID:
+////			__UDP_DEBUG(LOG_LVL_HIGH, "Request to mixer.");
+			//break;
+		//default:
+			//__UDP_DEBUG(LOG_LVL_HIGH, "Request to uknown selector.");
+			//break;
+	//}
 }
 	
 void udp_audio_fu_volume_cs(udp_setup_activity_t *udp_setup_pkg) {

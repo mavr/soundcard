@@ -22,8 +22,6 @@ typedef uint8_t	udp_state;
 #define	UDP_STATE_CONFIGURED	0x04
 #define	UDP_STATE_SUSPENDED		0x05
 
-
-
 typedef struct {
 	/* udp state */
 	udp_state state;
@@ -58,6 +56,5 @@ void udp_set_dev_addr(uint8_t address);
 /* Set and take device state in udp register */
 void udp_set_state(udp_state state);
 udp_state udp_get_state(void);
-
 
 #endif /* UDP_H_ */

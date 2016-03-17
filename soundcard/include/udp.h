@@ -16,12 +16,14 @@
 
 /* User API for usb device */
 
+#define __DEBUG_UDP_PREFIX "[udp]\t"
+
 #ifdef UART_DEBUG
 	#define __UDP_DEBUG(lvl,msg) {\
-		syslog_prefix("[udp]\t"); \
-		__DEBUG(lvl,msg); }
+				__DEBUG(lvl, __DEBUG_UDP_PREFIX, msg);\
+			}
 #else
-	#define __UDP_DEBUG(lvl,msg)
+	#define __UDP_DEBUG(lvl, msg)
 #endif
 
 //#define  __UDP_DEBUG(lvl,msg)

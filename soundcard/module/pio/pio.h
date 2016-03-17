@@ -11,16 +11,14 @@
 
 #include "core/syslog.h"
 
+#define __DEBUG_PIO_PREFIX	"[kbd]\t"
+
 #ifdef UART_DEBUG
-	#define __PIO_DEBUG(lvl, msg) {\
-		syslog_prefix("[pio]\t"); \
-		__DEBUG(lvl, msg); }
-		
-		#define __KBD_DEBUG(msg) {\
-			syslog_prefix("[pio]\tKeyboard : "); \
-		__DEBUG(LOG_LVL_HIGH, msg); }
-#else
-	#define __PIO_DEBUG(lvl, msg)
+	#define __KBD_DEBUG(msg) {\
+		__DEBUG(LOG_LVL_HIGH, __DEBUG_PIO_PREFIX, msg);\
+	}
+	#else
+	#define __KBD_DEBUG(msg)
 #endif
 
 /* Key and pin matching */
