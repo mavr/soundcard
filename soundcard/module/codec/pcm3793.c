@@ -46,7 +46,8 @@ void pcm3793_init() {
 	/* Choose switchers. */
 //	pcm3793_switch(PCM_R88_SW1 | PCM_R88_SW6);
 //	pcm3793_switch(PCM_R88_SW5 | PCM_R88_SW2);
-	pcm3793_switch( PCM_R88_SW6 | PCM_R88_SW5 | PCM_R88_SW1);
+//	pcm3793_switch( PCM_R88_SW6 | PCM_R88_SW5 | PCM_R88_SW1);
+	pcm3793_switch(PCM_R88_SW5);
 
 	/* Turn on HPR. */
 	void pcm3793_phpr_up();

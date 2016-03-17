@@ -145,6 +145,16 @@ void pcm3793_adc_filter_hp(uint8_t value) {
 	pcm3793_write(PCM_R81, codec.reg.r81);
 }
 
+void pcm3793_adc_soft_mute_on() {
+	codec.reg.r81 |= (PCM_R81_RMUL | PCM_R81_RMUR);
+	pcm3793_write(PCM_R81, codec.reg.r81);
+}
+
+void pcm3793_adc_soft_mute_off() {
+	codec.reg.r81 &= ~(PCM_R81_RMUL | PCM_R81_RMUR);
+	pcm3793_write(PCM_R81, codec.reg.r81);
+}
+
 //void pcm3793_adc
 
 void pcm3793_mic_inc(uint8_t value) {
