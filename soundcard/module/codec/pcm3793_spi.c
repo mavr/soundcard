@@ -126,12 +126,12 @@ void pcm3793_output(uint8_t value) {
 }
 
 void pcm3793_pg3_gain(uint8_t value) {
-	codec.reg.r79 = value;
+	codec.reg.r79 = PCM_R79_ALV(value);
 	pcm3793_write(PCM_R79, codec.reg.r79);
 }
 
 void pcm3793_pg4_gain(uint8_t value) {
-	codec.reg.r80 = value;
+	codec.reg.r80 = PCM_R80_ARV(value);
 	pcm3793_write(PCM_R80, codec.reg.r80);
 }
 

@@ -33,7 +33,7 @@
         <documentation help="" />
         <offline-documentation help="" />
         <dependencies>
-          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.18.1" />
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.22.0" />
         </dependencies>
       </framework-data>
     </AsfFrameworkConfig>
@@ -59,11 +59,11 @@
         <InterfaceName>SWD</InterfaceName>
       </ToolOptions>
       <ToolType>com.atmel.avrdbg.tool.atmelice</ToolType>
-      <ToolNumber>J41800000650</ToolNumber>
+      <ToolNumber>J41800005764</ToolNumber>
       <ToolName>Atmel-ICE</ToolName>
     </com_atmel_avrdbg_tool_atmelice>
     <ExternalProgrammingToolCommand />
-    <avrtoolserialnumber>J41800000650</avrtoolserialnumber>
+    <avrtoolserialnumber>J41800005764</avrtoolserialnumber>
     <avrdeviceexpectedsignature>0x29970EE0</avrdeviceexpectedsignature>
     <avrtoolinterfaceclock>2000000</avrtoolinterfaceclock>
   </PropertyGroup>
@@ -84,8 +84,8 @@
     <ListValues>
       <Value>../module</Value>
       <Value>..</Value>
-      <Value>%24(PackRepoDir)\atmel\SAM4S_DFP\1.0.35\sam4s\include</Value>
       <Value>%24(PackRepoDir)\arm\cmsis\4.2.0\CMSIS\Include\</Value>
+      <Value>%24(PackRepoDir)\atmel\SAM4S_DFP\1.0.45\sam4s\include</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
@@ -104,11 +104,17 @@
   <armgcc.linker.optimization.GarbageCollectUnusedSections>True</armgcc.linker.optimization.GarbageCollectUnusedSections>
   <armgcc.linker.memorysettings.ExternalRAM />
   <armgcc.linker.miscellaneous.LinkerFlags>-Tsam4sd32b_flash.ld</armgcc.linker.miscellaneous.LinkerFlags>
+  <armgcc.assembler.general.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\arm\cmsis\4.2.0\CMSIS\Include\</Value>
+      <Value>%24(PackRepoDir)\atmel\SAM4S_DFP\1.0.45\sam4s\include</Value>
+    </ListValues>
+  </armgcc.assembler.general.IncludePaths>
   <armgcc.assembler.debugging.DebugLevel>Default (-g)</armgcc.assembler.debugging.DebugLevel>
   <armgcc.preprocessingassembler.general.IncludePaths>
     <ListValues>
-      <Value>%24(PackRepoDir)\atmel\SAM4S_DFP\1.0.35\sam4s\include</Value>
       <Value>%24(PackRepoDir)\arm\cmsis\4.2.0\CMSIS\Include\</Value>
+      <Value>%24(PackRepoDir)\atmel\SAM4S_DFP\1.0.45\sam4s\include</Value>
     </ListValues>
   </armgcc.preprocessingassembler.general.IncludePaths>
   <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
@@ -135,8 +141,8 @@
     <ListValues>
       <Value>../module</Value>
       <Value>..</Value>
-      <Value>%24(PackRepoDir)\atmel\SAM4S_DFP\1.0.35\sam4s\include</Value>
       <Value>%24(PackRepoDir)\arm\cmsis\4.2.0\CMSIS\Include\</Value>
+      <Value>%24(PackRepoDir)\atmel\SAM4S_DFP\1.0.45\sam4s\include</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
@@ -155,11 +161,17 @@
   <armgcc.linker.optimization.GarbageCollectUnusedSections>True</armgcc.linker.optimization.GarbageCollectUnusedSections>
   <armgcc.linker.memorysettings.ExternalRAM />
   <armgcc.linker.miscellaneous.LinkerFlags>-Tsam4sd32b_flash.ld</armgcc.linker.miscellaneous.LinkerFlags>
+  <armgcc.assembler.general.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\arm\cmsis\4.2.0\CMSIS\Include\</Value>
+      <Value>%24(PackRepoDir)\atmel\SAM4S_DFP\1.0.45\sam4s\include</Value>
+    </ListValues>
+  </armgcc.assembler.general.IncludePaths>
   <armgcc.assembler.debugging.DebugLevel>Default (-g)</armgcc.assembler.debugging.DebugLevel>
   <armgcc.preprocessingassembler.general.IncludePaths>
     <ListValues>
-      <Value>%24(PackRepoDir)\atmel\SAM4S_DFP\1.0.35\sam4s\include</Value>
       <Value>%24(PackRepoDir)\arm\cmsis\4.2.0\CMSIS\Include\</Value>
+      <Value>%24(PackRepoDir)\atmel\SAM4S_DFP\1.0.45\sam4s\include</Value>
     </ListValues>
   </armgcc.preprocessingassembler.general.IncludePaths>
   <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
@@ -172,18 +184,6 @@
     </PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="core\fifo.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="core\fifo.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="core\list.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="core\list.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="core\stream.c">
       <SubType>compile</SubType>
     </Compile>

@@ -185,12 +185,12 @@
 #define PCM_R77_STSL			(0x01 << 0)
 
 /* Register 79 */
-#define PCM_R79_ALV_Msk			0x1F
+#define PCM_R79_ALV_Msk			0x3F
 #define PCM_R79_ALV_Pos			0x00
 #define PCM_R79_ALV(value)		(PCM_R79_ALV_Msk & ((value) << PCM_R79_ALV_Pos))
 
 /* Register 80 */
-#define PCM_R80_ARV_Msk			0x1F
+#define PCM_R80_ARV_Msk			0x3F
 #define PCM_R80_ARV_Pos			0x00
 #define PCM_R80_ARV(value)		(PCM_R80_ARV_Msk & ((value) << PCM_R80_ARV_Pos))
 
@@ -341,6 +341,20 @@ typedef struct {
 	uint8_t r88;
 	uint8_t r89;
 	uint8_t r90;
+	uint8_t r91;
+	uint8_t r92;
+	uint8_t r93;
+	uint8_t r94;
+	uint8_t r95;
+	uint8_t r96;
+	uint8_t r97;
+	uint8_t r98;
+	uint8_t r99;
+	uint8_t r100;
+	uint8_t r102;
+	uint8_t r103;
+	uint8_t r104;
+
 } pcm3793_reg_t;
 
 typedef struct {
@@ -453,6 +467,10 @@ void pcm3793_switch(uint8_t value);
 void pcm3793_zero_cross_enable(void);
 
 void pcm3793_mode_master(void);
+
+/** Filters **/
+/* Notch filters. */
+//void pcm3793_
 
 
 #endif /* PCM3793_H_ */

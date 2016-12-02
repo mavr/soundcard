@@ -16,12 +16,13 @@ void pcm3793_init() {
 
 	/* Set analog volume for right Tel. channel
 		and disable analog mute. */
-	pcm3793_hpr_vol(PCM_R65_HRV(0x3a));
+	pcm3793_hpl_vol(PCM_R64_HLV(0x3a));
 
 	/* SPL/R disable */
 
 	/* DAC block */
-	pcm3793_dar(PCM_R69_ATR(0x35));
+	pcm3793_dal(PCM_R68_ATL(0x35));
+//	pcm3793_dar(PCM_R69_ATR(0x35));
 	pcm3793_dac_format(PCM_R70_PFM_LJust);
 	pcm3793_dac_over();
 	pcm3793_dac_filter_dem(PCM_R70_DEM_OFF);
@@ -32,8 +33,10 @@ void pcm3793_init() {
 	pcm3793_adc_filter_hp(PCM_R81_HPF_OFF);
 
 	/* Set boost for PG1 and PG2. */
-	pcm3793_pg1_m20dB();
+//	pcm3793_pg1_m20dB();
 	pcm3793_pg2_m20dB();
+	pcm3793_pg3_gain(PCM_R79_ALV(0x20));
+//	pcm3793_pg4_gain(PCM_R80_ARV(0x2a));
 
 	/* Power on Mic Bias. */
 	pcm3793_pbis_up();
@@ -41,16 +44,16 @@ void pcm3793_init() {
 	/* Zero-cross ? */
 
 	/* Turn on mixer. */
-	pcm3793_pmxr_on();
+	pcm3793_pmxl_on();
 
 	/* Choose switchers. */
-//	pcm3793_switch(PCM_R88_SW1 | PCM_R88_SW6);
+//	pcm3793_switch( PCM_R88_SW2 | PCM_R88_SW5);
 //	pcm3793_switch(PCM_R88_SW5 | PCM_R88_SW2);
 //	pcm3793_switch( PCM_R88_SW6 | PCM_R88_SW5 | PCM_R88_SW1);
-	pcm3793_switch(PCM_R88_SW5);
+//	pcm3793_switch(PCM_R88_SW2);
 
-	/* Turn on HPR. */
-	void pcm3793_phpr_up();
+	/* Turn on HPL. */
+	void pcm3793_phpl_up();
 
 	/* Power up Vcom. */
 	pcm3793_vcom();
@@ -60,23 +63,46 @@ void pcm3793_init() {
 	pcm3793_adl_up();
 
 	pcm3793_pg1pg5_up();
-//	pcm3793_pg2pg6_up();
+	pcm3793_pg2pg6_up();
 
 	/* Switch codec to master mode. */
 	pcm3793_mode_master();
 	
-//	pcm3793_output(PCM_R74_HPS_SINGLE);
+	pcm3793_output(PCM_R74_CMS_INV_HPOL | PCM_R74_HPS_SINGLE);
 
 	pcm3793_analog_in(PCM_R87_AIL_AIN1L | PCM_R87_AIR_AIN1R);
+
+	pcm3793_write(0x52, 0x07 );
+	pcm3793_write(0x53, 0x60 | (2 << 2) | (3 << 0) ); //| (0 << 2) | (2 << 0));
+	pcm3793_write(0x5f, 0x80);
+
+	pcm3793_write(0x61, 0x07);
+	pcm3793_write(0x62, 0xf3);
+	pcm3793_write(0x63, 0x7e);
+	pcm3793_write(0x64, 0xe5);
+		
+	pcm3793_write(0x65, 0x07);
+	pcm3793_write(0x66, 0xf3);
+	pcm3793_write(0x67, 0x7e);
+	pcm3793_write(0x68, 0xe5);
+
+	pcm3793_write(0x60, 0xc0);
+	pcm3793_write(0x60, 0x30);
+
+
 //	pcm3793_analog_in(0x00);
 	
 //	pcm3793_pg4_gain(PCM_R80_ARV(0x0c));
 
 	///* wait 450 ms */
-	//volatile unsigned long long i = 0;
-	//for(i = 0; i < 100000; i++) {
-		//__NOP;
-	//}
+	volatile unsigned long long i = 0;
+	for(i = 0; i < 100000; i++) {
+		__NOP;
+	}
+
+
+
+
 	pcm3793_write(0x49, 0xff);
 
 	__DEBUG(LOG_LVL_HIGH, __DEBUG_PCM_PREFIX, "Started in master mode");

@@ -360,7 +360,8 @@ inline void _audio_unit_common_unsupport(const void * unit_conf) {
 /* Feature Unit ID 5. */
 void _audio_unit_mic_vol_set_cur(void *unit_conf, void *data) {
 	_audio_unit_common_u16_set_cur(unit_conf, data);
-	pcm3793_pg3_gain((int8_t) (audio_unit_ctrl_mic_fu_conf_vol.cur / 0x100));
+//	pcm3793_pg3_gain(audio_unit_ctrl_mic_fu_conf_vol.cur / 0x100);
+//	pcm3793_pg4_gain(audio_unit_ctrl_mic_fu_conf_vol.cur / 0x100);
 
 	_audio_unit_mic_log();
 }
@@ -395,7 +396,7 @@ inline void _audio_unit_phone_mute_set_cur(void *unit_conf, void *data) {
 
 	if(audio_unit_ctrl_phone_fu_conf_mute.cur == 1) reg |= PCM_R65_HMUR;
 	reg |= PCM_R65_HRV((int8_t) (audio_unit_ctrl_phone_fu_conf_vol.cur / 0x100));
-	pcm3793_hpr_vol(reg);
+	pcm3793_hpl_vol(reg);
 
 	_audio_unit_phone_log();
 }
